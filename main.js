@@ -48,3 +48,21 @@ const setApplicationMenu = () => {
   const menus = [mainMenuTemplate(mainWindow)];
   Menu.setApplicationMenu(Menu.buildFromTemplate(menus));
 };
+
+let inputFile, outputDirectory, batch;
+
+var ipc = require('electron').ipcMain;
+
+ipc.on('setOutputDirectory', (event, data) => {
+  outputDirectory = data
+  console.log(outputDirectory)
+})
+
+ipc.on('setInputFile', (event, data) => {
+  inputFile = data
+  console.log(inputFile)
+})
+
+ipc.on('clearBatchData', (event, data) => {
+  event.sender.send('clearBatchDataSuccessful', { success: true })
+})

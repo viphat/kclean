@@ -69,5 +69,125 @@
         </div>
       </div>
     </div>
+
+  <script>
+    let inputFile, outputDirectory, isProcessing, batch;
+    const dialog = require('electron').remote.dialog
+    var ipc = require('electron').ipcRenderer;
+
+    document.getElementById('outputDirectory').addEventListener('click', _=>{
+      dialog.showOpenDialog({
+        properties: ['openDirectory']
+      }).then((result) => {
+        outputDirectory = result.filePaths[0]
+        var label = document.getElementById('outputDirectoryLabel');
+        label.innerHTML = outputDirectory;
+        ipc.send('setOutputDirectory', outputDirectory)
+      });
+    });
+
+    document.getElementById('inputFile').addEventListener('click', _=>{
+      dialog.showOpenDialog({
+        properties: ['openFile'],
+        filters: [
+          { name: 'Excel File', extensions: ['xls', 'xlsx'] }
+        ]
+      }).then((result) => {
+        inputFile = result.filePaths[0]
+        var label = document.getElementById('inputFileLabel');
+        label.innerHTML = inputFile;
+        ipc.send('setInputFile', inputFile)
+      });
+    });
+
+    function disableSpinner() {
+      isProcessing = false;
+      document.getElementById('spinner').style.display = 'none';
+    }
+
+    function showSucceedBox(content) {
+      document.getElementById('failedBox').style.display = 'none';
+      document.getElementById('succeedBox').style.display = 'inherit';
+      document.getElementById('succeedBox').innerHTML = content;
+    }
+
+    function showFailedBox(content) {
+      document.getElementById('succeedBox').style.display = 'none';
+      document.getElementById('failedBox').style.display = 'inherit';
+      document.getElementById('failedBox').innerHTML = content;
+    }
+
+    function resetAlertAndShowSpinner() {
+      document.getElementById('failedBox').style.display = 'none';
+      document.getElementById('succeedBox').style.display = 'none';
+      document.getElementById('spinner').style.display = 'inherit';
+    }
+
+    function assignFormValues() {
+      batch = document.getElementById('txtBatch').value;
+    }
+
+    function isFormInvalid() {
+      return outputDirectory === undefined || inputFile === undefined || batch === undefined || batch === null || batch === ''
+    }
+
+    document.getElementById('btnClearBatch').addEventListener('click', _ => {
+      assignFormValues();
+
+      if (batch === undefined || batch === null || batch === '') {
+        dialog.showErrorBox('Notification', 'You must fill in batch field before processing.');
+        return null;
+      }
+
+      if (isProcessing === true) {
+        dialog.showErrorBox('Notification', 'Processing...');
+        return null;
+      }
+
+      isProcessing = true;
+      resetAlertAndShowSpinner();
+
+      ipc.send('clearBatchData', batch)
+
+      ipc.on('clearBatchDataSuccessful', function(event, data){
+        disableSpinner();
+        showSucceedBox('Clear All Data of ' + batch + ' Batch successfully.');
+      })
+
+      ipc.on('clearBatchDataFailed', function(event, errMessage){
+        disableSpinner();
+        showFailedBox(errMessage);
+      })
+    });
+
+    document.getElementById('btnProcess').addEventListener('click', _ => {
+      assignFormValues();
+
+      // inputFile = ['/Users/viphat/Downloads/1.xlsx'];
+      // outputDirectory = ['/Users/viphat/Downloads/Test'];
+      // batch = 'W1';
+
+      if (isFormInvalid()) {
+        dialog.showErrorBox('Notification', 'You must fill out this form before processing.');
+        return null;
+      }
+
+      if (isProcessing === true) {
+        dialog.showErrorBox('Notification', 'Processing...');
+        return null;
+      }
+
+      isProcessing = true;
+      resetAlertAndShowSpinner();
+
+      // mainProcess.processData(inputFile, batch, outputDirectory).then( (response) => {
+      //   disableSpinner();
+      //   showSucceedBox(response);
+      // }, errRes => {
+      //   disableSpinner();
+      //   showFailedBox(errRes);
+      // });
+    });
+  </script>
   </body>
 </html>
