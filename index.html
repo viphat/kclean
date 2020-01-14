@@ -2,11 +2,72 @@
 <html>
   <head>
     <meta charset="UTF-8">
-    <title>Hello World!</title>
+    <title>KOTEX CALL CENTER 2020 - Data Cleaning Tools</title>
     <!-- https://electronjs.org/docs/tutorial/security#csp-meta-tag -->
     <meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-inline';" />
+
+    <link href="vendor/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+    <link href="vendor/bootstrap4/css/bootstrap.min.css" rel="stylesheet" type="text/css">
+    <link href="stylesheets/main.css" rel="stylesheet" type="text/css">
   </head>
   <body>
-    <h1>Hello World!</h1>
+    <div class="container" style='max-width: 800px; min-width: 400px;'>
+      <div class="col-md-12" style='text-align: center; margin-bottom: 10px;'>
+        <img src='vendor/logo.png' alt='Intage Vietnam' />
+      </div>
+      <h3 class='text-warning'>KOTEX CALL CENTER 2020 - Data Cleaning Tools</h3>
+      <div class='row'>
+        <div class="col-md-12">
+          <form class='form' class='form-horizontal' novalidate=''>
+            <div class='form-group row'>
+              <label class='control-label col-sm-4 text-success' for='inputFile'>Input File (.xlsx file only)</label>
+              <div class='col-sm-8'>
+                <button type='button' id='inputFile' class='btn-sm btn btn-info'>Select File</button>
+                <span id='inputFileLabel'></span>
+              </div>
+            </div>
+            <div class='form-group row'>
+              <label class='control-label col-sm-4 text-success' for='outputDirectory'>Output Directory</label>
+              <div class='col-sm-8'>
+                <button type='button' id='outputDirectory' class='btn-sm btn btn-info'>Select a Directory</button>
+                <span id='outputDirectoryLabel'></span>
+              </div>
+            </div>
+            <div class='form-group row'>
+              <label class='text-success control-label col-sm-4' for='txtBatch'>Batch</label>
+              <div class='col-sm-6'>
+                <input type='text' class='form-control' id='txtBatch' name='txtBatch'/>
+              </div>
+            </div>
+
+            <div class='form-group'>
+              <button style='margin-bottom: 10px;' type='button' class='btn btn-danger' id='btnClearBatch'>
+                <i class='fa fa-close'></i>
+                <span style='margin-left: 5px;'>Xóa Data theo tuần</span>
+              </button>
+
+              <button style='margin-bottom: 10px;' type='button' class='btn btn-primary' id='btnProcess'>
+                <i class='fa fa-rocket'></i>
+                <span style='margin-left: 5px;'>Import Data</span>
+              </button>
+
+              <button style='margin-bottom: 10px;' type='button' class='btn btn-warning' id='btnReport'>
+                <i class='fa fa-suitcase'></i>
+                <span style='margin-left: 5px;'>Xuất Report</span>
+              </button>
+            </div>
+
+            <div id='spinner' style='text-align: center; display: none;'>
+              <i class="text-danger fa fa-circle-o-notch fa-spin fa-2x fa-fw"></i>
+              <span class="sr-only">Loading...</span>
+            </div>
+
+            <div id='succeedBox' style='display: none;' class='alert alert-success'></div>
+
+            <div id='failedBox' style='display: none;' class='alert alert-danger'></div>
+          </form>
+        </div>
+      </div>
+    </div>
   </body>
 </html>

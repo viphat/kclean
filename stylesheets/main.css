@@ -1,0 +1,25 @@
+body {
+  background-color: #fafafa;
+}
+
+a {
+  text-decoration: none;
+}
+
+.container {
+  margin: 30px auto;
+  min-height: 500px;
+  height: 100%;
+}
+
+h3 {
+  display: block;
+  font-size: 1.2rem;
+  font-weight: 700;
+  margin-bottom: 1.2rem;
+}
+
+.form {
+  margin-top: 20px;
+  margin-bottom: 20px;
+}
