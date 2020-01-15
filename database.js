@@ -24,47 +24,53 @@ export const importData = () => {
 
 function createTableAreas() {
   db.run('DROP TABLE IF EXISTS areas;');
-  db.run('CREATE TABLE areas(area_id INTEGER PRIMARY KEY, name TEXT);');
+  db.run('CREATE TABLE areas(areaId INTEGER PRIMARY KEY, name TEXT);');
 }
 
 function createTableProvinces() {
   db.run('DROP TABLE IF EXISTS provinces;');
-  db.run('CREATE TABLE provinces(province_id INTEGER PRIMARY KEY, name TEXT, area_id INTEGER, FOREIGN KEY(area_id) REFERENCES areas(area_id));');
+  db.run('CREATE TABLE provinces(provinceId INTEGER PRIMARY KEY, name TEXT, areaId INTEGER, FOREIGN KEY(areaId) REFERENCES areas(areaId));');
 }
 
 function createTableCustomers() {
   db.run('DROP TABLE IF EXISTS customers;');
-  db.run('CREATE TABLE customers(customer_id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT, province_id INTEGER, school_name TEXT, age INTEGER, phone_number TEXT, parent_phone_number TEXT, facebook TEXT, email TEXT, kotex_col_data TEXT, diana_col_data TEXT, laurier_col_data TEXT, whisper_col_data TEXT, others_col_data TEXT, created_at TEXT, received_gift TEXT, group_id INTEGER,\
+  db.run('CREATE TABLE customers(customerId INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT, provinceId INTEGER, schoolName TEXT, age INTEGER, phoneNumber TEXT, parentPhoneNumber TEXT, facebook TEXT, email TEXT, contactInformation TEXT, kotexData TEXT, dianaData TEXT, laurierData TEXT, whisperData TEXT, othersData TEXT, createdAt TEXT, notes TEXT, receivedGift TEXT, groupId INTEGER, batch TEXT,\
     missingData INTEGER DEFAULT 0,\
     missingName INTEGER DEFAULT 0,\
-    missingSchoolName INTEGER DEFAULT 0,\
-    missingAddress INTEGER DEFAULT 0,\
-    missingPhone INTEGER DEFAULT 0,\
+    missingLivingCity INTEGER DEFAULT 0,\
+    missingContactInformation INTEGER DEFAULT 0,\
     missingAge INTEGER DEFAULT 0,\
-    missingUsingBrand INTEGER DEFAULT 0,\
+    missingSchoolName INTEGER DEFAULT 0,\
+    missingBrandUsing INTEGER DEFAULT 0,\
     missingGroup INTEGER DEFAULT 0,\
     illogicalData INTEGER DEFAULT 0,\
     illogicalPhone INTEGER DEFAULT 0,\
     illogicalAge INTEGER DEFAULT 0,\
+    illogicalAgePupil INTEGER DEFAULT 0,\
+    illogicalAgeStudent INTEGER DEFAULT 0,\
+    illogicalAgeOthers INTEGER DEFAULT 0,\
     duplicatedPhone INTEGER DEFAULT 0,\
-    duplicatedPhoneBetweenGroups INTEGER DEFAULT 0,\
-    duplicatedPhoneWithinGroupPupil INTEGER DEFAULT 0,\
-    duplicatedPhoneWithinGroupStudent INTEGER DEFAULT 0,\
-    FOREIGN KEY(province_id) REFERENCES provinces(province_id));');
+    duplicatedPhoneBetweenPupilAndStudent INTEGER DEFAULT 0,\
+    duplicatedPhoneBetweenPupilAndOthers INTEGER DEFAULT 0,\
+    duplicatedPhoneBetweenStudentAndOthers INTEGER DEFAULT 0,\
+    duplicatedPhoneWithinPupil INTEGER DEFAULT 0,\
+    duplicatedPhoneWithinStudent INTEGER DEFAULT 0,\
+    duplicatedPhoneWithinOthers INTEGER DEFAULT 0,\
+    FOREIGN KEY(provinceId) REFERENCES provinces(provinceId));');
 }
 
 function insertTableAreas() {
-  db.run('INSERT INTO areas(area_id, name) VALUES(?, ?);', 1, 'Hồ Chí Minh');
-  db.run('INSERT INTO areas(area_id, name) VALUES(?, ?);', 2, 'Tây Nam Bộ');
-  db.run('INSERT INTO areas(area_id, name) VALUES(?, ?);', 3, 'Đông Nam Bộ');
-  db.run('INSERT INTO areas(area_id, name) VALUES(?, ?);', 4, 'Miền Trung');
+  db.run('INSERT INTO areas(areaId, name) VALUES(?, ?);', 1, 'Hồ Chí Minh');
+  db.run('INSERT INTO areas(areaId, name) VALUES(?, ?);', 2, 'Tây Nam Bộ');
+  db.run('INSERT INTO areas(areaId, name) VALUES(?, ?);', 3, 'Đông Nam Bộ');
+  db.run('INSERT INTO areas(areaId, name) VALUES(?, ?);', 4, 'Miền Trung');
 }
 
 function insertTableProvinces() {
-  db.run('INSERT INTO provinces(province_id, area_id, name) VALUES(?, ?, ?);', 1, 1, 'Hồ Chí Minh');
-  db.run('INSERT INTO provinces(province_id, area_id, name) VALUES(?, ?, ?);', 2, 2, 'Cần Thơ');
-  db.run('INSERT INTO provinces(province_id, area_id, name) VALUES(?, ?, ?);', 3, 2, 'Vĩnh Long');
-  db.run('INSERT INTO provinces(province_id, area_id, name) VALUES(?, ?, ?);', 4, 3, 'Đồng Nai');
-  db.run('INSERT INTO provinces(province_id, area_id, name) VALUES(?, ?, ?);', 5, 4, 'Đà Nẵng');
-  db.run('INSERT INTO provinces(province_id, area_id, name) VALUES(?, ?, ?);', 6, 4, 'Huế');
+  db.run('INSERT INTO provinces(provinceId, areaId, name) VALUES(?, ?, ?);', 1, 1, 'Hồ Chí Minh');
+  db.run('INSERT INTO provinces(provinceId, areaId, name) VALUES(?, ?, ?);', 2, 2, 'Cần Thơ');
+  db.run('INSERT INTO provinces(provinceId, areaId, name) VALUES(?, ?, ?);', 3, 2, 'Vĩnh Long');
+  db.run('INSERT INTO provinces(provinceId, areaId, name) VALUES(?, ?, ?);', 4, 3, 'Đồng Nai');
+  db.run('INSERT INTO provinces(provinceId, areaId, name) VALUES(?, ?, ?);', 5, 4, 'Đà Nẵng');
+  db.run('INSERT INTO provinces(provinceId, areaId, name) VALUES(?, ?, ?);', 6, 4, 'Huế');
 }

@@ -1,5 +1,6 @@
 import { app, BrowserWindow, Menu, dialog } from 'electron'
 import { mainMenuTemplate } from './mainMenu.js'
+import { clearCustomerData } from './clearCustomerData'
 
 // Keep a global reference of the window object, if you don't, the window will be closed automatically when the JavaScript object is garbage collected.
 let mainWindow
@@ -55,14 +56,16 @@ var ipc = require('electron').ipcMain;
 
 ipc.on('setOutputDirectory', (event, data) => {
   outputDirectory = data
-  console.log(outputDirectory)
 })
 
 ipc.on('setInputFile', (event, data) => {
   inputFile = data
-  console.log(inputFile)
 })
 
-ipc.on('clearBatchData', (event, data) => {
-  event.sender.send('clearBatchDataSuccessful', { success: true })
+ipc.on('clearCustomerData', (event, data) => {
+  clearCustomerData(data).then((response) => {
+    event.sender.send('clearCustomerDataSuccessful', { success: true })
+  }, (errRes) => {
+    event.sender.send('clearCustomerDataFailed', { success: true })
+  })
 })

@@ -147,14 +147,14 @@
       isProcessing = true;
       resetAlertAndShowSpinner();
 
-      ipc.send('clearBatchData', batch)
+      ipc.send('clearCustomerData', batch)
 
-      ipc.on('clearBatchDataSuccessful', function(event, data){
+      ipc.on('clearCustomerDataSuccessful', function(event, data){
         disableSpinner();
         showSucceedBox('Clear All Data of ' + batch + ' Batch successfully.');
       })
 
-      ipc.on('clearBatchDataFailed', function(event, errMessage){
+      ipc.on('clearCustomerDataFailed', function(event, errMessage){
         disableSpinner();
         showFailedBox(errMessage);
       })
