@@ -87,22 +87,74 @@ const checkMissingData = (customer) => {
     customer.missingData = 1
   }
 
-  if (_.isEmpty(customer.schoolName)) {
-    customer.missingSchoolName = 1
-    customer.missingData = 1
-  }
-
   if (_.isEmpty(customer.kotexData) && _.isEmpty(customer.dianaData) && _.isEmpty(customer.laurierData) && _.isEmpty(customer.othersData) && _.isEmpty(customer.whisperData)) {
     customer.missingBrandUsing = 1
     customer.missingData = 1
   }
 
-    if (_.isEmpty(customer.group)) {
+    if (_.isEmpty(customer.groupId)) {
     customer.missingGroup = 1
     customer.missingData = 1
   }
 
   return customer;
+}
+
+const checkDuplication = (customer) => {
+  return new Promise((resolve, reject) => {
+    if (customer.missingContactInformation === 1 || _.isEmpty(customer.phoneNumber)) {
+      return resolve(customer)
+    }
+
+    if (customer.illogicalPhone === 1) {
+      return resolve(customer)
+    }
+
+    db.get('SELECT customers.customerId, customers.name, customers.areaName, customers.provinceName,\
+      customers.phoneNumber, customers.parentPhoneNumber, customers.facebook, customers.email, customers.kotexData, customers.dianaData, customers.laurierData, customers.whisperData, customers.othersData, customers.createdAt, customers.notes, customers.receivedGift, customers.groupId, customers.batch\
+    from customers\
+    WHERE customers.phoneNumber = ? AND customers.customerId != ?',
+      customer.phoneNumber, customer.customerId, (err, res) => {
+      if (err) {
+        return reject(err);
+      }
+
+      if (res === undefined || res === null) {
+        resolve(customer);
+      } else {
+        customer.duplicatedWith = res;
+        customer.duplicatedPhone = 1;
+
+        if (customer.groupId === 1) {
+          if (customer.duplicatedWith.groupId === 2) {
+            customer.duplicatedPhoneBetweenPupilAndStudent = 1
+          } else if (customer.duplicatedWith.groupId === 3) {
+            customer.duplicatedPhoneBetweenPupilAndOthers = 1
+          } else if (customer.duplicatedWith.groupId === customer.groupId) {
+            customer.duplicatedPhoneWithinPupil = 1
+          }
+        } else if (customer.groupId === 2) {
+          if (customer.duplicatedWith.groupId === 1) {
+            customer.duplicatedPhoneBetweenPupilAndStudent = 1
+          } else if (customer.duplicatedWith.groupId === 3) {
+            customer.duplicatedPhoneBetweenStudentAndOthers = 1
+          } else if (customer.duplicatedWith.groupId === customer.groupId) {
+            customer.duplicatedPhoneWithinStudent = 1
+          }
+        } else if (customer.groupId === 3) {
+          if (customer.duplicatedWith.groupId === 1) {
+            customer.duplicatedPhoneBetweenPupilAndOthers = 1
+          } else if (customer.duplicatedWith.groupId === 2) {
+            customer.duplicatedPhoneBetweenStudentAndOthers = 1
+          } else if (customer.duplicatedWith.groupId === customer.groupId) {
+            customer.duplicatedPhoneWithinOthers = 1
+          }
+        }
+
+        resolve(customer);
+      }
+    });
+  })
 }
 
 export const createCustomer = (customer) => {
@@ -116,7 +168,7 @@ export const createCustomer = (customer) => {
     }
 
     _.each(provinces, (province) => {
-      if (customer.province === province.name) {
+      if (customer.provinceName === province.name) {
         customer.provinceId = province.provinceId
       }
     })
@@ -135,53 +187,57 @@ export const createCustomer = (customer) => {
 
     customer = checkMissingData(customer)
     customer = checkIllogicalData(customer)
-
-    db.run('INSERT INTO customers(\
-          name, provinceId, schoolName, age, phoneNumber, parentPhoneNumber, facebook, email, contactInformation, kotexData, dianaData, laurierData, whisperData, othersData, createdAt, notes, receivedGift, groupId, batch, hasError, missingData, missingLivingCity, missingName, missingContactInformation, missingAge, missingSchoolName, missingBrandUsing, missingGroup, illogicalData, illogicalPhone, illogicalAge, illogicalAgePupil, illogicalAgeStudent, illogicalAgeOthers\
-        ) \
-        VALUES($name, $provinceId, $schoolName, $age, $phoneNumber, $parentPhoneNumber, $facebook, $email, $contactInformation, $kotexData, $dianaData, $laurierData, $whisperData, $othersData, $createdAt, $notes, $receivedGift, $groupId, $batch, $hasError, $missingData, $missingLivingCity, $missingName, $missingContactInformation, $missingAge, $missingSchoolName, $missingBrandUsing, $missingGroup, $illogicalData, $illogicalPhone, $illogicalAge, $illogicalAgePupil, $illogicalAgeStudent, $illogicalAgeOthers);',
-    {
-      $name: customer.name,
-      $provinceId: customer.provinceId,
-      $schoolName: customer.schoolName,
-      $age: customer.age,
-      $phoneNumber: customer.phoneNumber,
-      $parentPhoneNumber: customer.parentPhoneNumber,
-      $facebook: customer.facebook,
-      $email: customer.email,
-      $contactInformation: customer.contactInformation,
-      $kotexData: customer.kotexData,
-      $dianaData: customer.dianaData,
-      $laurierData: customer.laurierData,
-      $whisperData: customer.whisperData,
-      $othersData: customer.othersData,
-      $createdAt: customer.createdAt,
-      $notes: customer.notes,
-      $receivedGift: customer.receivedGift,
-      $groupId: customer.groupId,
-      $batch: customer.batch,
-      $hasError: customer.hasError,
-      $missingData: customer.missingData,
-      $missingLivingCity: customer.missingLivingCity,
-      $missingName: customer.missingName,
-      $missingContactInformation: customer.missingContactInformation,
-      $missingAge: customer.missingAge,
-      $missingSchoolName: customer.missingSchoolName,
-      $missingBrandUsing: customer.missingBrandUsing,
-      $missingGroup: customer.missingGroup,
-      $illogicalData: customer.illogicalData,
-      $illogicalPhone: customer.illogicalPhone,
-      $illogicalAge: customer.illogicalAge,
-      $illogicalAgePupil: customer.illogicalAgePupil,
-      $illogicalAgeStudent: customer.illogicalAgeStudent,
-      $illogicalAgeOthers: customer.illogicalAgeOthers
-    }, (errRes) => {
-      db.get('SELECT last_insert_rowid() as customerId', (err, row) => {
-        customer.customerId = row.customerId;
-        // isPhoneDuplicate(customer).then((customer) => {
-        //   resolve(customer);
-        // });
-      });
-    });
+    checkDuplication(customer).then((customer) => {
+      db.run('INSERT INTO customers(\
+            name, provinceId, areaName, provinceName, schoolName, age, phoneNumber, parentPhoneNumber, facebook, email, contactInformation, kotexData, dianaData, laurierData, whisperData, othersData, createdAt, notes, receivedGift, groupId, batch, hasError, missingData, missingLivingCity, missingName, missingContactInformation, missingAge, missingSchoolName, missingBrandUsing, missingGroup, illogicalData, illogicalPhone, illogicalAge, illogicalAgePupil, illogicalAgeStudent, illogicalAgeOthers,\
+              duplicatedPhone, duplicatedPhoneBetweenPupilAndStudent, duplicatedPhoneBetweenPupilAndOthers, duplicatedPhoneBetweenStudentAndOthers, duplicatedPhoneWithinPupil, duplicatedPhoneWithinStudent, duplicatedPhoneWithinOthers\
+          ) \
+          VALUES($name, $provinceId, $areaName, $provinceName, $schoolName, $age, $phoneNumber, $parentPhoneNumber, $facebook, $email, $contactInformation, $kotexData, $dianaData, $laurierData, $whisperData, $othersData, $createdAt, $notes, $receivedGift, $groupId, $batch, $hasError, $missingData, $missingLivingCity, $missingName, $missingContactInformation, $missingAge, $missingSchoolName, $missingBrandUsing, $missingGroup, $illogicalData, $illogicalPhone, $illogicalAge, $illogicalAgePupil, $illogicalAgeStudent, $illogicalAgeOthers, $duplicatedPhone, $duplicatedPhoneBetweenPupilAndStudent, $duplicatedPhoneBetweenPupilAndOthers, $duplicatedPhoneBetweenStudentAndOthers, $duplicatedPhoneWithinPupil, $duplicatedPhoneWithinStudent, $duplicatedPhoneWithinOthers);',
+      {
+        $name: customer.name,
+        $provinceId: customer.provinceId,
+        $areaName: customer.areaName,
+        $provinceName: customer.provinceName,
+        $schoolName: customer.schoolName,
+        $age: customer.age,
+        $phoneNumber: customer.phoneNumber,
+        $parentPhoneNumber: customer.parentPhoneNumber,
+        $facebook: customer.facebook,
+        $email: customer.email,
+        $contactInformation: customer.contactInformation,
+        $kotexData: customer.kotexData,
+        $dianaData: customer.dianaData,
+        $laurierData: customer.laurierData,
+        $whisperData: customer.whisperData,
+        $othersData: customer.othersData,
+        $createdAt: customer.createdAt,
+        $notes: customer.notes,
+        $receivedGift: customer.receivedGift,
+        $groupId: customer.groupId,
+        $batch: customer.batch,
+        $hasError: customer.hasError,
+        $missingData: customer.missingData,
+        $missingLivingCity: customer.missingLivingCity,
+        $missingName: customer.missingName,
+        $missingContactInformation: customer.missingContactInformation,
+        $missingAge: customer.missingAge,
+        $missingSchoolName: customer.missingSchoolName,
+        $missingBrandUsing: customer.missingBrandUsing,
+        $missingGroup: customer.missingGroup,
+        $illogicalData: customer.illogicalData,
+        $illogicalPhone: customer.illogicalPhone,
+        $illogicalAge: customer.illogicalAge,
+        $illogicalAgePupil: customer.illogicalAgePupil,
+        $illogicalAgeStudent: customer.illogicalAgeStudent,
+        $illogicalAgeOthers: customer.illogicalAgeOthers,
+        $duplicatedPhone: customer.duplicatedPhone,
+        $duplicatedPhoneBetweenPupilAndStudent: customer.duplicatedPhoneBetweenPupilAndStudent,
+        $duplicatedPhoneBetweenPupilAndOthers: customer.duplicatedPhoneBetweenPupilAndOthers,
+        $duplicatedPhoneBetweenStudentAndOthers: customer.duplicatedPhoneBetweenStudentAndOthers,
+        $duplicatedPhoneWithinPupil: customer.duplicatedPhoneWithinPupil,
+        $duplicatedPhoneWithinStudent: customer.duplicatedPhoneWithinStudent,
+        $duplicatedPhoneWithinOthers: customer.duplicatedPhoneWithinOthers,
+      })
+    })
   });
 }
