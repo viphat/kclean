@@ -74,9 +74,16 @@ const checkMissingData = (customer) => {
     customer.missingData = 1
   }
 
-  if (isBlank(customer.phoneNumber) && isBlank(customer.parentPhoneNumber) && isBlank(customer.facebook) && isBlank(customer.email)) {
-    customer.missingContactInformation = 1
-    customer.missingData = 1
+  if (customer.groupId === 1) {
+    if (isBlank(customer.phoneNumber) && isBlank(customer.parentPhoneNumber) && isBlank(customer.facebook) && isBlank(customer.email)) {
+      customer.missingContactInformation = 1
+      customer.missingData = 1
+    }
+  } else if (customer.groupId === 2 || customer.groupId === 3) {
+    if (isBlank(customer.phoneNumber)) {
+      customer.missingContactInformation = 1
+      customer.missingData = 1
+    }
   }
 
   if (customer.missingContactInformation === 0 && customer.groupId === 3 && isBlank(customer.phoneNumber) && isBlank(customer.facebook) && isBlank(customer.email)) {
@@ -99,7 +106,7 @@ const checkMissingData = (customer) => {
     customer.missingData = 1
   }
 
-    if (isBlank(customer.groupId)) {
+  if (isBlank(customer.groupId)) {
     customer.missingGroup = 1
     customer.missingData = 1
   }
