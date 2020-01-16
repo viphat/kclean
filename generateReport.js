@@ -61,6 +61,7 @@ export const generateReport = (batch, outputDirectory) => {
 const generateReportTemplate = (batch, outputDirectory) => {
   return new Promise((resolve, reject) => {
     let dir = outputDirectory + '/' + batch;
+
     if (!fs.existsSync(dir)) {
       fs.mkdirSync(dir)
     }

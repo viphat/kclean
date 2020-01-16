@@ -65,9 +65,6 @@ ipc.on('clearCustomerData', (event, batch) => {
 
 ipc.on('importData', (event, data) => {
   let { inputFile, outputDirectory, batch } = data;
-  inputFile = _.first(inputFile)
-  outputDirectory = _.first(outputDirectory)
-
   importData(inputFile, batch, outputDirectory).then((res) => {
     event.sender.send('importDataSuccessful', { success: true })
   })
@@ -75,8 +72,6 @@ ipc.on('importData', (event, data) => {
 
 ipc.on('generateReport', (event, data) => {
   let { outputDirectory, batch } = data;
-  outputDirectory = _.first(outputDirectory)
-
   generateReport(batch, outputDirectory).then((reportFilePath) => {
     event.sender.send('generateReportSuccessful', reportFilePath)
   })

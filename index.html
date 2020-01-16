@@ -160,8 +160,8 @@
 
     document.getElementById('btnImport').addEventListener('click', _ => {
       assignFormValues();
-      // inputFile = ['/Users/viphat/W1 - Kotex.xlsx'];
-      // outputDirectory = ['/Users/viphat/Eddie/test'];
+      // inputFile = '/Users/viphat/W1 - Kotex.xlsx';
+      // outputDirectory = '/Users/viphat/Eddie/test';
       // batch = 'W1';
 
       if (isFormInvalid()) {
@@ -187,7 +187,7 @@
 
     document.getElementById('btnReport').addEventListener('click', _ => {
       assignFormValues();
-      // outputDirectory = ['/Users/viphat/Eddie/test'];
+      // outputDirectory = '/Users/viphat/Eddie/test';
       // batch = 'W1';
 
       if (batch === undefined || batch === null || batch === '') {

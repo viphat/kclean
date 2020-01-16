@@ -17,9 +17,14 @@ const checkIllogicalData = (customer) => {
       customer.illogicalPhone = 1;
       customer.illogicalData = 1;
     } else {
-      if (phone.length < 8 || phone.length > 12) {
+      if (phone.length !== 10) {
         customer.illogicalPhone = 1;
         customer.illogicalData = 1;
+      } else {
+        if (!phone.startsWith('03') && !phone.startsWith('05') && !phone.startsWith('07') && !phone.startsWith('08') && !phone.startsWith('09')) {
+          customer.illogicalPhone = 1;
+          customer.illogicalData = 1;
+        }
       }
     }
   }
