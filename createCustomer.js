@@ -30,7 +30,10 @@ const checkIllogicalData = (customer) => {
       customer.illogicalData = 1
     } else {
       var age = parseInt(customer.age)
-      if (customer.groupId === 1 && age < 10 && age >= 18) {
+      if (age < 10 || age > 99) {
+        customer.illogicalAge = 1
+        customer.illogicalData = 1
+      } else if (customer.groupId === 1 && age < 10 && age >= 18) {
         customer.illogicalAgePupil = 1
         customer.illogicalData = 1
       } else if (customer.groupId === 2 && age < 18 && age >= 30)  {
@@ -101,6 +104,15 @@ const checkMissingData = (customer) => {
 
 const checkDuplication = (customer) => {
   return new Promise((resolve, reject) => {
+    customer.duplicatedPhone = 0
+    customer.duplicatedPhoneBetweenPupilAndStudent = 0
+    customer.duplicatedPhoneBetweenPupilAndOthers = 0
+    customer.duplicatedPhoneBetweenStudentAndOthers = 0
+    customer.duplicatedPhoneWithinPupil = 0
+    customer.duplicatedPhoneWithinStudent = 0
+    customer.duplicatedPhoneWithinOthers = 0
+
+
     if (customer.missingContactInformation === 1 || isBlank(customer.phoneNumber)) {
       return resolve(customer)
     }

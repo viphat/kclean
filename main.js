@@ -2,6 +2,7 @@ import { app, BrowserWindow, Menu, dialog } from 'electron'
 import { mainMenuTemplate } from './mainMenu'
 import { clearCustomerData } from './clearCustomerData'
 import { importData } from './importData'
+import { generateReport } from './generateReport'
 import _ from 'lodash'
 
 // Keep a global reference of the window object, if you don't, the window will be closed automatically when the JavaScript object is garbage collected.
@@ -71,3 +72,13 @@ ipc.on('importData', (event, data) => {
     event.sender.send('importDataSuccessful', { success: true })
   })
 })
+
+ipc.on('generateReport', (event, data) => {
+  let { outputDirectory, batch } = data;
+  outputDirectory = _.first(outputDirectory)
+
+  generateReport(batch, outputDirectory).then((reportFilePath) => {
+    event.sender.send('generateReportSuccessful', reportFilePath)
+  })
+})
+

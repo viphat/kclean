@@ -160,10 +160,9 @@
 
     document.getElementById('btnImport').addEventListener('click', _ => {
       assignFormValues();
-
-      inputFile = ['/Users/viphat/W1 - Kotex.xlsx'];
-      outputDirectory = ['/Users/viphat/Eddie/test'];
-      batch = 'W1';
+      // inputFile = ['/Users/viphat/W1 - Kotex.xlsx'];
+      // outputDirectory = ['/Users/viphat/Eddie/test'];
+      // batch = 'W1';
 
       if (isFormInvalid()) {
         dialog.showErrorBox('Notification', 'You must fill out this form before processing.');
@@ -185,6 +184,39 @@
         showSucceedBox('Xử lý thành công! Vui lòng kiểm tra kết quả ở thư mục ' + outputDirectory);
       })
     });
+
+    document.getElementById('btnReport').addEventListener('click', _ => {
+      assignFormValues();
+      // outputDirectory = ['/Users/viphat/Eddie/test'];
+      // batch = 'W1';
+
+      if (batch === undefined || batch === null || batch === '') {
+        dialog.showErrorBox('Notification', 'You must fill in batch field before processing.');
+        return null;
+      }
+
+      if (outputDirectory === undefined || outputDirectory === null) {
+        dialog.showErrorBox('Notification', 'You must fill in output directory before processing.');
+        return null;
+      }
+
+      if (isProcessing === true) {
+        dialog.showErrorBox('Notification', 'Processing...');
+        return null;
+      }
+
+      isProcessing = true;
+      resetAlertAndShowSpinner();
+
+      ipc.send('generateReport', { batch, outputDirectory })
+
+      ipc.on('generateReportSuccessful', (event, reportFilePath) => {
+        disableSpinner();
+        showSucceedBox('Xuất report thành công. Vui lòng kiểm tra file ' + reportFilePath);
+      })
+    });
+
+    btnReport
   </script>
   </body>
 </html>
