@@ -2,8 +2,12 @@
   "dependencies": {
     "electron": "^7.1.9",
     "esm": "^3.2.25",
+    "exceljs": "^3.5.0",
+    "extract-zip": "^1.6.7",
+    "glob": "^7.1.6",
     "lodash": "^4.17.15",
-    "sqlite3": "^4.1.1"
+    "sqlite3": "^4.1.1",
+    "string.prototype.padstart": "^3.1.0"
   },
   "name": "kotex",
   "version": "1.0.0",

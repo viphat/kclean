@@ -1,6 +1,8 @@
 import { app, BrowserWindow, Menu, dialog } from 'electron'
-import { mainMenuTemplate } from './mainMenu.js'
+import { mainMenuTemplate } from './mainMenu'
 import { clearCustomerData } from './clearCustomerData'
+import { importData } from './importData'
+import _ from 'lodash'
 
 // Keep a global reference of the window object, if you don't, the window will be closed automatically when the JavaScript object is garbage collected.
 let mainWindow
@@ -50,22 +52,22 @@ const setApplicationMenu = () => {
   Menu.setApplicationMenu(Menu.buildFromTemplate(menus));
 };
 
-let inputFile, outputDirectory, batch;
-
 var ipc = require('electron').ipcMain;
 
-ipc.on('setOutputDirectory', (event, data) => {
-  outputDirectory = data
-})
-
-ipc.on('setInputFile', (event, data) => {
-  inputFile = data
-})
-
-ipc.on('clearCustomerData', (event, data) => {
-  clearCustomerData(data).then((response) => {
+ipc.on('clearCustomerData', (event, batch) => {
+  clearCustomerData(batch).then((response) => {
     event.sender.send('clearCustomerDataSuccessful', { success: true })
   }, (errRes) => {
     event.sender.send('clearCustomerDataFailed', { success: true })
+  })
+})
+
+ipc.on('importData', (event, data) => {
+  let { inputFile, outputDirectory, batch } = data;
+  inputFile = _.first(inputFile)
+  outputDirectory = _.first(outputDirectory)
+
+  importData(inputFile, batch, outputDirectory).then((res) => {
+    event.sender.send('importDataSuccessful', { success: true })
   })
 })

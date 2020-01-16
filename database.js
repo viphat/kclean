@@ -34,7 +34,7 @@ function createTableProvinces() {
 
 function createTableCustomers() {
   db.run('DROP TABLE IF EXISTS customers;');
-  db.run('CREATE TABLE customers(customerId INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT, provinceId INTEGER, areaName TEXT, provinceName TEXT, schoolName TEXT, age INTEGER, phoneNumber TEXT, parentPhoneNumber TEXT, facebook TEXT, email TEXT, contactInformation TEXT, kotexData TEXT, dianaData TEXT, laurierData TEXT, whisperData TEXT, othersData TEXT, createdAt TEXT, notes TEXT, receivedGift TEXT, groupId INTEGER, batch TEXT,\
+  db.run('CREATE TABLE customers(customerId INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT, provinceId INTEGER, areaName TEXT, provinceName TEXT, schoolName TEXT, age INTEGER, phoneNumber TEXT, parentPhoneNumber TEXT, facebook TEXT, email TEXT, contactInformation TEXT, kotexData TEXT, dianaData TEXT, laurierData TEXT, whisperData TEXT, othersData TEXT, createdAt TEXT, notes TEXT, receivedGift TEXT, groupName TEXT, groupId INTEGER, batch TEXT,\
     hasError INTEGER DEFAULT 0,\
     missingData INTEGER DEFAULT 0,\
     missingName INTEGER DEFAULT 0,\

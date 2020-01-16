@@ -46,7 +46,7 @@
                 <span style='margin-left: 5px;'>Xóa Data theo tuần</span>
               </button>
 
-              <button style='margin-bottom: 10px;' type='button' class='btn btn-primary' id='btnProcess'>
+              <button style='margin-bottom: 10px;' type='button' class='btn btn-primary' id='btnImport'>
                 <i class='fa fa-rocket'></i>
                 <span style='margin-left: 5px;'>Import Data</span>
               </button>
@@ -82,7 +82,6 @@
         outputDirectory = result.filePaths[0]
         var label = document.getElementById('outputDirectoryLabel');
         label.innerHTML = outputDirectory;
-        ipc.send('setOutputDirectory', outputDirectory)
       });
     });
 
@@ -96,7 +95,6 @@
         inputFile = result.filePaths[0]
         var label = document.getElementById('inputFileLabel');
         label.innerHTML = inputFile;
-        ipc.send('setInputFile', inputFile)
       });
     });
 
@@ -160,12 +158,12 @@
       })
     });
 
-    document.getElementById('btnProcess').addEventListener('click', _ => {
+    document.getElementById('btnImport').addEventListener('click', _ => {
       assignFormValues();
 
-      // inputFile = ['/Users/viphat/Downloads/1.xlsx'];
-      // outputDirectory = ['/Users/viphat/Downloads/Test'];
-      // batch = 'W1';
+      inputFile = ['/Users/viphat/W1 - Kotex.xlsx'];
+      outputDirectory = ['/Users/viphat/Eddie/test'];
+      batch = 'W1';
 
       if (isFormInvalid()) {
         dialog.showErrorBox('Notification', 'You must fill out this form before processing.');
@@ -180,13 +178,12 @@
       isProcessing = true;
       resetAlertAndShowSpinner();
 
-      // mainProcess.processData(inputFile, batch, outputDirectory).then( (response) => {
-      //   disableSpinner();
-      //   showSucceedBox(response);
-      // }, errRes => {
-      //   disableSpinner();
-      //   showFailedBox(errRes);
-      // });
+      ipc.send('importData', { batch, inputFile, outputDirectory })
+
+      ipc.on('importDataSuccessful', (event, data) => {
+        disableSpinner();
+        showSucceedBox('Xử lý thành công! Vui lòng kiểm tra kết quả ở thư mục ' + outputDirectory);
+      })
     });
   </script>
   </body>

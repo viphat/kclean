@@ -12,9 +12,8 @@ const checkIllogicalData = (customer) => {
 
   var phone = customer.phoneNumber || customer.parentPhoneNumber
 
-  if (!_.isEmpty(phone)) {
-    phone = '' + phone.replace(/[\.\-\_\s\+\(\)]/g,'');
-    if (!_.isNumber(phone)) {
+  if (!isBlank(phone)) {
+    if (isNaN(parseInt(phone))) {
       customer.illogicalPhone = 1;
       customer.illogicalData = 1;
     } else {
@@ -25,8 +24,8 @@ const checkIllogicalData = (customer) => {
     }
   }
 
-  if (!_.isEmpty(customer.age)) {
-    if (!_.isNumber(customer.age)) {
+  if (!isBlank(customer.age)) {
+    if (isNaN(parseInt(customer.age))) {
       customer.illogicalAge = 1
       customer.illogicalData = 1
     } else {
@@ -37,7 +36,7 @@ const checkIllogicalData = (customer) => {
       } else if (customer.groupId === 2 && age < 18 && age >= 30)  {
         customer.illogicalAgeStudent = 1
         customer.illogicalData = 1
-      } else (customer.groupId === 3 && age < 18) {
+      } else if (customer.groupId === 3 && (age < 18 || age > 60)) {
         customer.illogicalAgeOthers = 1
         customer.illogicalData = 1
       }
@@ -57,42 +56,42 @@ const checkMissingData = (customer) => {
   customer.missingBrandUsing = 0
   customer.missingGroup = 0
 
-  if (_.isEmpty(customer.name)) {
+  if (isBlank(customer.name)) {
     customer.missingName = 1
     customer.missingData = 1
   }
 
-  if (_.isEmpty(customer.provinceId)) {
+  if (isBlank(customer.provinceId)) {
     customer.missingLivingCity = 1
     customer.missingData = 1
   }
 
-  if (_.isEmpty(customer.phoneNumber) && _.isEmpty(customer.parentPhoneNumber) && _.isEmpty(customer.facebook) && _.isEmpty(customer.email)) {
+  if (isBlank(customer.phoneNumber) && isBlank(customer.parentPhoneNumber) && isBlank(customer.facebook) && isBlank(customer.email)) {
     customer.missingContactInformation = 1
     customer.missingData = 1
   }
 
-  if (customer.missingContactInformation === 0 && customer.groupId === 3 && _.isEmpty(customer.phoneNumber) && _.isEmpty(customer.facebook) && _.isEmpty(customer.email)) {
+  if (customer.missingContactInformation === 0 && customer.groupId === 3 && isBlank(customer.phoneNumber) && isBlank(customer.facebook) && isBlank(customer.email)) {
     customer.missingContactInformation = 1
     customer.missingData = 1
   }
 
-  if (_.isEmpty(customer.age)) {
+  if (isBlank(customer.age)) {
     customer.missingAge = 1
     customer.missingData = 1
   }
 
-  if (_.isEmpty(customer.schoolName)) {
+  if (isBlank(customer.schoolName)) {
     customer.missingSchoolName = 1
     customer.missingData = 1
   }
 
-  if (_.isEmpty(customer.kotexData) && _.isEmpty(customer.dianaData) && _.isEmpty(customer.laurierData) && _.isEmpty(customer.othersData) && _.isEmpty(customer.whisperData)) {
+  if (isBlank(customer.kotexData) && isBlank(customer.dianaData) && isBlank(customer.laurierData) && isBlank(customer.othersData) && isBlank(customer.whisperData)) {
     customer.missingBrandUsing = 1
     customer.missingData = 1
   }
 
-    if (_.isEmpty(customer.groupId)) {
+    if (isBlank(customer.groupId)) {
     customer.missingGroup = 1
     customer.missingData = 1
   }
@@ -102,7 +101,7 @@ const checkMissingData = (customer) => {
 
 const checkDuplication = (customer) => {
   return new Promise((resolve, reject) => {
-    if (customer.missingContactInformation === 1 || _.isEmpty(customer.phoneNumber)) {
+    if (customer.missingContactInformation === 1 || isBlank(customer.phoneNumber)) {
       return resolve(customer)
     }
 
@@ -110,11 +109,11 @@ const checkDuplication = (customer) => {
       return resolve(customer)
     }
 
-    db.get('SELECT customers.customerId, customers.name, customers.areaName, customers.provinceName,\
-      customers.phoneNumber, customers.parentPhoneNumber, customers.facebook, customers.email, customers.kotexData, customers.dianaData, customers.laurierData, customers.whisperData, customers.othersData, customers.createdAt, customers.notes, customers.receivedGift, customers.groupId, customers.batch\
+    db.get('SELECT customers.customerId, customers.name, customers.areaName, customers.provinceName, customers.schoolName, customers.age,\
+      customers.phoneNumber, customers.parentPhoneNumber, customers.facebook, customers.email, customers.kotexData, customers.dianaData, customers.laurierData, customers.whisperData, customers.othersData, customers.createdAt, customers.notes, customers.receivedGift, customers.groupName, customers.groupId, customers.batch\
     from customers\
-    WHERE customers.phoneNumber = ? AND customers.customerId != ?',
-      customer.phoneNumber, customer.customerId, (err, res) => {
+    WHERE customers.phoneNumber = ?',
+      customer.phoneNumber, (err, res) => {
       if (err) {
         return reject(err);
       }
@@ -159,7 +158,7 @@ const checkDuplication = (customer) => {
 
 export const createCustomer = (customer) => {
   return new Promise((resolve, reject) => {
-    if (customer.parentPhoneNumber && customer.parentPhoneNumber.length > 0) {
+    if (customer.phoneNumber && customer.phoneNumber.length > 0) {
       customer.phoneNumber = '' + customer.phoneNumber.replace(/[\.\-\_\s\+\(\)]/g,'');
     }
 
@@ -175,11 +174,11 @@ export const createCustomer = (customer) => {
 
     customer.contactInformation = customer.phoneNumber || customer.parentPhoneNumber || customer.facebook || customer.email
 
-    if (customer.group === 'Học sinh') {
+    if (customer.groupName === 'Học sinh') {
       customer.groupId = 1
-    } else if (customer.group === 'Sinh viên') {
+    } else if (customer.groupName === 'Sinh viên') {
       customer.groupId = 2
-    } else if (customer.group === 'Khác') {
+    } else if (customer.groupName === 'Khác') {
       customer.groupId = 3
     } else {
       customer.groupId = 0
@@ -189,10 +188,10 @@ export const createCustomer = (customer) => {
     customer = checkIllogicalData(customer)
     checkDuplication(customer).then((customer) => {
       db.run('INSERT INTO customers(\
-            name, provinceId, areaName, provinceName, schoolName, age, phoneNumber, parentPhoneNumber, facebook, email, contactInformation, kotexData, dianaData, laurierData, whisperData, othersData, createdAt, notes, receivedGift, groupId, batch, hasError, missingData, missingLivingCity, missingName, missingContactInformation, missingAge, missingSchoolName, missingBrandUsing, missingGroup, illogicalData, illogicalPhone, illogicalAge, illogicalAgePupil, illogicalAgeStudent, illogicalAgeOthers,\
+            name, provinceId, areaName, provinceName, schoolName, age, phoneNumber, parentPhoneNumber, facebook, email, contactInformation, kotexData, dianaData, laurierData, whisperData, othersData, createdAt, notes, receivedGift, groupName, groupId, batch, hasError, missingData, missingLivingCity, missingName, missingContactInformation, missingAge, missingSchoolName, missingBrandUsing, missingGroup, illogicalData, illogicalPhone, illogicalAge, illogicalAgePupil, illogicalAgeStudent, illogicalAgeOthers,\
               duplicatedPhone, duplicatedPhoneBetweenPupilAndStudent, duplicatedPhoneBetweenPupilAndOthers, duplicatedPhoneBetweenStudentAndOthers, duplicatedPhoneWithinPupil, duplicatedPhoneWithinStudent, duplicatedPhoneWithinOthers\
           ) \
-          VALUES($name, $provinceId, $areaName, $provinceName, $schoolName, $age, $phoneNumber, $parentPhoneNumber, $facebook, $email, $contactInformation, $kotexData, $dianaData, $laurierData, $whisperData, $othersData, $createdAt, $notes, $receivedGift, $groupId, $batch, $hasError, $missingData, $missingLivingCity, $missingName, $missingContactInformation, $missingAge, $missingSchoolName, $missingBrandUsing, $missingGroup, $illogicalData, $illogicalPhone, $illogicalAge, $illogicalAgePupil, $illogicalAgeStudent, $illogicalAgeOthers, $duplicatedPhone, $duplicatedPhoneBetweenPupilAndStudent, $duplicatedPhoneBetweenPupilAndOthers, $duplicatedPhoneBetweenStudentAndOthers, $duplicatedPhoneWithinPupil, $duplicatedPhoneWithinStudent, $duplicatedPhoneWithinOthers);',
+          VALUES($name, $provinceId, $areaName, $provinceName, $schoolName, $age, $phoneNumber, $parentPhoneNumber, $facebook, $email, $contactInformation, $kotexData, $dianaData, $laurierData, $whisperData, $othersData, $createdAt, $notes, $receivedGift, $groupName, $groupId, $batch, $hasError, $missingData, $missingLivingCity, $missingName, $missingContactInformation, $missingAge, $missingSchoolName, $missingBrandUsing, $missingGroup, $illogicalData, $illogicalPhone, $illogicalAge, $illogicalAgePupil, $illogicalAgeStudent, $illogicalAgeOthers, $duplicatedPhone, $duplicatedPhoneBetweenPupilAndStudent, $duplicatedPhoneBetweenPupilAndOthers, $duplicatedPhoneBetweenStudentAndOthers, $duplicatedPhoneWithinPupil, $duplicatedPhoneWithinStudent, $duplicatedPhoneWithinOthers);',
       {
         $name: customer.name,
         $provinceId: customer.provinceId,
@@ -213,6 +212,7 @@ export const createCustomer = (customer) => {
         $createdAt: customer.createdAt,
         $notes: customer.notes,
         $receivedGift: customer.receivedGift,
+        $groupName: customer.groupName,
         $groupId: customer.groupId,
         $batch: customer.batch,
         $hasError: customer.hasError,
@@ -237,7 +237,16 @@ export const createCustomer = (customer) => {
         $duplicatedPhoneWithinPupil: customer.duplicatedPhoneWithinPupil,
         $duplicatedPhoneWithinStudent: customer.duplicatedPhoneWithinStudent,
         $duplicatedPhoneWithinOthers: customer.duplicatedPhoneWithinOthers,
+      }, (errRes) => {
+        db.get('SELECT last_insert_rowid() as customerId', (err, row) => {
+          customer.customerId = row.customerId;
+          resolve(customer)
+        });
       })
     })
   });
+}
+
+const isBlank = (value) => {
+  return _.isEmpty(value) && (!_.isNumber(value) || _.isNaN(value))
 }
