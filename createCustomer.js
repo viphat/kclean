@@ -21,7 +21,7 @@ const checkIllogicalData = (customer) => {
         customer.illogicalPhone = 1;
         customer.illogicalData = 1;
       } else {
-        if (!phone.startsWith('03') && !phone.startsWith('05') && !phone.startsWith('07') && !phone.startsWith('08') && !phone.startsWith('09')) {
+        if (!phone.startsWith('02') && !phone.startsWith('03') && !phone.startsWith('05') && !phone.startsWith('07') && !phone.startsWith('08') && !phone.startsWith('09')) {
           customer.illogicalPhone = 1;
           customer.illogicalData = 1;
         }
@@ -38,10 +38,10 @@ const checkIllogicalData = (customer) => {
       if (age < 10 || age > 99) {
         customer.illogicalAge = 1
         customer.illogicalData = 1
-      } else if (customer.groupId === 1 && age < 10 && age >= 18) {
+      } else if (customer.groupId === 1 && (age < 10 || age > 18)) {
         customer.illogicalAgePupil = 1
         customer.illogicalData = 1
-      } else if (customer.groupId === 2 && age < 18 && age >= 30)  {
+      } else if (customer.groupId === 2 && (age < 18 || age >= 24))  {
         customer.illogicalAgeStudent = 1
         customer.illogicalData = 1
       } else if (customer.groupId === 3 && (age < 18 || age > 60)) {
