@@ -211,6 +211,10 @@ export const createCustomer = (customer) => {
     customer = checkMissingData(customer)
     customer = checkIllogicalData(customer)
     checkDuplication(customer).then((customer) => {
+      if (customer.missingData === 1 || customer.illogicalData === 1 || customer.duplicatedPhone === 1) {
+        customer.hasError = 1
+      }
+
       db.run('INSERT INTO customers(\
             name, provinceId, areaName, provinceName, schoolName, age, phoneNumber, parentPhoneNumber, facebook, email, contactInformation, kotexData, dianaData, laurierData, whisperData, othersData, createdAt, notes, receivedGift, groupName, groupId, batch, hasError, missingData, missingLivingCity, missingName, missingContactInformation, missingAge, missingSchoolName, missingBrandUsing, missingGroup, illogicalData, illogicalPhone, illogicalAge, illogicalAgePupil, illogicalAgeStudent, illogicalAgeOthers,\
               duplicatedPhone, duplicatedPhoneBetweenPupilAndStudent, duplicatedPhoneBetweenPupilAndOthers, duplicatedPhoneBetweenStudentAndOthers, duplicatedPhoneWithinPupil, duplicatedPhoneWithinStudent, duplicatedPhoneWithinOthers\
