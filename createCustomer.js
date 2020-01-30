@@ -38,7 +38,7 @@ const checkIllogicalData = (customer) => {
       if (age < 10 || age > 99) {
         customer.illogicalAge = 1
         customer.illogicalData = 1
-      } else if (customer.groupId === 1 && (age < 10 || age > 18)) {
+      } else if (customer.groupId === 1 && (age < 10 || age > 19)) {
         customer.illogicalAgePupil = 1
         customer.illogicalData = 1
       } else if (customer.groupId === 2 && (age < 18 || age >= 24))  {
