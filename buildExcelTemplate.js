@@ -142,7 +142,7 @@ function writeBaseTemplate(workbook, worksheet, title) {
   worksheet.getCell('F5').fill = worksheet.getCell('A5').fill;
   worksheet.getCell('F5').alignment = worksheet.getCell('A5').alignment;
   worksheet.getCell('F5').border = worksheet.getCell('A5').border;
-  worksheet.getCell('F5').value = 'Tuổi';
+  worksheet.getCell('F5').value = 'Năm sinh';
 
   worksheet.mergeCells('G5:G6');
   worksheet.getCell('G5').font = worksheet.getCell('A5').font;

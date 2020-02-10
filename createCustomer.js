@@ -133,7 +133,7 @@ const checkDuplication = (customer) => {
       return resolve(customer)
     }
 
-    db.get('SELECT customers.customerId, customers.name, customers.areaName, customers.provinceName, customers.schoolName, customers.age,\
+    db.get('SELECT customers.customerId, customers.name, customers.areaName, customers.provinceName, customers.schoolName, customers.yearOfBirth,\
       customers.phoneNumber, customers.parentPhoneNumber, customers.facebook, customers.email, customers.kotexData, customers.dianaData, customers.laurierData, customers.whisperData, customers.othersData, customers.createdAt, customers.notes, customers.receivedGift, customers.groupName, customers.groupId, customers.batch\
     from customers\
     WHERE customers.phoneNumber = ?',
@@ -216,16 +216,17 @@ export const createCustomer = (customer) => {
       }
 
       db.run('INSERT INTO customers(\
-            name, provinceId, areaName, provinceName, schoolName, age, phoneNumber, parentPhoneNumber, facebook, email, contactInformation, kotexData, dianaData, laurierData, whisperData, othersData, createdAt, notes, receivedGift, groupName, groupId, batch, hasError, missingData, missingLivingCity, missingName, missingContactInformation, missingAge, missingSchoolName, missingBrandUsing, missingGroup, illogicalData, illogicalPhone, illogicalAge, illogicalAgePupil, illogicalAgeStudent, illogicalAgeOthers,\
+            name, provinceId, areaName, provinceName, schoolName, yearOfBirth, age, phoneNumber, parentPhoneNumber, facebook, email, contactInformation, kotexData, dianaData, laurierData, whisperData, othersData, createdAt, notes, receivedGift, groupName, groupId, batch, hasError, missingData, missingLivingCity, missingName, missingContactInformation, missingAge, missingSchoolName, missingBrandUsing, missingGroup, illogicalData, illogicalPhone, illogicalAge, illogicalAgePupil, illogicalAgeStudent, illogicalAgeOthers,\
               duplicatedPhone, duplicatedPhoneBetweenPupilAndStudent, duplicatedPhoneBetweenPupilAndOthers, duplicatedPhoneBetweenStudentAndOthers, duplicatedPhoneWithinPupil, duplicatedPhoneWithinStudent, duplicatedPhoneWithinOthers\
           ) \
-          VALUES($name, $provinceId, $areaName, $provinceName, $schoolName, $age, $phoneNumber, $parentPhoneNumber, $facebook, $email, $contactInformation, $kotexData, $dianaData, $laurierData, $whisperData, $othersData, $createdAt, $notes, $receivedGift, $groupName, $groupId, $batch, $hasError, $missingData, $missingLivingCity, $missingName, $missingContactInformation, $missingAge, $missingSchoolName, $missingBrandUsing, $missingGroup, $illogicalData, $illogicalPhone, $illogicalAge, $illogicalAgePupil, $illogicalAgeStudent, $illogicalAgeOthers, $duplicatedPhone, $duplicatedPhoneBetweenPupilAndStudent, $duplicatedPhoneBetweenPupilAndOthers, $duplicatedPhoneBetweenStudentAndOthers, $duplicatedPhoneWithinPupil, $duplicatedPhoneWithinStudent, $duplicatedPhoneWithinOthers);',
+          VALUES($name, $provinceId, $areaName, $provinceName, $schoolName, $yearOfBirth, $age, $phoneNumber, $parentPhoneNumber, $facebook, $email, $contactInformation, $kotexData, $dianaData, $laurierData, $whisperData, $othersData, $createdAt, $notes, $receivedGift, $groupName, $groupId, $batch, $hasError, $missingData, $missingLivingCity, $missingName, $missingContactInformation, $missingAge, $missingSchoolName, $missingBrandUsing, $missingGroup, $illogicalData, $illogicalPhone, $illogicalAge, $illogicalAgePupil, $illogicalAgeStudent, $illogicalAgeOthers, $duplicatedPhone, $duplicatedPhoneBetweenPupilAndStudent, $duplicatedPhoneBetweenPupilAndOthers, $duplicatedPhoneBetweenStudentAndOthers, $duplicatedPhoneWithinPupil, $duplicatedPhoneWithinStudent, $duplicatedPhoneWithinOthers);',
       {
         $name: customer.name,
         $provinceId: customer.provinceId,
         $areaName: customer.areaName,
         $provinceName: customer.provinceName,
         $schoolName: customer.schoolName,
+        $yearOfBirth: customer.yearOfBirth,
         $age: customer.age,
         $phoneNumber: customer.phoneNumber,
         $parentPhoneNumber: customer.parentPhoneNumber,

@@ -12,7 +12,7 @@ const areaCol = 2
 const provinceCol = 3
 const schoolNameCol = 4
 const nameCol = 5
-const ageCol = 6
+const yearOfBirthCol = 6
 const phoneNumberCol = 7
 const parentPhoneNumberCol = 8
 const facebookCol = 9
@@ -97,12 +97,20 @@ const readEachRow = (excelFile, outputWorkbook, batch, worksheet, rowNumber) => 
       return resolve(outputWorkbook);
     }
 
+    let yearOfBirth = row.getCell(yearOfBirthCol).value
+    let currentYear = new Date().getFullYear()
+    let age;
+    if (yearOfBirth) {
+      age = currentYear - parseInt(yearOfBirth)
+    }
+
     let customer = {
       areaName: row.getCell(areaCol).value,
       provinceName: row.getCell(provinceCol).value,
       schoolName: row.getCell(schoolNameCol).value,
       name: row.getCell(nameCol).value,
-      age: row.getCell(ageCol).value,
+      yearOfBirth: yearOfBirth,
+      age: age,
       phoneNumber: row.getCell(phoneNumberCol).value,
       parentPhoneNumber: row.getCell(parentPhoneNumberCol).value,
       facebook: row.getCell(facebookCol).value,
@@ -119,6 +127,8 @@ const readEachRow = (excelFile, outputWorkbook, batch, worksheet, rowNumber) => 
       batch: batch
     }
 
+    customer
+
     createCustomer(customer).then((response) => {
       customer = response;
       let missingData = customer.missingData === 1;
@@ -131,7 +141,7 @@ const readEachRow = (excelFile, outputWorkbook, batch, worksheet, rowNumber) => 
         customer.provinceName,
         customer.schoolName,
         customer.name,
-        customer.age,
+        customer.yearOfBirth,
         customer.phoneNumber,
         customer.parentPhoneNumber,
         customer.facebook,
@@ -165,7 +175,7 @@ const readEachRow = (excelFile, outputWorkbook, batch, worksheet, rowNumber) => 
           duplicatedWith.provinceName,
           duplicatedWith.schoolName,
           duplicatedWith.name,
-          duplicatedWith.age,
+          duplicatedWith.yearOfBirth,
           duplicatedWith.phoneNumber,
           duplicatedWith.parentPhoneNumber,
           duplicatedWith.facebook,
