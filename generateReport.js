@@ -168,9 +168,9 @@ const generateReportTemplate = (batch, outputDirectory) => {
     buildReportFirstColumnType1(worksheet, 20, "Duplication between Others");
     buildReportFirstColumnType1(worksheet, 22, "Illogical phone number format");
     buildReportFirstColumnType1(worksheet, 23, "Illogical age format (not 2 digit)");
-    buildReportFirstColumnType1(worksheet, 24, "Pupil but >19 years old");
-    buildReportFirstColumnType1(worksheet, 25, "Student but <18 years old");
-    buildReportFirstColumnType1(worksheet, 26, "Illogical age of Others");
+    buildReportFirstColumnType1(worksheet, 24, "Pupil but <2001 (more than 20 years old)");
+    buildReportFirstColumnType1(worksheet, 25, "Student but >2002 (<18 years old) or <1996 (>24 years old)");
+    buildReportFirstColumnType1(worksheet, 26, "Illogical age of Others (<1960)");
     // Done 1st Col
 
     // Row 4 - D4, K4, P4, S4

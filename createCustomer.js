@@ -38,13 +38,13 @@ const checkIllogicalData = (customer) => {
       if (age < 10 || age > 99) {
         customer.illogicalAge = 1
         customer.illogicalData = 1
-      } else if (customer.groupId === 1 && (age < 10 || age > 19)) {
+      } else if (customer.groupId === 1 && (age < 10 || age > 20)) {
         customer.illogicalAgePupil = 1
         customer.illogicalData = 1
-      } else if (customer.groupId === 2 && (age < 18 || age >= 24))  {
+      } else if (customer.groupId === 2 && (age < 18 || age > 24))  {
         customer.illogicalAgeStudent = 1
         customer.illogicalData = 1
-      } else if (customer.groupId === 3 && (age < 18 || age > 60)) {
+      } else if (customer.groupId === 3 && (age > 60)) {
         customer.illogicalAgeOthers = 1
         customer.illogicalData = 1
       }
