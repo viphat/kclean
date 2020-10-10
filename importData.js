@@ -80,7 +80,7 @@ const readFile = (excelFile, batch, source, outputDirectory) => {
       }
 
       buildExcelTemplate(outputPath).then((outputWorkbook) => {
-        return readEachRow(excelFile, outputWorkbook, batch, worksheet, rowNumber);
+        return readEachRow(excelFile, outputWorkbook, batch, source, worksheet, rowNumber);
       }).then((outputWorkbook) => {
         resolve(outputWorkbook.xlsx.writeFile(outputPath));
       });
@@ -88,7 +88,7 @@ const readFile = (excelFile, batch, source, outputDirectory) => {
   })
 }
 
-const readEachRow = (excelFile, outputWorkbook, batch, worksheet, rowNumber) => {
+const readEachRow = (excelFile, outputWorkbook, batch, source, worksheet, rowNumber) => {
   return new Promise((resolve, reject) => {
     let row = worksheet.getRow(rowNumber);
     console.log('Row: ' + rowNumber);
@@ -198,10 +198,10 @@ const readEachRow = (excelFile, outputWorkbook, batch, worksheet, rowNumber) => 
           writeToFile(outputWorkbook, outputSheetName, rowData).then((workbook) => {
             if (rowNumber % 1000 === 0) {
               setTimeout(function(){
-                resolve(readEachRow(excelFile, workbook, batch, worksheet, rowNumber+1));
+                resolve(readEachRow(excelFile, workbook, batch, source, worksheet, rowNumber+1));
               }, 0);
             } else {
-              resolve(readEachRow(excelFile, workbook, batch, worksheet, rowNumber+1));
+              resolve(readEachRow(excelFile, workbook, batch, source, worksheet, rowNumber+1));
             }
           });
         });
@@ -209,10 +209,10 @@ const readEachRow = (excelFile, outputWorkbook, batch, worksheet, rowNumber) => 
         writeToFile(outputWorkbook, outputSheetName, rowData).then((workbook) => {
           if (rowNumber % 1000 === 0) {
               setTimeout(function(){
-                resolve(readEachRow(excelFile, workbook, batch, worksheet, rowNumber+1));
+                resolve(readEachRow(excelFile, workbook, batch, source, worksheet, rowNumber+1));
               }, 0);
             } else {
-              resolve(readEachRow(excelFile, workbook, batch, worksheet, rowNumber+1));
+              resolve(readEachRow(excelFile, workbook, batch, source, worksheet, rowNumber+1));
             }
         });
       }
