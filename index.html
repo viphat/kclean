@@ -168,7 +168,7 @@
       isProcessing = true;
       resetAlertAndShowSpinner();
 
-      ipc.send('clearCustomerData', batch, source)
+      ipc.send('clearCustomerData', { batch, source })
 
       ipc.on('clearCustomerDataSuccessful', function(event, data){
         disableSpinner();
@@ -200,7 +200,7 @@
       isProcessing = true;
       resetAlertAndShowSpinner();
 
-      ipc.send('importData', { batch, inputFile, outputDirectory })
+      ipc.send('importData', { batch, source, inputFile, outputDirectory })
 
       ipc.on('importDataSuccessful', (event, data) => {
         disableSpinner();

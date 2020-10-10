@@ -55,8 +55,9 @@ const setApplicationMenu = () => {
 
 var ipc = require('electron').ipcMain;
 
-ipc.on('clearCustomerData', (event, batch) => {
-  clearCustomerData(batch).then((response) => {
+ipc.on('clearCustomerData', (event, data) => {
+  let { source, batch } = data;
+  clearCustomerData(batch, source).then((response) => {
     event.sender.send('clearCustomerDataSuccessful', { success: true })
   }, (errRes) => {
     event.sender.send('clearCustomerDataFailed', { success: true })
@@ -64,8 +65,8 @@ ipc.on('clearCustomerData', (event, batch) => {
 })
 
 ipc.on('importData', (event, data) => {
-  let { inputFile, outputDirectory, batch } = data;
-  importData(inputFile, batch, outputDirectory).then((res) => {
+  let { inputFile, outputDirectory, batch, source } = data;
+  importData(inputFile, batch, source, outputDirectory).then((res) => {
     event.sender.send('importDataSuccessful', { success: true })
   })
 })

@@ -45,7 +45,7 @@ const isEmptyRow = (row) => {
   return false
 }
 
-export const importData = (excelFile, batch, outputDirectory) => {
+export const importData = (excelFile, batch, source, outputDirectory) => {
   return new Promise((resolve, reject) => {
     if ( !_.endsWith(outputDirectory, '/') ) {
       outputDirectory += '/';
@@ -63,17 +63,17 @@ export const importData = (excelFile, batch, outputDirectory) => {
       fs.mkdirSync(dir)
     }
 
-    resolve(readFile(excelFile, batch, dir));
+    resolve(readFile(excelFile, batch, source, dir));
   });
 }
 
-const readFile = (excelFile, batch, outputDirectory) => {
+const readFile = (excelFile, batch, source, outputDirectory) => {
   return new Promise((resolve, reject) => {
     let workbook = new Excel.Workbook();
     workbook.xlsx.readFile(excelFile).then(() => {
       let worksheet = workbook.getWorksheet(1);
       let rowNumber = dataBeginRow;
-      let outputPath = outputDirectory + '/' + batch + '_cleaned_data.xlsx';
+      let outputPath = outputDirectory + '/' + batch + '_' + source.replace(/ /g, '_') + '_cleaned_data.xlsx';
 
       if (fs.existsSync(outputPath)) {
         fs.unlinkSync(outputPath);
