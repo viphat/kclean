@@ -2,7 +2,7 @@
 <html>
   <head>
     <meta charset="UTF-8">
-    <title>KOTEX CALL CENTER 2020 - Data Cleaning Tools</title>
+    <title>FEM CALL CENTER 2020 - Data Cleaning Tools</title>
     <!-- https://electronjs.org/docs/tutorial/security#csp-meta-tag -->
     <meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-inline';" />
 
@@ -15,7 +15,7 @@
       <div class="col-md-12" style='text-align: center; margin-bottom: 10px;'>
         <img src='vendor/logo.png' alt='Intage Vietnam' />
       </div>
-      <h3 class='text-warning'>KOTEX CALL CENTER 2020 - Data Cleaning Tools</h3>
+      <h3 class='text-warning'>FEM CALL CENTER 2020 - Data Cleaning Tools</h3>
       <div class='row'>
         <div class="col-md-12">
           <form class='form' class='form-horizontal' novalidate=''>
@@ -33,6 +33,23 @@
                 <span id='outputDirectoryLabel'></span>
               </div>
             </div>
+
+            <div class='form-group row'>
+              <label class='text-success control-label col-sm-4' for='txtSource'>Source</label>
+              <div class='col-sm-8'>
+                <div class="form-check-inline">
+                  <label class="form-check-label">
+                    <input type="radio" class="form-check-input" name="txtSource" value="Focus MKT" style="margin-right: 10px;">Focus MKT
+                  </label>
+                </div>
+                <div class="form-check-inline">
+                  <label class="form-check-label">
+                    <input type="radio" class="form-check-input" name="txtSource" value="BrandMax" style="margin-right: 10px;">BrandMax
+                  </label>
+                </div>
+              </div>
+            </div>
+
             <div class='form-group row'>
               <label class='text-success control-label col-sm-4' for='txtBatch'>Batch</label>
               <div class='col-sm-6'>
@@ -71,7 +88,7 @@
     </div>
 
   <script>
-    let inputFile, outputDirectory, isProcessing, batch;
+    let inputFile, outputDirectory, isProcessing, batch, source;
     const dialog = require('electron').remote.dialog
     var ipc = require('electron').ipcRenderer;
 
@@ -123,10 +140,11 @@
 
     function assignFormValues() {
       batch = document.getElementById('txtBatch').value;
+      source = document.getElementById('txtSource').value;
     }
 
     function isFormInvalid() {
-      return outputDirectory === undefined || inputFile === undefined || batch === undefined || batch === null || batch === ''
+      return outputDirectory === undefined || inputFile === undefined || batch === undefined || batch === null || batch === '' || source === undefined || source === null || source === ''
     }
 
     document.getElementById('btnClearBatch').addEventListener('click', _ => {
@@ -134,6 +152,11 @@
 
       if (batch === undefined || batch === null || batch === '') {
         dialog.showErrorBox('Notification', 'You must fill in batch field before processing.');
+        return null;
+      }
+
+      if (source === undefined || source === null || source === '') {
+        dialog.showErrorBox('Notification', 'You must fill in source field before processing.');
         return null;
       }
 
@@ -145,11 +168,11 @@
       isProcessing = true;
       resetAlertAndShowSpinner();
 
-      ipc.send('clearCustomerData', batch)
+      ipc.send('clearCustomerData', batch, source)
 
       ipc.on('clearCustomerDataSuccessful', function(event, data){
         disableSpinner();
-        showSucceedBox('Clear All Data of ' + batch + ' Batch successfully.');
+        showSucceedBox('Đã xóa Data ' + source + ' của đợt ' + batch + ' thành công.');
       })
 
       ipc.on('clearCustomerDataFailed', function(event, errMessage){
