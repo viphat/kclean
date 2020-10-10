@@ -8,7 +8,6 @@ const checkIllogicalData = (customer) => {
   customer.illogicalAge = 0
   customer.illogicalAgePupil = 0
   customer.illogicalAgeStudent = 0
-  customer.illogicalAgeOthers = 0
 
   var phone = customer.phoneNumber || customer.parentPhoneNumber
 
@@ -31,22 +30,24 @@ const checkIllogicalData = (customer) => {
 
   if (!isBlank(customer.age)) {
     if (isNaN(parseInt(customer.age))) {
-      customer.illogicalAge = 1
       customer.illogicalData = 1
+      customer.illogicalAge = 1
+
+      if (customer.source === 'BrandMax') {
+        customer.illogicalAgePupil = 1
+      } else if (customer.groupId === 'Focus MKT') {
+        customer.illogicalAgeStudent = 1
+      }
     } else {
       var age = parseInt(customer.age)
-      if (age < 10 || age > 99) {
+      if (customer.source === 'BrandMax' && (age < 12 || age > 20)) {
+        customer.illogicalData = 1
         customer.illogicalAge = 1
-        customer.illogicalData = 1
-      } else if (customer.groupId === 1 && (age < 10 || age > 20)) {
         customer.illogicalAgePupil = 1
+      } else if (customer.groupId === 'Focus MKT' && (age < 17 || age > 24))  {
         customer.illogicalData = 1
-      } else if (customer.groupId === 2 && (age < 18 || age > 24))  {
+        customer.illogicalAge = 1
         customer.illogicalAgeStudent = 1
-        customer.illogicalData = 1
-      } else if (customer.groupId === 3 && (age > 60)) {
-        customer.illogicalAgeOthers = 1
-        customer.illogicalData = 1
       }
     }
   }
@@ -62,37 +63,38 @@ const checkMissingData = (customer) => {
   customer.missingAge = 0
   customer.missingSchoolName = 0
   customer.missingBrandUsing = 0
-  customer.missingGroup = 0
+  customer.missingCollectedDate = 0
+  customer.missingSamplingType = 0
 
-  if (isBlank(customer.name)) {
+  if (isBlank(customer.firstName) && isBlank(customer.lastName)) {
     customer.missingName = 1
     customer.missingData = 1
   }
 
-  if (isBlank(customer.provinceId)) {
+  if (isBlank(customer.provinceName) || isBlank(customer.districtName)) {
     customer.missingLivingCity = 1
     customer.missingData = 1
   }
 
-  if (customer.groupId === 1) {
-    if (isBlank(customer.phoneNumber) && isBlank(customer.parentPhoneNumber) && isBlank(customer.facebook) && isBlank(customer.email)) {
+  if (customer.source === 'BrandMax') {
+    if (isBlank(customer.phoneNumber) && isBlank(customer.parentPhoneNumber)) {
       customer.missingContactInformation = 1
       customer.missingData = 1
     }
-  } else if (customer.groupId === 2 || customer.groupId === 3) {
+  } else if (customer.source === 'Focus MKT') {
     if (isBlank(customer.phoneNumber)) {
       customer.missingContactInformation = 1
       customer.missingData = 1
     }
   }
 
-  if (customer.missingContactInformation === 0 && customer.groupId === 3 && isBlank(customer.phoneNumber) && isBlank(customer.facebook) && isBlank(customer.email)) {
-    customer.missingContactInformation = 1
+  if (isBlank(customer.age)) {
+    customer.missingAge = 1
     customer.missingData = 1
   }
 
-  if (isBlank(customer.age)) {
-    customer.missingAge = 1
+  if (isBlank(customer.collectedDate)) {
+    customer.missingCollectedDate = 1
     customer.missingData = 1
   }
 
@@ -101,13 +103,13 @@ const checkMissingData = (customer) => {
     customer.missingData = 1
   }
 
-  if (isBlank(customer.kotexData) && isBlank(customer.dianaData) && isBlank(customer.laurierData) && isBlank(customer.othersData) && isBlank(customer.whisperData)) {
+  if (isBlank(customer.brand) || isBlank(customer.subBrand)) {
     customer.missingBrandUsing = 1
     customer.missingData = 1
   }
 
-  if (isBlank(customer.groupId)) {
-    customer.missingGroup = 1
+  if (isBlank(customer.samplingProduct)) {
+    customer.missingSamplingType = 1
     customer.missingData = 1
   }
 

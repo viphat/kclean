@@ -6,37 +6,39 @@ import { db } from './database';
 import { createCustomer } from './createCustomer'
 import { buildExcelTemplate } from './buildExcelTemplate'
 
-const dataBeginRow = 4
+// BrandMax - High School
+// Focus MKT - University
+
+const dataBeginRow = 2
 const indexCol = 1
-const areaCol = 2
-const provinceCol = 3
-const schoolNameCol = 4
-const nameCol = 5
-const yearOfBirthCol = 6
-const phoneNumberCol = 7
-const parentPhoneNumberCol = 8
-const facebookCol = 9
-const emailCol = 10
-const kotexCol = 11
-const dianaCol = 12
-const laurierCol = 13
-const whisperCol = 14
-const othersCol = 15
-const notesCol = 16
-const createdAtCol = 17
-const receivedGiftCol = 18
-const groupNameCol = 19
+const schoolNameCol = 2
+const provinceNameCol = 3
+const districtNameCol = 4
+const collectedDateCol = 5
+const collectedTimeCol = 6
+const firstNameCol = 7
+const lastNameCol = 8
+const phoneNumberCol = 9
+const parentPhoneNumberCol = 10
+const dateOfBirthCol = 11
+const brandCol = 12
+const subBrandCol = 13
+const samplingProductCol = 14
+const genderCol = 15
+const districtIdCol = 16
+const provinceIdCol = 17
+const optInCol = 18
 
 const isEmptyRow = (row) => {
-  if (row.getCell(nameCol).value === null     &&
+  if (row.getCell(indexCol).value === null     &&
       row.getCell(schoolNameCol).value === null      &&
-      row.getCell(areaCol).value === null      &&
-      row.getCell(provinceCol).value === null      &&
+      row.getCell(provinceNameCol).value === null      &&
+      row.getCell(districtNameCol).value === null      &&
       row.getCell(phoneNumberCol).value === null         &&
-      row.getCell(groupNameCol).value === null           &&
-      row.getCell(indexCol).value === null            &&
-      row.getCell(createdAtCol).value === null            &&
-      row.getCell(receivedGiftCol).value === null
+      row.getCell(firstNameCol).value === null           &&
+      row.getCell(lastNameCol).value === null           &&
+      row.getCell(brandCol).value === null           &&
+      row.getCell(dateOfBirthCol).value === null
     ) {
     // Empty Row
     return true
@@ -97,7 +99,7 @@ const readEachRow = (excelFile, outputWorkbook, batch, source, worksheet, rowNum
       return resolve(outputWorkbook);
     }
 
-    let yearOfBirth = row.getCell(yearOfBirthCol).value
+    let dateOfBirth = row.getCell(dateOfBirthCol).value
     let currentYear = new Date().getFullYear()
     let age;
     if (yearOfBirth) {
