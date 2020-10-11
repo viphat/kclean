@@ -5,6 +5,7 @@ const _ = require('lodash')
 const validTitle = 'DATA CLEANING RESULT - VALID LIST'
 const invalidTitle = 'DATA CLEANING RESULT - INVALID LIST'
 const duplicationTitle = 'DATA CLEANING RESULT - DUPLICATION LIST'
+const duplicationWithAnotherAgencyTitle = 'DATA CLEANING RESULT - DUPLICATION WITH ANOTHER AGENCY LIST';
 const logoPath = './vendor/logo.png';
 
 export const buildExcelTemplate = (outputPath) => {
@@ -37,6 +38,10 @@ function writeTemplate(outputPath, workbook) {
     sheetName = 'Duplication';
     worksheet = workbook.addWorksheet(sheetName, {});
     writeBaseTemplate(workbook, worksheet, duplicationTitle);
+    sheetName = 'Duplication With Another Agency';
+    worksheet = workbook.addWorksheet(sheetName, {});
+    writeBaseTemplate(workbook, worksheet, duplicationWithAnotherAgencyTitle);
+
     // Write to File
     workbook.xlsx.writeFile(outputPath).then(() => {
       resolve(workbook);

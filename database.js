@@ -5,8 +5,8 @@ export const db = new sqlite3.Database('db.sqlite3');
 
 export const setupDatabase = () => {
   db.serialize(()=>{
-    // createTableProvinces();
-    // createTableDistricts();
+    createTableProvinces();
+    createTableDistricts();
     createTableCustomers();
   });
 

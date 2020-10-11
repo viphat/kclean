@@ -114,19 +114,19 @@ const readEachRow = (excelFile, outputWorkbook, batch, source, worksheet, rowNum
         arr = row.getCell(dateOfBirthCol).value.toString().split('/')
 
         if (arr.length !== 3) {
-          return reject('Lỗi ngày tháng DOB ở dòng ' + rowNumber)
+          return reject('#1 - Lỗi ngày tháng DOB ở dòng ' + rowNumber)
         }
 
         dayOfBirth = padStart(arr[0], 2, 0);
         monthOfBirth = padStart(arr[1], 2, 0);
-        yearOfBirth = arr[2].length === 2 ? '20' + arr[2] : arr[2];
+        yearOfBirth = (arr[2].toString().length === 2 ? ((parseInt(arr[2], 10) >= 90 && parseInt(arr[2], 10) <= 99) ? '19' : '20') + arr[2] : arr[2]);
       } else {
-        monthOfBirth = dateOfBirth.getDate()
-        dayOfBirth = dateOfBirth.getMonth() + 1
+        dayOfBirth = dateOfBirth.getDate()
+        monthOfBirth = dateOfBirth.getMonth() + 1
         yearOfBirth = dateOfBirth.getFullYear()
 
         if (monthOfBirth > 12) {
-          return reject('Lỗi ngày tháng DOB ở dòng ' + rowNumber)
+          return reject('#2 - Lỗi ngày tháng DOB ở dòng ' + rowNumber)
         }
       }
 
@@ -156,7 +156,7 @@ const readEachRow = (excelFile, outputWorkbook, batch, source, worksheet, rowNum
 
       collectedDay = padStart(arr[0], 2, 0);
       collectedMonth = padStart(arr[1], 2, 0);
-      collectedYear = arr[2].length === 2 ? '20' + arr[2] : arr[2];
+      collectedYear = arr[2].toString().length === 2 ? '20' + arr[2] : arr[2];
     }
 
     // collectedDate = new Date(collectedDate)
@@ -224,7 +224,11 @@ const readEachRow = (excelFile, outputWorkbook, batch, source, worksheet, rowNum
       if (missingData || illogicalData) {
         outputSheetName = 'Invalid';
       } else if (duplicateData === true) {
-        outputSheetName = 'Duplication';
+        if (customer.duplicatedPhoneBetweenPupilAndStudent === 1) {
+          outputSheetName = 'Duplication With Another Agency';
+        } else {
+          outputSheetName = 'Duplication';
+        }
       }
 
 
