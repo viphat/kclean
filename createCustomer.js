@@ -35,16 +35,17 @@ const checkIllogicalData = (customer) => {
 
       if (customer.source === 'BrandMax') {
         customer.illogicalAgePupil = 1
-      } else if (customer.groupId === 'Focus MKT') {
+      } else if (customer.source === 'Focus MKT') {
         customer.illogicalAgeStudent = 1
       }
     } else {
       var age = parseInt(customer.age)
+
       if (customer.source === 'BrandMax' && (age < 12 || age > 20)) {
         customer.illogicalData = 1
         customer.illogicalAge = 1
         customer.illogicalAgePupil = 1
-      } else if (customer.groupId === 'Focus MKT' && (age < 17 || age > 24))  {
+      } else if (customer.source === 'Focus MKT' && (age < 17 || age > 24))  {
         customer.illogicalData = 1
         customer.illogicalAge = 1
         customer.illogicalAgeStudent = 1
@@ -131,7 +132,7 @@ const checkDuplication = (customer) => {
       return resolve(customer)
     }
 
-    db.get('SELECT customers.customerId, customers.firstName, customers.lastName,\
+    db.get('SELECT customers.customerId, customers.customerIndex, customers.firstName, customers.lastName,\
       customers.districtId, customers.districtName, customers.provinceId, customers.provinceName,\
       customers.schoolName, customers.dateOfBirth, customers.collectedDate, customers.collectedTime,\
       customers.phoneNumber, customers.parentPhoneNumber,\
@@ -191,7 +192,7 @@ export const createCustomer = (customer) => {
 
       db.run('INSERT INTO customers(\
             customerIndex, firstName, lastName, districtId, provinceId, districtName, provinceName, schoolName, phoneNumber, parentPhoneNumber, collectedDate, collectedTime, dateOfBirth, yearOfBirth, brand, subBrand, samplingProduct, gender, optIn, source, batch,\
-            hasError, missingData, missingName, missingLivingCity, missingSchoolName, missingContactInformation, missingAge, missingCollectedDate, missingSchoolName, missingBrandUsing, missingSamplingType,\
+            hasError, missingData, missingName, missingLivingCity, missingSchoolName, missingContactInformation, missingAge, missingCollectedDate, missingBrandUsing, missingSamplingType,\
             illogicalData, illogicalPhone, illogicalAge, illogicalAgePupil, illogicalAgeStudent,\
             duplicatedPhone, duplicatedPhoneBetweenPupilAndStudent, duplicatedPhoneWithinPupil, duplicatedPhoneWithinStudent) \
           VALUES($customerIndex, $firstName, $lastName, $districtId, $provinceId, $districtName, $provinceName, $schoolName, $phoneNumber, $parentPhoneNumber, $collectedDate, $collectedTime, $dateOfBirth, $yearOfBirth, $brand, $subBrand, $samplingProduct, $gender, $optIn, $source, $batch,\

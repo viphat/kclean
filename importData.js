@@ -102,34 +102,42 @@ const readEachRow = (excelFile, outputWorkbook, batch, source, worksheet, rowNum
     console.log('Row: ' + rowNumber);
 
     let dateOfBirth = row.getCell(dateOfBirthCol).value;
-    let dayOfBirth, monthOfBirth, yearOfBirth;
+    let dayOfBirth, monthOfBirth, yearOfBirth, age;
     let arr;
 
     dateOfBirth = new Date(dateOfBirth)
     // Do Data gốc bị sai format, nên phải ép lại
 
-    if (dateOfBirth.toString() === 'Invalid Date') {
-      // dd/mm/yyyy
-      arr = row.getCell(dateOfBirthCol).value.toString().split('/')
+    if (dateOfBirth !== null && dateOfBirth !== undefined) {
+      if (dateOfBirth.toString() === 'Invalid Date') {
+        // dd/mm/yyyy
+        arr = row.getCell(dateOfBirthCol).value.toString().split('/')
 
-      if (arr.length !== 3) {
-        return reject('Lỗi ngày tháng DOB ở dòng ' + rowNumber)
+        if (arr.length !== 3) {
+          return reject('Lỗi ngày tháng DOB ở dòng ' + rowNumber)
+        }
+
+        dayOfBirth = padStart(arr[0], 2, 0);
+        monthOfBirth = padStart(arr[1], 2, 0);
+        yearOfBirth = arr[2].length === 2 ? '20' + arr[2] : arr[2];
+      } else {
+        monthOfBirth = dateOfBirth.getDate()
+        dayOfBirth = dateOfBirth.getMonth() + 1
+        yearOfBirth = dateOfBirth.getFullYear()
+
+        if (monthOfBirth > 12) {
+          return reject('Lỗi ngày tháng DOB ở dòng ' + rowNumber)
+        }
       }
 
-      dayOfBirth = padStart(arr[0], 2, 0);
-      monthOfBirth = padStart(arr[1], 2, 0);
-      yearOfBirth = arr[2].length === 2 ? '20' + arr[2] : arr[2];
-    } else {
-      monthOfBirth = dateOfBirth.getDate()
-      dayOfBirth = dateOfBirth.getMonth() + 1
-      yearOfBirth = dateOfBirth.getFullYear()
+      dateOfBirth = new Date(yearOfBirth + '-' + monthOfBirth + '-' + dayOfBirth)
 
-      if (monthOfBirth > 12) {
-        return reject('Lỗi ngày tháng DOB ở dòng ' + rowNumber)
+      let currentYear = new Date().getFullYear()
+
+      if (yearOfBirth) {
+        age = currentYear - parseInt(yearOfBirth)
       }
     }
-
-    dateOfBirth = new Date(yearOfBirth + '-' + monthOfBirth + '-' + dayOfBirth)
 
     // dateOfBirth = new Date(dateOfBirth)
     // console.log(dateOfBirth)
@@ -137,15 +145,19 @@ const readEachRow = (excelFile, outputWorkbook, batch, source, worksheet, rowNum
     //   return reject('Lỗi ngày tháng DOB ở dòng ' + rowNumber)
     // }
 
+    let collectedDay, collectedMonth, collectedYear;
     let collectedDate = row.getCell(collectedDateCol).value
-    arr = collectedDate.toString().split('/')
-    if (arr.length !== 3) {
-      return reject('Lỗi ngày tháng cột E ở dòng ' + rowNumber)
-    }
 
-    let collectedDay = padStart(arr[0], 2, 0);
-    let collectedMonth = padStart(arr[1], 2, 0);
-    let collectedYear = arr[2].length === 2 ? '20' + arr[2] : arr[2];
+    if (collectedDate !== null && collectedDate !== undefined) {
+      arr = collectedDate.toString().split('/')
+      if (arr.length !== 3) {
+        return reject('Lỗi ngày tháng cột E ở dòng ' + rowNumber)
+      }
+
+      collectedDay = padStart(arr[0], 2, 0);
+      collectedMonth = padStart(arr[1], 2, 0);
+      collectedYear = arr[2].length === 2 ? '20' + arr[2] : arr[2];
+    }
 
     // collectedDate = new Date(collectedDate)
     // let collectedDay = collectedDate.getDate()
@@ -154,13 +166,6 @@ const readEachRow = (excelFile, outputWorkbook, batch, source, worksheet, rowNum
     // if (collectedDate.toString() === 'Invalid Date') {
     //   return reject('Lỗi ngày tháng cột E ở dòng ' + rowNumber)
     // }
-
-    let currentYear = new Date().getFullYear()
-    let age;
-
-    if (yearOfBirth) {
-      age = currentYear - parseInt(yearOfBirth)
-    }
 
     let customer = {
       customerIndex: row.getCell(indexCol).value,
@@ -173,10 +178,10 @@ const readEachRow = (excelFile, outputWorkbook, batch, source, worksheet, rowNum
       schoolName: row.getCell(schoolNameCol).value,
       phoneNumber: row.getCell(phoneNumberCol).value,
       parentPhoneNumber: row.getCell(parentPhoneNumberCol).value,
-      dateOfBirth: yearOfBirth + '-' + padStart(monthOfBirth, 2, 0) + '-' + padStart(dayOfBirth, 2, 0),
+      dateOfBirth: yearOfBirth ? (yearOfBirth + '-' + padStart(monthOfBirth, 2, 0) + '-' + padStart(dayOfBirth, 2, 0)) : null,
       yearOfBirth: yearOfBirth,
       age: age,
-      collectedDate: collectedYear + '-' + padStart(collectedMonth, 2, 0) + '-' + padStart(collectedDay, 2, 0),
+      collectedDate: collectedYear? (collectedYear + '-' + padStart(collectedMonth, 2, 0) + '-' + padStart(collectedDay, 2, 0)) : null,
       collectedTime: row.getCell(collectedTimeCol).value,
       brand: row.getCell(brandCol).value,
       subBrand: row.getCell(subBrandCol).value,
