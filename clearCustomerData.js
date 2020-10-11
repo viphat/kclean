@@ -1,4 +1,4 @@
-import { db } from './database.js';
+import { db } from './database';
 
 export const clearCustomerData = (batch, source) => {
   return new Promise((resolve, reject) => {

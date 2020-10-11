@@ -1,6 +1,6 @@
+const _ = require('lodash');
+
 import { db } from './database';
-import { provinces } from './provinces';
-import _ from 'lodash'
 
 const checkIllogicalData = (customer) => {
   customer.illogicalData = 0

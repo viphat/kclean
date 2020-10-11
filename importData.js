@@ -1,7 +1,7 @@
 const Excel = require('exceljs')
 const fs = require('fs');
+const _ = require('lodash');
 
-import _ from 'lodash'
 import { db } from './database';
 import { createCustomer } from './createCustomer'
 import { buildExcelTemplate } from './buildExcelTemplate'
@@ -100,36 +100,58 @@ const readEachRow = (excelFile, outputWorkbook, batch, source, worksheet, rowNum
     }
 
     let dateOfBirth = row.getCell(dateOfBirthCol).value
+
+    dateOfBirth = new Date(dateOfBirth)
+
+    if (dateOfBirth === 'Invalid Date') {
+      reject('Lỗi ngày tháng DOB ở dòng ' + rowNumber)
+    }
+
+    let collectedDate = row.getCell(collectedDateCol).value
+    collectedDate = new Date(collectedDate)
+
+    if (collectedDate === 'Invalid Date') {
+      reject('Lỗi ngày tháng cột E ở dòng ' + rowNumber)
+    }
+
     let currentYear = new Date().getFullYear()
+    let dayOfBirth = dateOfBirth.getDate()
+    let monthOfBirth = dateOfBirth.getMonth() + 1
+    let yearOfBirth = dateOfBirth.getFullYear()
     let age;
+
     if (yearOfBirth) {
       age = currentYear - parseInt(yearOfBirth)
     }
 
+    let collectedDay = collectedDate.getDate()
+    let collectedMonth = collectedDate.getMonth() + 1
+    let collectedYear = collectedDate.getFullYear()
+
     let customer = {
-      areaName: row.getCell(areaCol).value,
-      provinceName: row.getCell(provinceCol).value,
+      customerIndex: row.getCell(indexCol).value,
+      firstName: row.getCell(firstNameCol).value,
+      lastName: row.getCell(lastNameCol).value,
+      provinceId: row.getCell(provinceIdCol).value,
+      provinceName: row.getCell(provinceNameCol).value,
+      districtId: row.getCell(districtIdCol).value,
+      districtName: row.getCell(districtNameCol).value,
       schoolName: row.getCell(schoolNameCol).value,
-      name: row.getCell(nameCol).value,
-      yearOfBirth: yearOfBirth,
-      age: age,
       phoneNumber: row.getCell(phoneNumberCol).value,
       parentPhoneNumber: row.getCell(parentPhoneNumberCol).value,
-      facebook: row.getCell(facebookCol).value,
-      email: row.getCell(emailCol).value,
-      kotexData: row.getCell(kotexCol).value,
-      dianaData: row.getCell(dianaCol).value,
-      laurierData: row.getCell(laurierCol).value,
-      whisperData: row.getCell(whisperCol).value,
-      othersData: row.getCell(othersCol).value,
-      notes: row.getCell(notesCol).value,
-      createdAt: row.getCell(createdAtCol).value,
-      receivedGift: row.getCell(receivedGiftCol).value,
-      groupName: row.getCell(groupNameCol).value,
+      dateOfBirth: yearOfBirth + '-' + monthOfBirth + '-' + dayOfBirth,
+      yearOfBirth: yearOfBirth,
+      age: age,
+      collectedDate: collectedYear + '-' + collectedMonth + '-' + collectedDay,
+      collectedTime: row.getCell(collectedTime).value,
+      brand: row.getCell(brandCol).value,
+      subBrand: row.getCell(subBrandCol).value,
+      samplingProduct: row.getCell(samplingProductCol).value,
+      gender: row.getCell(genderCol).value,
+      optIn: row.getCell(optInCol).value,
+      source: source,
       batch: batch
     }
-
-    customer
 
     createCustomer(customer).then((response) => {
       customer = response;
@@ -138,25 +160,25 @@ const readEachRow = (excelFile, outputWorkbook, batch, source, worksheet, rowNum
       let duplicateData = customer.duplicatedPhone === 1;
 
       let rowData = [
-        customer.customerId,
-        customer.areaName,
-        customer.provinceName,
+        customer.customerIndex,
         customer.schoolName,
-        customer.name,
-        customer.yearOfBirth,
+        customer.provinceName,
+        customer.districtName,
+        customer.collectedDate,
+        customer.collectedTime,
+        customer.firstName,
+        customer.lastName,
         customer.phoneNumber,
         customer.parentPhoneNumber,
-        customer.facebook,
-        customer.email,
-        customer.kotexData,
-        customer.dianaData,
-        customer.laurierData,
-        customer.whisperData,
-        customer.othersData,
-        customer.notes,
-        customer.createdAt,
-        customer.receivedGift,
-        customer.groupName
+        customer.dateOfBirth,
+        customer.brand,
+        customer.subBrand,
+        customer.samplingProduct,
+        customer.gender,
+        customer.districtId,
+        customer.provinceId,
+        customer.optIn,
+        customer.source
       ];
 
       let outputSheetName = 'Valid';
@@ -172,26 +194,26 @@ const readEachRow = (excelFile, outputWorkbook, batch, source, worksheet, rowNum
         duplicatedWith = customer.duplicatedWith;
 
         var duplicatedRow = [
-          duplicatedWith.customerId,
-          duplicatedWith.areaName,
-          duplicatedWith.provinceName,
+          duplicatedWith.customerIndex,
           duplicatedWith.schoolName,
-          duplicatedWith.name,
-          duplicatedWith.yearOfBirth,
+          duplicatedWith.provinceName,
+          duplicatedWith.districtName,
+          duplicatedWith.collectedDate,
+          duplicatedWith.collectedTime,
+          duplicatedWith.firstName,
+          duplicatedWith.lastName,
           duplicatedWith.phoneNumber,
           duplicatedWith.parentPhoneNumber,
-          duplicatedWith.facebook,
-          duplicatedWith.email,
-          duplicatedWith.kotexData,
-          duplicatedWith.dianaData,
-          duplicatedWith.laurierData,
-          duplicatedWith.whisperData,
-          duplicatedWith.othersData,
-          duplicatedWith.notes,
-          duplicatedWith.createdAt,
-          duplicatedWith.receivedGift,
-          duplicatedWith.groupName,
-          duplicatedWith.batch
+          duplicatedWith.dateOfBirth,
+          duplicatedWith.brand,
+          duplicatedWith.subBrand,
+          duplicatedWith.samplingProduct,
+          duplicatedWith.gender,
+          duplicatedWith.districtId,
+          duplicatedWith.provinceId,
+          duplicatedWith.optIn,
+          duplicatedWith.source,
+          duplicatedWith.batch,
         ]
 
         rowData.push(customer.batch);

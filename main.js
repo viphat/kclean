@@ -3,7 +3,7 @@ import { mainMenuTemplate } from './mainMenu'
 import { clearCustomerData } from './clearCustomerData'
 import { importData } from './importData'
 import { generateReport } from './generateReport'
-import _ from 'lodash'
+const _ = require('lodash');
 
 // Keep a global reference of the window object, if you don't, the window will be closed automatically when the JavaScript object is garbage collected.
 let mainWindow
@@ -56,7 +56,8 @@ const setApplicationMenu = () => {
 var ipc = require('electron').ipcMain;
 
 ipc.on('clearCustomerData', (event, data) => {
-  let { source, batch } = data;
+  let { batch, source } = data;
+
   clearCustomerData(batch, source).then((response) => {
     event.sender.send('clearCustomerDataSuccessful', { success: true })
   }, (errRes) => {

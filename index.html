@@ -140,7 +140,12 @@
 
     function assignFormValues() {
       batch = document.getElementById('txtBatch').value;
-      source = document.getElementById('txtSource').value;
+
+      if (document.querySelector('input[name="txtSource"]:checked') !== null) {
+        source = document.querySelector('input[name="txtSource"]:checked').value;
+      } else {
+        source = undefined;
+      }
     }
 
     function isFormInvalid() {

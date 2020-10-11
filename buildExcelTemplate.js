@@ -1,7 +1,6 @@
 const Excel = require('exceljs')
 const fs = require('fs')
-
-import _ from 'lodash'
+const _ = require('lodash')
 
 const validTitle = 'DATA CLEANING RESULT - VALID LIST'
 const invalidTitle = 'DATA CLEANING RESULT - INVALID LIST'

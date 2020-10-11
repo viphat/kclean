@@ -1,7 +1,7 @@
 const Excel = require('exceljs')
 const fs = require('fs');
+const _ = require('lodash');
 
-import _ from 'lodash'
 import { db } from './database';
 
 const logoPath = './vendor/logo.png';
