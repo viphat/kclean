@@ -29,6 +29,8 @@ const genderCol = 15
 const districtIdCol = 16
 const provinceIdCol = 17
 const optInCol = 18
+const productTypeCol = 19
+const targetCol = 20
 
 const isEmptyRow = (row) => {
   if (row.getCell(indexCol).value === null     &&
@@ -188,6 +190,8 @@ const readEachRow = (excelFile, outputWorkbook, batch, source, worksheet, rowNum
       samplingProduct: row.getCell(samplingProductCol).value,
       gender: row.getCell(genderCol).value,
       optIn: row.getCell(optInCol).value,
+      productType: row.getCell(productTypeCol).value,
+      target: row.getCell(targetCol).value,
       source: source,
       batch: batch
     }
@@ -217,6 +221,8 @@ const readEachRow = (excelFile, outputWorkbook, batch, source, worksheet, rowNum
         customer.districtId,
         customer.provinceId,
         customer.optIn,
+        customer.productType,
+        customer.target,
         customer.source
       ];
 
@@ -255,6 +261,8 @@ const readEachRow = (excelFile, outputWorkbook, batch, source, worksheet, rowNum
           duplicatedWith.districtId,
           duplicatedWith.provinceId,
           duplicatedWith.optIn,
+          duplicatedWith.productType,
+          duplicatedWith.target,
           duplicatedWith.source,
           duplicatedWith.batch,
         ]
@@ -372,10 +380,18 @@ export const writeToFile = (outputWorkbook, outputSheetName, rowData) => {
     row.getCell(19).border = row.getCell(1).border;
     row.getCell(19).alignment = row.getCell(1).alignment;
 
-    if (outputSheetName.endsWith('Duplication')) {
-      row.getCell(20).font = row.getCell(1).font;
-      row.getCell(20).border = row.getCell(1).border;
-      row.getCell(20).alignment = row.getCell(1).alignment;
+    row.getCell(20).font = row.getCell(1).font;
+    row.getCell(20).border = row.getCell(1).border;
+    row.getCell(20).alignment = row.getCell(1).alignment;
+
+    row.getCell(21).font = row.getCell(1).font;
+    row.getCell(21).border = row.getCell(1).border;
+    row.getCell(21).alignment = row.getCell(1).alignment;
+
+    if (outputSheetName.endsWith('Duplication') || outputSheetName.endsWith('Duplication With Another Agency')) {
+      row.getCell(22).font = row.getCell(1).font;
+      row.getCell(22).border = row.getCell(1).border;
+      row.getCell(22).alignment = row.getCell(1).alignment;
     }
 
     resolve(workbook);
