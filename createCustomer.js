@@ -132,7 +132,7 @@ const checkDuplication = (customer) => {
     }
 
     db.get('SELECT customers.customerId, customers.firstName, customers.lastName,\
-      customers.districtId, , customers.districtName, customers.provinceId, customers.provinceName,\
+      customers.districtId, customers.districtName, customers.provinceId, customers.provinceName,\
       customers.schoolName, customers.dateOfBirth, customers.collectedDate, customers.collectedTime,\
       customers.phoneNumber, customers.parentPhoneNumber,\
       customers.brand, customers.subBrand, customers.samplingProduct,\

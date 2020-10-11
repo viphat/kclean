@@ -60,9 +60,9 @@ function writeBaseTemplate(workbook, worksheet, title) {
   worksheet.getColumn('M').width = 13.8;
   worksheet.getColumn('N').width = 24;
   worksheet.getColumn('O').width = 10;
-  worksheet.getColumn('P').width = 10;
-  worksheet.getColumn('Q').width = 10;
-  worksheet.getColumn('R').width = 10;
+  worksheet.getColumn('P').width = 16;
+  worksheet.getColumn('Q').width = 16;
+  worksheet.getColumn('R').width = 16;
   worksheet.getColumn('S').width = 16;
   worksheet.getColumn('T').width = 16;
 
@@ -211,14 +211,14 @@ function writeBaseTemplate(workbook, worksheet, title) {
   worksheet.getCell('P5').fill = worksheet.getCell('A5').fill;
   worksheet.getCell('P5').alignment = worksheet.getCell('A5').alignment;
   worksheet.getCell('P5').border = worksheet.getCell('A5').border;
-  worksheet.getCell('P5').value = 'DistrictId'
+  worksheet.getCell('P5').value = 'District ID'
 
   worksheet.mergeCells('Q5:Q6');
   worksheet.getCell('Q5').font = worksheet.getCell('A5').font;
   worksheet.getCell('Q5').fill = worksheet.getCell('A5').fill;
   worksheet.getCell('Q5').alignment = worksheet.getCell('A5').alignment;
   worksheet.getCell('Q5').border = worksheet.getCell('A5').border;
-  worksheet.getCell('Q5').value = 'ProvinceId'
+  worksheet.getCell('Q5').value = 'Province ID'
 
   worksheet.mergeCells('R5:R6');
   worksheet.getCell('R5').font = worksheet.getCell('A5').font;

@@ -1,6 +1,7 @@
 const Excel = require('exceljs')
 const fs = require('fs');
 const _ = require('lodash');
+const padStart = require('string.prototype.padstart');
 
 import { db } from './database';
 import { createCustomer } from './createCustomer'
@@ -93,40 +94,73 @@ const readFile = (excelFile, batch, source, outputDirectory) => {
 const readEachRow = (excelFile, outputWorkbook, batch, source, worksheet, rowNumber) => {
   return new Promise((resolve, reject) => {
     let row = worksheet.getRow(rowNumber);
-    console.log('Row: ' + rowNumber);
 
     if (isEmptyRow(row)) {
       return resolve(outputWorkbook);
     }
 
-    let dateOfBirth = row.getCell(dateOfBirthCol).value
+    console.log('Row: ' + rowNumber);
+
+    let dateOfBirth = row.getCell(dateOfBirthCol).value;
+    let dayOfBirth, monthOfBirth, yearOfBirth;
+    let arr;
 
     dateOfBirth = new Date(dateOfBirth)
+    // Do Data gốc bị sai format, nên phải ép lại
 
-    if (dateOfBirth === 'Invalid Date') {
-      reject('Lỗi ngày tháng DOB ở dòng ' + rowNumber)
+    if (dateOfBirth.toString() === 'Invalid Date') {
+      // dd/mm/yyyy
+      arr = row.getCell(dateOfBirthCol).value.toString().split('/')
+
+      if (arr.length !== 3) {
+        return reject('Lỗi ngày tháng DOB ở dòng ' + rowNumber)
+      }
+
+      dayOfBirth = padStart(arr[0], 2, 0);
+      monthOfBirth = padStart(arr[1], 2, 0);
+      yearOfBirth = arr[2].length === 2 ? '20' + arr[2] : arr[2];
+    } else {
+      monthOfBirth = dateOfBirth.getDate()
+      dayOfBirth = dateOfBirth.getMonth() + 1
+      yearOfBirth = dateOfBirth.getFullYear()
+
+      if (monthOfBirth > 12) {
+        return reject('Lỗi ngày tháng DOB ở dòng ' + rowNumber)
+      }
     }
+
+    dateOfBirth = new Date(yearOfBirth + '-' + monthOfBirth + '-' + dayOfBirth)
+
+    // dateOfBirth = new Date(dateOfBirth)
+    // console.log(dateOfBirth)
+    // if (dateOfBirth.toString() === 'Invalid Date') {
+    //   return reject('Lỗi ngày tháng DOB ở dòng ' + rowNumber)
+    // }
 
     let collectedDate = row.getCell(collectedDateCol).value
-    collectedDate = new Date(collectedDate)
-
-    if (collectedDate === 'Invalid Date') {
-      reject('Lỗi ngày tháng cột E ở dòng ' + rowNumber)
+    arr = collectedDate.toString().split('/')
+    if (arr.length !== 3) {
+      return reject('Lỗi ngày tháng cột E ở dòng ' + rowNumber)
     }
 
+    let collectedDay = padStart(arr[0], 2, 0);
+    let collectedMonth = padStart(arr[1], 2, 0);
+    let collectedYear = arr[2].length === 2 ? '20' + arr[2] : arr[2];
+
+    // collectedDate = new Date(collectedDate)
+    // let collectedDay = collectedDate.getDate()
+    // let collectedMonth = collectedDate.getMonth() + 1
+    // let collectedYear = collectedDate.getFullYear()
+    // if (collectedDate.toString() === 'Invalid Date') {
+    //   return reject('Lỗi ngày tháng cột E ở dòng ' + rowNumber)
+    // }
+
     let currentYear = new Date().getFullYear()
-    let dayOfBirth = dateOfBirth.getDate()
-    let monthOfBirth = dateOfBirth.getMonth() + 1
-    let yearOfBirth = dateOfBirth.getFullYear()
     let age;
 
     if (yearOfBirth) {
       age = currentYear - parseInt(yearOfBirth)
     }
-
-    let collectedDay = collectedDate.getDate()
-    let collectedMonth = collectedDate.getMonth() + 1
-    let collectedYear = collectedDate.getFullYear()
 
     let customer = {
       customerIndex: row.getCell(indexCol).value,
@@ -139,11 +173,11 @@ const readEachRow = (excelFile, outputWorkbook, batch, source, worksheet, rowNum
       schoolName: row.getCell(schoolNameCol).value,
       phoneNumber: row.getCell(phoneNumberCol).value,
       parentPhoneNumber: row.getCell(parentPhoneNumberCol).value,
-      dateOfBirth: yearOfBirth + '-' + monthOfBirth + '-' + dayOfBirth,
+      dateOfBirth: yearOfBirth + '-' + padStart(monthOfBirth, 2, 0) + '-' + padStart(dayOfBirth, 2, 0),
       yearOfBirth: yearOfBirth,
       age: age,
-      collectedDate: collectedYear + '-' + collectedMonth + '-' + collectedDay,
-      collectedTime: row.getCell(collectedTime).value,
+      collectedDate: collectedYear + '-' + padStart(collectedMonth, 2, 0) + '-' + padStart(collectedDay, 2, 0),
+      collectedTime: row.getCell(collectedTimeCol).value,
       brand: row.getCell(brandCol).value,
       subBrand: row.getCell(subBrandCol).value,
       samplingProduct: row.getCell(samplingProductCol).value,
