@@ -101,7 +101,7 @@ const readEachRow = (excelFile, outputWorkbook, batch, source, worksheet, rowNum
       return resolve(outputWorkbook);
     }
 
-    console.log('Row: ' + rowNumber);
+    // console.log('Row: ' + rowNumber);
 
     let dateOfBirth = row.getCell(dateOfBirthCol).value;
     let dayOfBirth, monthOfBirth, yearOfBirth, age;
@@ -180,10 +180,10 @@ const readEachRow = (excelFile, outputWorkbook, batch, source, worksheet, rowNum
       schoolName: row.getCell(schoolNameCol).value,
       phoneNumber: row.getCell(phoneNumberCol).value,
       parentPhoneNumber: row.getCell(parentPhoneNumberCol).value,
-      dateOfBirth: yearOfBirth ? (yearOfBirth + '-' + padStart(monthOfBirth, 2, 0) + '-' + padStart(dayOfBirth, 2, 0)) : null,
+      dateOfBirth: yearOfBirth ? (padStart(dayOfBirth, 2, 0) + '/' + padStart(monthOfBirth, 2, 0) + '/' + yearOfBirth) : null,
       yearOfBirth: yearOfBirth,
       age: age,
-      collectedDate: collectedYear? (collectedYear + '-' + padStart(collectedMonth, 2, 0) + '-' + padStart(collectedDay, 2, 0)) : null,
+      collectedDate: collectedYear? (padStart(collectedDay, 2, 0) + '/' + padStart(collectedMonth, 2, 0) + '/' + collectedYear) : null,
       collectedTime: row.getCell(collectedTimeCol).value,
       brand: row.getCell(brandCol).value,
       subBrand: row.getCell(subBrandCol).value,
