@@ -10,47 +10,47 @@ export const generateReport = (batch, source, outputDirectory) => {
   return new Promise((resolve, reject) => {
     generateReportTemplate(batch, source, outputDirectory).then((reportFilePath) => {
       fillData(batch, source, 'All').then((rowData) => {
-        return writeToTemplate(reportFilePath, rowData, 'B');
+        return writeToTemplate(source, reportFilePath, rowData, 'B');
       }).then(() => {
         return fillData(batch, source, 'ByBatch');
       }).then((rowData) => {
-        return writeToTemplate(reportFilePath, rowData, 'C');
+        return writeToTemplate(source, reportFilePath, rowData, 'C');
       }).then(() => {
         return fillData(batch, source, { provinceId: 23 }); // Ho Chi Minh
       }).then((rowData) => {
-        return writeToTemplate(reportFilePath, rowData, 'D');
+        return writeToTemplate(source, reportFilePath, rowData, 'D');
       }).then(() => {
         return fillData(batch, source, { provinceId: 21 }); // Ha Noi
       }).then((rowData) => {
-        return writeToTemplate(reportFilePath, rowData, 'E');
+        return writeToTemplate(source, reportFilePath, rowData, 'E');
       }).then(() => {
         return fillData(batch, source, { provinceId: 28 }); // Hai Phong
       }).then((rowData) => {
-        return writeToTemplate(reportFilePath, rowData, 'F');
+        return writeToTemplate(source, reportFilePath, rowData, 'F');
       }).then(() => {
         return fillData(batch, source, { provinceId: 16 }); //. Da Nang
       }).then((rowData) => {
-        return writeToTemplate(reportFilePath, rowData, 'G');
+        return writeToTemplate(source, reportFilePath, rowData, 'G');
       }).then(() => {
         return fillData(batch, source, { provinceId: 33 }); // Khanh Hoa
       }).then((rowData) => {
-        return writeToTemplate(reportFilePath, rowData, 'H');
+        return writeToTemplate(source, reportFilePath, rowData, 'H');
       }).then(() => {
         return fillData(batch, source, { provinceId: 13 }); // Can Tho
       }).then((rowData) => {
-        return writeToTemplate(reportFilePath, rowData, 'I');
+        return writeToTemplate(source, reportFilePath, rowData, 'I');
       }).then(() => {
         return fillData(batch, source, { provinceId: 17 }); // Dong Nai
       }).then((rowData) => {
-        return writeToTemplate(reportFilePath, rowData, 'J');
+        return writeToTemplate(source, reportFilePath, rowData, 'J');
       }).then(() => {
         return fillData(batch, source, { provinceId: 3 }); // Binh Duong
       }).then((rowData) => {
-        return writeToTemplate(reportFilePath, rowData, 'K');
+        return writeToTemplate(source, reportFilePath, rowData, 'K');
       }).then(() => {
         return fillData(batch, source, { provinceId: 1 }); // An Giang
       }).then((rowData) => {
-        return writeToTemplate(reportFilePath, rowData, 'L');
+        return writeToTemplate(source, reportFilePath, rowData, 'L');
       }).then(() => {
         resolve(reportFilePath);
       })
@@ -490,7 +490,7 @@ function fillData(batch, source, filterType) {
   });
 }
 
-function writeToTemplate(reportFilePath, rowData, cellIndex) {
+function writeToTemplate(source, reportFilePath, rowData, cellIndex) {
   return new Promise((resolve, reject) => {
     let workbook = new Excel.Workbook();
     workbook.xlsx.readFile(reportFilePath).then((response) => {
@@ -529,7 +529,11 @@ function writeToTemplate(reportFilePath, rowData, cellIndex) {
       row.getCell(cellIndex).value = rowData.MissingSamplingType;
 
       row = worksheet.getRow(16);
-      row.getCell(cellIndex).value = rowData.DuplicatedPhone;
+      if (source === 'BrandMax') {
+        row.getCell(cellIndex).value = rowData.DuplicatedPhoneWithinPupil;
+      } else {
+        row.getCell(cellIndex).value = rowData.DuplicatedPhoneWithinStudent;
+      }
 
       row = worksheet.getRow(17);
       row.getCell(cellIndex).value = rowData.IllogicalData;

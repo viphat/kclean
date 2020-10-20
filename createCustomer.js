@@ -188,7 +188,7 @@ export const createCustomer = (customer) => {
     customer = checkIllogicalData(customer)
 
     checkDuplication(customer).then((customer) => {
-      if (customer.missingData === 1 || customer.illogicalData === 1 || customer.duplicatedPhone === 1) {
+      if (customer.missingData === 1 || customer.illogicalData === 1 || customer.duplicatedPhoneWithinPupil === 1 || customer.duplicatedPhoneWithinStudent === 1) {
         customer.hasError = 1
       }
 
