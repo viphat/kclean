@@ -221,12 +221,13 @@ const readEachRow = (excelFile, outputWorkbook, batch, source, worksheet, rowNum
         customer.districtId,
         customer.provinceId,
         customer.optIn,
+        customer.source,
         customer.productType,
-        customer.target,
-        customer.source
+        customer.target
       ];
 
       let outputSheetName = 'Valid';
+
       if (missingData || illogicalData) {
         outputSheetName = 'Invalid';
       } else if (duplicateData === true) {
@@ -239,8 +240,7 @@ const readEachRow = (excelFile, outputWorkbook, batch, source, worksheet, rowNum
 
 
       if (duplicateData == true) {
-        var duplicatedWith
-        duplicatedWith = customer.duplicatedWith;
+        var duplicatedWith = customer.duplicatedWith;
 
         var duplicatedRow = [
           duplicatedWith.customerIndex,
@@ -261,9 +261,9 @@ const readEachRow = (excelFile, outputWorkbook, batch, source, worksheet, rowNum
           duplicatedWith.districtId,
           duplicatedWith.provinceId,
           duplicatedWith.optIn,
+          duplicatedWith.source,
           duplicatedWith.productType,
           duplicatedWith.target,
-          duplicatedWith.source,
           duplicatedWith.batch,
         ]
 

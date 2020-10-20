@@ -73,8 +73,8 @@ ipc.on('importData', (event, data) => {
 })
 
 ipc.on('generateReport', (event, data) => {
-  let { outputDirectory, batch } = data;
-  generateReport(batch, outputDirectory).then((reportFilePath) => {
+  let { outputDirectory, batch, source } = data;
+  generateReport(batch, source, outputDirectory).then((reportFilePath) => {
     event.sender.send('generateReportSuccessful', reportFilePath)
   })
 })

@@ -55,7 +55,7 @@ function writeBaseTemplate(workbook, worksheet, title) {
   worksheet.getColumn('C').width = 16;
   worksheet.getColumn('D').width = 16;
   worksheet.getColumn('E').width = 16;
-  worksheet.getColumn('F').width = 6;
+  worksheet.getColumn('F').width = 16;
   worksheet.getColumn('G').width = 24;
   worksheet.getColumn('H').width = 24;
   worksheet.getColumn('I').width = 18;

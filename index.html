@@ -228,6 +228,11 @@
         return null;
       }
 
+      if (source === undefined || source === null || source === '') {
+        dialog.showErrorBox('Notification', 'You must fill in source field before processing.');
+        return null;
+      }
+
       if (isProcessing === true) {
         dialog.showErrorBox('Notification', 'Processing...');
         return null;
@@ -236,7 +241,7 @@
       isProcessing = true;
       resetAlertAndShowSpinner();
 
-      ipc.send('generateReport', { batch, outputDirectory })
+      ipc.send('generateReport', { batch, source, outputDirectory })
 
       ipc.on('generateReportSuccessful', (event, reportFilePath) => {
         disableSpinner();

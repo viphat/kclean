@@ -6,49 +6,49 @@ import { db } from './database';
 
 const logoPath = './vendor/logo.png';
 
-export const generateReport = (batch, outputDirectory) => {
+export const generateReport = (batch, source, outputDirectory) => {
   return new Promise((resolve, reject) => {
-    generateReportTemplate(batch, outputDirectory).then((reportFilePath) => {
-      fillData(batch, 'All').then((rowData) => {
+    generateReportTemplate(batch, source, outputDirectory).then((reportFilePath) => {
+      fillData(batch, source, 'All').then((rowData) => {
         return writeToTemplate(reportFilePath, rowData, 'B');
       }).then(() => {
-        return fillData(batch, 'ByBatch');
+        return fillData(batch, source, 'ByBatch');
       }).then((rowData) => {
         return writeToTemplate(reportFilePath, rowData, 'C');
       }).then(() => {
-        return fillData(batch, { provinceId: 23 }); // Ho Chi Minh
+        return fillData(batch, source, { provinceId: 23 }); // Ho Chi Minh
       }).then((rowData) => {
         return writeToTemplate(reportFilePath, rowData, 'D');
       }).then(() => {
-        return fillData(batch, { provinceId: 21 }); // Ha Noi
+        return fillData(batch, source, { provinceId: 21 }); // Ha Noi
       }).then((rowData) => {
         return writeToTemplate(reportFilePath, rowData, 'E');
       }).then(() => {
-        return fillData(batch, { provinceId: 28 }); // Hai Phong
+        return fillData(batch, source, { provinceId: 28 }); // Hai Phong
       }).then((rowData) => {
         return writeToTemplate(reportFilePath, rowData, 'F');
       }).then(() => {
-        return fillData(batch, { provinceId: 16 }); //. Da Nang
+        return fillData(batch, source, { provinceId: 16 }); //. Da Nang
       }).then((rowData) => {
         return writeToTemplate(reportFilePath, rowData, 'G');
       }).then(() => {
-        return fillData(batch, { provinceId: 33 }); // Khanh Hoa
+        return fillData(batch, source, { provinceId: 33 }); // Khanh Hoa
       }).then((rowData) => {
         return writeToTemplate(reportFilePath, rowData, 'H');
       }).then(() => {
-        return fillData(batch, { provinceId: 13 }); // Can Tho
+        return fillData(batch, source, { provinceId: 13 }); // Can Tho
       }).then((rowData) => {
         return writeToTemplate(reportFilePath, rowData, 'I');
       }).then(() => {
-        return fillData(batch, { provinceId: 17 }); // Dong Nai
+        return fillData(batch, source, { provinceId: 17 }); // Dong Nai
       }).then((rowData) => {
         return writeToTemplate(reportFilePath, rowData, 'J');
       }).then(() => {
-        return fillData(batch, { provinceId: 3 }); // Binh Duong
+        return fillData(batch, source, { provinceId: 3 }); // Binh Duong
       }).then((rowData) => {
         return writeToTemplate(reportFilePath, rowData, 'K');
       }).then(() => {
-        return fillData(batch, { provinceId: 1 }); // An Giang
+        return fillData(batch, source, { provinceId: 1 }); // An Giang
       }).then((rowData) => {
         return writeToTemplate(reportFilePath, rowData, 'L');
       }).then(() => {
@@ -58,7 +58,7 @@ export const generateReport = (batch, outputDirectory) => {
   })
 }
 
-const generateReportTemplate = (batch, outputDirectory) => {
+const generateReportTemplate = (batch, source, outputDirectory) => {
   return new Promise((resolve, reject) => {
     let dir = outputDirectory + '/' + batch;
 
@@ -66,7 +66,7 @@ const generateReportTemplate = (batch, outputDirectory) => {
       fs.mkdirSync(dir)
     }
 
-    let reportFilePath = dir + '/' + batch + '_report.xlsx';
+    let reportFilePath = dir + '/' + batch + '_' + source + '_report.xlsx';
 
     let workbook = new Excel.Workbook();
     let worksheet = workbook.addWorksheet('Abs', {});
@@ -145,7 +145,7 @@ const generateReportTemplate = (batch, outputDirectory) => {
     worksheet.getCell('A5').value = batch;
 
     // A6, A27
-    buildReportFirstColumnType3(worksheet, 6, 'Raw data received from Agency');
+    buildReportFirstColumnType3(worksheet, 6, 'Raw data received from ' + source);
     buildReportFirstColumnType3(worksheet, 21, 'Valid database (value) - base all');
 
     // A7, A14, A21
@@ -154,17 +154,17 @@ const generateReportTemplate = (batch, outputDirectory) => {
     buildReportFirstColumnType2(worksheet, 17, 'Illogical data');
 
     // A8 - A13, A15 - A20, A22-A25
-    buildReportFirstColumnType1(worksheet, 8, "Respondent's name");
-    buildReportFirstColumnType1(worksheet, 9, "Living city");
-    buildReportFirstColumnType1(worksheet, 10, "Contact information");
-    buildReportFirstColumnType1(worksheet, 11, "Birth Year");
-    buildReportFirstColumnType1(worksheet, 12, "Sampling Date");
-    buildReportFirstColumnType1(worksheet, 13, "School Name");
-    buildReportFirstColumnType1(worksheet, 14, "Brand Using");
-    buildReportFirstColumnType1(worksheet, 15, "Sampling Type");
-    buildReportFirstColumnType1(worksheet, 18, "Illogical phone number format");
-    buildReportFirstColumnType1(worksheet, 19, "Illogical Age - High School");
-    buildReportFirstColumnType1(worksheet, 20, "Illogical Age - University");
+    buildReportFirstColumnType1(worksheet, 8, "Respondent's name (column G+H)");
+    buildReportFirstColumnType1(worksheet, 9, "Living city (column C+D)");
+    buildReportFirstColumnType1(worksheet, 10, "Contact information\nBRAND MAX/ HIGH SCHOOL: must have either phone number (column I), parents number (column J)\nFOCUS MKT/ UNIVERSITY: must have phone number (column I)");
+    buildReportFirstColumnType1(worksheet, 11, "Birth Year (column K)");
+    buildReportFirstColumnType1(worksheet, 12, "Sampling Date (column E)");
+    buildReportFirstColumnType1(worksheet, 13, "School Name (column B+C+D)");
+    buildReportFirstColumnType1(worksheet, 14, "Brand Using (column L)");
+    buildReportFirstColumnType1(worksheet, 15, "Sampling Type\nFOCUS MKT/ UNIVERSITY: column N\nBRAND MAX/ HIGH SCHOOL: ok to be blank");
+    buildReportFirstColumnType1(worksheet, 18, "Illogical phone number format (not 03x, 05x, 07x, 08x, 09x)");
+    buildReportFirstColumnType1(worksheet, 19, "Illogical Age - High School (not 2002 - 2006)");
+    buildReportFirstColumnType1(worksheet, 20, "Illogical Age - University (not 1998 - 2003)");
     // Done 1st Col
 
     // Row 4 - D4, K4, P4, S4
@@ -367,7 +367,7 @@ function buildReportFirstColumnType1(worksheet, rowIndex, text) {
     size: 14, name: 'Calibri', family: 2
   }
 
-  row.getCell('A').alignment = { horizontal: 'right', vertical: 'middle' };
+  row.getCell('A').alignment = { horizontal: 'right', vertical: 'middle', wrapText: true };
 
   row.getCell('A').value = text;
 }
@@ -424,7 +424,7 @@ function buildDataRow(worksheet, rowIndex, cellIndex) {
   row.getCell(cellIndex).value = 0;
 }
 
-function fillData(batch, filterType) {
+function fillData(batch, source, filterType) {
   return new Promise((resolve, reject) => {
     let baseQuery = 'SELECT COUNT(*) AS TotalBase, coalesce(SUM(hasError),0) AS HasError,\
     coalesce(SUM(missingData),0) AS MissingData,\
@@ -465,6 +465,17 @@ function fillData(batch, filterType) {
         whereCondition = 'WHERE customers.batch = $batch'
       } else {
         whereCondition += " AND customers.batch = $batch";
+      }
+    }
+
+    if (source !== '') {
+      params = _.merge(params, {
+        $source: source
+      });
+      if (whereCondition === '') {
+        whereCondition = 'WHERE customers.source = $source'
+      } else {
+        whereCondition += " AND customers.source = $source";
       }
     }
 
