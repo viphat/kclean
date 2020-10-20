@@ -104,7 +104,7 @@ const checkMissingData = (customer) => {
     customer.missingData = 1
   }
 
-  if (isBlank(customer.brand) || isBlank(customer.subBrand)) {
+  if (isBlank(customer.brand)) {
     customer.missingBrandUsing = 1
     customer.missingData = 1
   }
@@ -142,7 +142,7 @@ const checkDuplication = (customer) => {
       customers.gender, customers.optIn, customers.productType, customers.target,\
       customers.source, customers.batch\
     from customers\
-    WHERE (customers.phoneNumber = ?) OR (customers.source = "BrandMax" AND customers.parentPhoneNumber IS NOT NULL AND customers.parentPhoneNumber != "" AND customers.parentPhoneNumber = ?)',
+    WHERE (customers.phoneNumber IS NOT NULL AND customers.phoneNumber != "" AND customers.phoneNumber = ?) OR (customers.source = "BrandMax" AND customers.parentPhoneNumber IS NOT NULL AND customers.parentPhoneNumber != "" AND customers.parentPhoneNumber = ?)',
       customer.phoneNumber, customer.parentPhoneNumber, (err, res) => {
       if (err) {
         return reject(err);
