@@ -101,7 +101,7 @@ const readEachRow = (excelFile, outputWorkbook, batch, source, worksheet, rowNum
       return resolve(outputWorkbook);
     }
 
-    // console.log('Row: ' + rowNumber);
+    console.log('Row: ' + rowNumber);
 
     let dateOfBirth = row.getCell(dateOfBirthCol).value;
     let dayOfBirth, monthOfBirth, yearOfBirth, age;
