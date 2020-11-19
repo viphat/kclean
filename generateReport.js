@@ -52,6 +52,8 @@ export const generateReport = (batch, source, outputDirectory) => {
       }).then((rowData) => {
         return writeToTemplate(source, reportFilePath, rowData, 'L');
       }).then(() => {
+        return generateSheetValidDatabase(batch, source, reportFilePath);
+      }).then(() => {
         resolve(reportFilePath);
       })
     })
@@ -325,7 +327,6 @@ function buildReportFirstColumnType3(worksheet, rowIndex, text) {
   row.getCell('A').value = text;
 }
 
-
 function buildReportFirstColumnType2(worksheet, rowIndex, text) {
   let row = worksheet.getRow(rowIndex);
 
@@ -551,6 +552,340 @@ function writeToTemplate(source, reportFilePath, rowData, cellIndex) {
       row.getCell(cellIndex).value = rowData.TotalBase - rowData.HasError;
 
       resolve(workbook.xlsx.writeFile(reportFilePath));
+    });
+  });
+}
+
+const generateSheetValidDatabase = (batch, source, reportFilePath) => {
+  let workbook = new Excel.Workbook();
+
+  workbook.xlsx.readFile(reportFilePath).then((response) => {
+    let worksheet = workbook.addWorksheet('Valid Database for QC Calls', {});
+
+    worksheet.getColumn('A').width = 60;
+    worksheet.getRow(1).height = 50;
+    worksheet.getRow(4).height = 30;
+    worksheet.getRow(5).height = 40;
+
+    // Add Logo
+    let logo = workbook.addImage({
+      filename: logoPath,
+      extension: 'png'
+    });
+
+    worksheet.addImage(logo, {
+      tl: { col: 0, row: 0 },
+      br: { col: 1, row: 1 }
+    });
+
+    worksheet.getColumn('B').width = 30;
+    worksheet.getColumn('C').width = 30;
+
+    worksheet.getCell('B1').value = 'KOTEX CALL CENTER 2020 PROJECT';
+
+    worksheet.getCell('B1').font = {
+      bold: true, size: 26, name: 'Calibri', family: 2,
+      color: { argb: 'FFFF0000' }
+    };
+
+    worksheet.getCell('B1').alignment = { horizontal: 'center', vertical: 'middle' };
+    worksheet.mergeCells('B1:E1');
+
+    // A2
+    worksheet.getCell('B2').font = {
+      bold: true, size: 14, name: 'Calibri', family: 2,
+      underline: true,
+      color: { argb: 'FFFF0000' }
+    };
+
+    worksheet.getCell('B2').alignment = { horizontal: 'center', vertical: 'middle' };
+
+    worksheet.getCell('B2').value = 'Step 1: Database Clean - Summary Report';
+
+    // A4
+    worksheet.getCell('A5').border = {
+      left: { style: 'thin' },
+      right: { style: 'thin' },
+      top: { style: 'thin' },
+      bottom: { style: 'thin' }
+    };
+
+    worksheet.getCell('A5').font = {
+      bold: true, size: 14, name: 'Calibri', family: 2
+    };
+
+    worksheet.getCell('A5').alignment = { horizontal: 'center', vertical: 'middle' };
+
+    worksheet.getCell('A5').fill = {
+      type: 'pattern',
+      pattern: 'solid',
+      fgColor: { argb: 'FFFABF8F' },
+      bgColor: { indexed: 64 }
+    };
+
+    worksheet.getCell('A5').value = batch;
+
+    buildReportFirstColumnType3(worksheet, 6, 'Valid data received from ' + source);
+
+    buildReportFirstColumnType1(worksheet, 7, 'Total duplication removed with other Agency');
+
+    buildReportFirstColumnType1(worksheet, 8, 'Removed from Agency Focus MKT');
+
+    buildReportFirstColumnType1(worksheet, 9, 'Removed from Agency BrandMax');
+
+    buildReportFirstColumnType2(worksheet, 10, 'Valid database for QC Calls - ' + source);
+
+    fillDataForSheetValidDatabase(batch, source, 'All').then((rowData) => {
+      worksheet.getCell('B5').value = 'Total';
+
+      worksheet.getCell('B5').border = {
+        left: { style: 'thin' },
+        right: { style: 'thin' },
+        top: { style: 'thin' },
+        bottom: { style: 'thin' }
+      };
+
+      worksheet.getCell('B5').alignment = { horizontal: 'center', vertical: 'middle' };
+
+      worksheet.getCell('B5').fill = {
+        type: 'pattern',
+        pattern: 'solid',
+        fgColor: { argb: 'FFFABF8F' },
+        bgColor: { indexed: 64 }
+      };
+
+      worksheet.getCell('B6').value = rowData.TotalBase - rowData.HasError;
+
+      worksheet.getCell('B6').alignment = { vertical: 'middle' };
+
+      worksheet.getCell('B6').font = {
+        bold: true, size: 14, name: 'Calibri', family: 2,
+        color: { argb: 'FFFF0000' }
+      };
+
+      worksheet.getCell('B6').border = {
+        left: { style: 'thin' },
+        right: { style: 'thin' },
+        top: { style: 'thin' },
+        bottom: { style: 'thin' }
+      };
+
+      worksheet.getCell('B7').value = rowData.duplicatedCount;
+
+      worksheet.getCell('B7').border = {
+        left: { style: 'thin' },
+        right: { style: 'thin' },
+        top: { style: 'thin' },
+        bottom: { style: 'thin' }
+      };
+
+      worksheet.getCell('B7').font = {
+        size: 14, name: 'Calibri', family: 2
+      };
+
+      worksheet.getCell('B7').alignment = { horizontal: 'right', vertical: 'middle' };
+
+      if (source == 'Focus MKT') {
+        worksheet.getCell('B8').value = rowData.duplicatedCount;
+      } else {
+        worksheet.getCell('B8').value = 0;
+      }
+
+      worksheet.getCell('B8').border = {
+        left: { style: 'thin' },
+        right: { style: 'thin' },
+        top: { style: 'thin' },
+        bottom: { style: 'thin' }
+      };
+
+      worksheet.getCell('B8').font = {
+        size: 14, name: 'Calibri', family: 2
+      };
+
+      worksheet.getCell('B8').alignment = { horizontal: 'right', vertical: 'middle' };
+
+      if (source == 'BrandMax') {
+        worksheet.getCell('B9').value = rowData.duplicatedCount;
+      } else {
+        worksheet.getCell('B9').value = 0;
+      }
+
+      worksheet.getCell('B9').border = {
+        left: { style: 'thin' },
+        right: { style: 'thin' },
+        top: { style: 'thin' },
+        bottom: { style: 'thin' }
+      };
+
+      worksheet.getCell('B9').font = {
+        size: 14, name: 'Calibri', family: 2
+      };
+
+      worksheet.getCell('B9').alignment = { horizontal: 'right', vertical: 'middle' };
+
+      worksheet.getCell('B10').value = rowData.TotalBase - rowData.HasError - rowData.duplicatedCount;
+
+      worksheet.getCell('B10').border = {
+        left: { style: 'thin' },
+        right: { style: 'thin' },
+        top: { style: 'thin' },
+        bottom: { style: 'thin' }
+      };
+
+      worksheet.getCell('B10').font = {
+        bold: true, size: 14, name: 'Calibri', family: 2,
+        color: { theme: 0 }
+      };
+
+      worksheet.getCell('B10').alignment = { vertical: 'middle' };
+
+      worksheet.getCell('B10').fill = {
+        type: 'pattern',
+        pattern: 'solid',
+        fgColor: { argb: 'FF00B0F0' },
+        bgColor: { indexed: 64 }
+      };
+
+      fillDataForSheetValidDatabase(batch, source, 'ByBatch').then((rowData) => {
+        worksheet.getCell('C5').value = batch;
+
+        worksheet.getCell('C5').border = {
+          left: { style: 'thin' },
+          right: { style: 'thin' },
+          top: { style: 'thin' },
+          bottom: { style: 'thin' }
+        };
+
+        worksheet.getCell('C5').alignment = { horizontal: 'center', vertical: 'middle' };
+
+        worksheet.getCell('C5').fill = {
+          type: 'pattern',
+          pattern: 'solid',
+          fgColor: { argb: 'FFFABF8F' },
+          bgColor: { indexed: 64 }
+        };
+
+        worksheet.getCell('C6').value = rowData.TotalBase - rowData.HasError;
+
+        worksheet.getCell('C6').alignment = { vertical: 'middle' };
+
+        worksheet.getCell('C6').font = {
+          bold: true, size: 14, name: 'Calibri', family: 2,
+          color: { argb: 'FFFF0000' }
+        };
+
+        worksheet.getCell('C6').border = {
+          left: { style: 'thin' },
+          right: { style: 'thin' },
+          top: { style: 'thin' },
+          bottom: { style: 'thin' }
+        };
+
+        worksheet.getCell('C7').value = rowData.duplicatedCount;
+
+        worksheet.getCell('C7').border = {
+          left: { style: 'thin' },
+          right: { style: 'thin' },
+          top: { style: 'thin' },
+          bottom: { style: 'thin' }
+        };
+
+        worksheet.getCell('C7').font = {
+          size: 14, name: 'Calibri', family: 2
+        };
+
+        worksheet.getCell('C7').alignment = { horizontal: 'right', vertical: 'middle' };
+
+        if (source == 'Focus MKT') {
+          worksheet.getCell('C8').value = rowData.duplicatedCount;
+        } else {
+          worksheet.getCell('C8').value = 0;
+        }
+
+        worksheet.getCell('C8').border = {
+          left: { style: 'thin' },
+          right: { style: 'thin' },
+          top: { style: 'thin' },
+          bottom: { style: 'thin' }
+        };
+
+        worksheet.getCell('C8').font = {
+          size: 14, name: 'Calibri', family: 2
+        };
+
+        worksheet.getCell('C8').alignment = { horizontal: 'right', vertical: 'middle' };
+
+        if (source == 'BrandMax') {
+          worksheet.getCell('C9').value = rowData.duplicatedCount;
+        } else {
+          worksheet.getCell('C9').value = 0;
+        }
+
+        worksheet.getCell('C9').border = {
+          left: { style: 'thin' },
+          right: { style: 'thin' },
+          top: { style: 'thin' },
+          bottom: { style: 'thin' }
+        };
+
+        worksheet.getCell('C9').font = {
+          size: 14, name: 'Calibri', family: 2
+        };
+
+        worksheet.getCell('C9').alignment = { horizontal: 'right', vertical: 'middle' };
+
+        worksheet.getCell('C10').value = rowData.TotalBase - rowData.HasError - rowData.duplicatedCount;
+
+        worksheet.getCell('C10').border = {
+          left: { style: 'thin' },
+          right: { style: 'thin' },
+          top: { style: 'thin' },
+          bottom: { style: 'thin' }
+        };
+
+        worksheet.getCell('C10').font = {
+          bold: true, size: 14, name: 'Calibri', family: 2,
+          color: { theme: 0 }
+        };
+
+        worksheet.getCell('C10').alignment = { vertical: 'middle' };
+
+        worksheet.getCell('C10').fill = {
+          type: 'pattern',
+          pattern: 'solid',
+          fgColor: { argb: 'FF00B0F0' },
+          bgColor: { indexed: 64 }
+        };
+
+        workbook.xlsx.writeFile(reportFilePath);
+      });
+    });
+  });
+}
+
+function fillDataForSheetValidDatabase(batch, source, filterType) {
+  return new Promise((resolve, reject) => {
+    let baseQuery = 'SELECT COUNT(*) AS TotalBase,\
+      coalesce(SUM(hasError),0) AS HasError,\
+      coalesce(SUM(duplicatedPhoneBetweenPupilAndStudent),0) AS duplicatedCount\
+      FROM customers WHERE customers.source = $source';
+
+    let whereCondition = '';
+    let params = { $source: source };
+
+    if (batch !== '' && filterType !== 'All') {
+      params = _.merge(params, {
+        $batch: batch
+      });
+
+      whereCondition += " AND customers.batch = $batch";
+    }
+
+    db.get(baseQuery + ' ' + whereCondition, params, (err, row) => {
+      if (err) {
+        return reject(err);
+      }
+      resolve(row);
     });
   });
 }
