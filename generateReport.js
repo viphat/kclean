@@ -16,42 +16,6 @@ export const generateReport = (batch, outputDirectory) => {
       }).then((rowData) => {
         return writeToTemplate(reportFilePath, rowData, 'C');
       }).then(() => {
-        return fillData(batch, { provinceId: 1 });
-      }).then((rowData) => {
-        return writeToTemplate(reportFilePath, rowData, 'D');
-      }).then(() => {
-        return fillData(batch, { provinceId: 2 });
-      }).then((rowData) => {
-        return writeToTemplate(reportFilePath, rowData, 'E');
-      }).then(() => {
-        return fillData(batch, { provinceId: 3 });
-      }).then((rowData) => {
-        return writeToTemplate(reportFilePath, rowData, 'F');
-      }).then(() => {
-        return fillData(batch, { provinceId: 4 });
-      }).then((rowData) => {
-        return writeToTemplate(reportFilePath, rowData, 'G');
-      }).then(() => {
-        return fillData(batch, { provinceId: 5 });
-      }).then((rowData) => {
-        return writeToTemplate(reportFilePath, rowData, 'H');
-      }).then(() => {
-        return fillData(batch, { provinceId: 6 });
-      }).then((rowData) => {
-        return writeToTemplate(reportFilePath, rowData, 'I');
-      }).then(() => {
-        return fillData(batch, { groupId: 1 });
-      }).then((rowData) => {
-        return writeToTemplate(reportFilePath, rowData, 'J');
-      }).then(() => {
-        return fillData(batch, { groupId: 2 });
-      }).then((rowData) => {
-        return writeToTemplate(reportFilePath, rowData, 'K');
-      }).then(() => {
-        return fillData(batch, { groupId: 3 });
-      }).then((rowData) => {
-        return writeToTemplate(reportFilePath, rowData, 'L');
-      }).then(() => {
         resolve(reportFilePath);
       })
     })
@@ -71,10 +35,8 @@ const generateReportTemplate = (batch, outputDirectory) => {
     let workbook = new Excel.Workbook();
     let worksheet = workbook.addWorksheet('Abs', {});
 
-    worksheet.getColumn('A').width = 60;
+    worksheet.getColumn('A').width = 85;
     worksheet.getRow(1).height = 50;
-    worksheet.getRow(4).height = 30;
-    worksheet.getRow(5).height = 40;
 
     // Add Logo
     let logo = workbook.addImage({
@@ -87,20 +49,11 @@ const generateReportTemplate = (batch, outputDirectory) => {
       br: { col: 1, row: 1 }
     });
 
-    worksheet.getColumn('B').width = 30;
-    worksheet.getColumn('C').width = 30;
-    worksheet.getColumn('D').width = 30;
-    worksheet.getColumn('E').width = 30;
-    worksheet.getColumn('F').width = 30;
-    worksheet.getColumn('G').width = 30;
-    worksheet.getColumn('H').width = 30;
-    worksheet.getColumn('I').width = 30;
-    worksheet.getColumn('J').width = 30;
-    worksheet.getColumn('K').width = 30;
-    worksheet.getColumn('L').width = 30;
+    worksheet.getColumn('B').width = 25;
+    worksheet.getColumn('C').width = 25;
     // A1
 
-    worksheet.getCell('B1').value = 'KOTEX CALL CENTER 2020 PROJECT';
+    worksheet.getCell('B1').value = 'OPPO PROJECT';
 
     worksheet.getCell('B1').font = {
       bold: true, size: 27, name: 'Calibri', family: 2,
@@ -122,77 +75,51 @@ const generateReportTemplate = (batch, outputDirectory) => {
     worksheet.getCell('B2').value = 'Step 1: Database Clean';
 
     // A4
-    worksheet.getCell('A5').border = {
+    worksheet.getCell('A4').border = {
       left: { style: 'thin' },
       right: { style: 'thin' },
       top: { style: 'thin' },
       bottom: { style: 'thin' }
     }
 
-    worksheet.getCell('A5').font = {
+    worksheet.getCell('A4').font = {
       bold: true, size: 14, name: 'Calibri', family: 2
     }
 
-    worksheet.getCell('A5').alignment = { horizontal: 'center', vertical: 'middle' };
+    worksheet.getCell('A4').alignment = { horizontal: 'center', vertical: 'middle' };
 
-    worksheet.getCell('A5').fill = {
+    worksheet.getCell('A4').fill = {
       type: 'pattern',
       pattern: 'solid',
       fgColor: { argb: 'FFFABF8F' },
       bgColor: { indexed: 64 }
     };
 
-    worksheet.getCell('A5').value = batch;
+    worksheet.getCell('A4').value = batch;
 
     // A6, A27
-    buildReportFirstColumnType3(worksheet, 6, 'Raw data received from Agency');
-    buildReportFirstColumnType3(worksheet, 27, 'Valid database (value) - base all');
+    buildReportFirstColumnType3(worksheet, 5, 'Raw data received from Agency');
+    buildReportFirstColumnType3(worksheet, 13, 'Valid database (value) - base all');
 
     // A7, A14, A21
-    buildReportFirstColumnType2(worksheet, 7, 'Data missing');
-    buildReportFirstColumnType2(worksheet, 14, 'Duplicated Data (Checking vs. total database since 1st week)');
-    buildReportFirstColumnType2(worksheet, 21, 'Illogical data');
+    buildReportFirstColumnType2(worksheet, 6, 'Phone number missing (column C=blank)');
+    buildReportFirstColumnType2(worksheet, 7, 'Duplicated Phone (Checking vs. total database all projects, column C)');
+    buildReportFirstColumnType2(worksheet, 10, 'Illogical Phone (column C)');
 
     // A8 - A13, A15 - A20, A22-A25
-    buildReportFirstColumnType1(worksheet, 8, "Respondent's name");
-    buildReportFirstColumnType1(worksheet, 9, "Living city");
-    buildReportFirstColumnType1(worksheet, 10, "Contact information");
-    buildReportFirstColumnType1(worksheet, 11, "Age");
-    buildReportFirstColumnType1(worksheet, 12, "School name");
-    buildReportFirstColumnType1(worksheet, 13, "Brand using");
-    buildReportFirstColumnType1(worksheet, 15, "Duplication Pupil/ Student");
-    buildReportFirstColumnType1(worksheet, 16, "Duplication Pupil/ Others");
-    buildReportFirstColumnType1(worksheet, 17, "Duplication Student/ Others");
-    buildReportFirstColumnType1(worksheet, 18, "Duplication between Pupil");
-    buildReportFirstColumnType1(worksheet, 19, "Duplication between Student");
-    buildReportFirstColumnType1(worksheet, 20, "Duplication between Others");
-    buildReportFirstColumnType1(worksheet, 22, "Illogical phone number format");
-    buildReportFirstColumnType1(worksheet, 23, "Illogical age format (not 2 digit)");
-    buildReportFirstColumnType1(worksheet, 24, "Pupil but <2001 (more than 20 years old)");
-    buildReportFirstColumnType1(worksheet, 25, "Student but >2002 (<18 years old) or <1996 (>24 years old)");
-    buildReportFirstColumnType1(worksheet, 26, "Illogical age of Others (<1960)");
+    buildReportFirstColumnType1(worksheet, 8, "Duplicated within same model/ product (same data in column F)");
+    buildReportFirstColumnType1(worksheet, 9, "Duplicated with previous model/ product (different data in column F)");
+    buildReportFirstColumnType1(worksheet, 11, "Illogical phone number format (smaller/ higher than 10 digits)");
+    buildReportFirstColumnType1(worksheet, 12, "Illogical phone providers (10 digits but not 03x, 05x, 07x, 08x, 09x)");
     // Done 1st Col
 
-    // Row 4 - D4, K4, P4, S4
-    buildReportRow4(worksheet, 'D', 'D4:I4', 'Break-down by city');
-    buildReportRow4(worksheet, 'J', 'J4:L4', 'Target');
-
-    // // Row 5, B4-T4
+    // Row 5, B4-T4
     buildReportRow5(worksheet, 'B', 'Total Project');
     buildReportRow5(worksheet, 'C', 'Total ' + batch);
-    buildReportRow5(worksheet, 'D', 'Hồ Chí Minh');
-    buildReportRow5(worksheet, 'E', 'Cần  Thơ');
-    buildReportRow5(worksheet, 'F', 'Vĩnh Long');
-    buildReportRow5(worksheet, 'G', 'Đồng Nai');
-    buildReportRow5(worksheet, 'H', 'Đà Nẵng');
-    buildReportRow5(worksheet, 'I', 'Huế');
-    buildReportRow5(worksheet, 'J', 'Pupil/ Học sinh');
-    buildReportRow5(worksheet, 'K', 'Student/ Sinh viên');
-    buildReportRow5(worksheet, 'L', 'Others/ Khác');
 
     // Data
-    let colArr = ['B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L'];
-    let rowArr = [6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27];
+    let colArr = ['B', 'C'];
+    let rowArr = [5, 6, 7, 8, 9, 10, 11, 12, 13];
 
     for (let rowArrIndex = 0; rowArrIndex < rowArr.length; rowArrIndex += 1) {
       for (let colArrIndex = 0; colArrIndex < colArr.length; colArrIndex += 1 ) {
@@ -209,7 +136,7 @@ const generateReportTemplate = (batch, outputDirectory) => {
 }
 
 function buildReportRow5(worksheet, cellIndex, text) {
-  let row = worksheet.getRow(5);
+  let row = worksheet.getRow(4);
   let fgColor = { theme: 0, tint: -0.1499984740745262 };
 
   if (cellIndex == 'B') {
@@ -384,11 +311,11 @@ function buildDataRow(worksheet, rowIndex, cellIndex) {
   let bold = false;
   let color = { argb: 'FF000000' };
 
-  if (rowIndex == 6 || rowIndex == 7 || rowIndex == 14 || rowIndex == 21 || rowIndex == 27) {
+  if (rowIndex == 5 || rowIndex == 6 || rowIndex == 7 || rowIndex == 10 || rowIndex == 13) {
     bold = true;
   }
 
-  if (rowIndex == 7 || rowIndex == 14 || rowIndex == 21) {
+  if (rowIndex == 6 || rowIndex == 7 || rowIndex == 10) {
     row.getCell(cellIndex).fill = {
       type: 'pattern',
       pattern: 'solid',
@@ -397,7 +324,7 @@ function buildDataRow(worksheet, rowIndex, cellIndex) {
     };
   }
 
-  if (rowIndex == 27) {
+  if (rowIndex == 13) {
     row.getCell(cellIndex).fill = {
       type: 'pattern',
       pattern: 'solid',
@@ -406,11 +333,11 @@ function buildDataRow(worksheet, rowIndex, cellIndex) {
     };
   }
 
-  if (rowIndex == 6) {
+  if (rowIndex == 5) {
     color = { argb: 'FFFF0000' };
   }
 
-  if (rowIndex == 7 || rowIndex == 14 || rowIndex == 21 || rowIndex == 27) {
+  if (rowIndex == 6 || rowIndex == 7 || rowIndex == 10 || rowIndex == 13) {
     color = { theme: 0 };
   }
 
@@ -435,41 +362,21 @@ function fillData(batch, filterType) {
   return new Promise((resolve, reject) => {
     let baseQuery = 'SELECT COUNT(*) AS TotalBase, coalesce(SUM(hasError),0) AS HasError,\
     coalesce(SUM(missingData),0) AS MissingData,\
-    coalesce(SUM(missingName),0) AS MissingName, coalesce(SUM(missingLivingCity),0) AS MissingLivingCity,\
-    coalesce(SUM(missingContactInformation),0) AS MissingContactInformation, \
-    coalesce(SUM(missingAge),0) As MissingAge, \
-    coalesce(SUM(missingSchoolName),0) AS MissingSchoolName, \
-    coalesce(SUM(missingBrandUsing),0) AS MissingBrandUsing, \
-    coalesce(SUM(illogicalData),0) As IllogicalData, \
-    coalesce(SUM(illogicalPhone),0) AS IllogicalPhone,\
-    coalesce(SUM(illogicalAge),0) AS IllogicalAge,\
-    coalesce(SUM(illogicalAgePupil),0) AS IllogicalAgePupil,\
-    coalesce(SUM(illogicalAgeStudent),0) AS IllogicalAgeStudent,\
-    coalesce(SUM(illogicalAgeOthers),0) AS IllogicalAgeOthers,\
+    coalesce(SUM(missingName),0) AS MissingName,\
+    coalesce(SUM(missingPhoneNumber),0) AS MissingPhoneNumber, \
+    coalesce(SUM(missingAddress),0) As MissingAddress, \
+    coalesce(SUM(missingModel),0) AS MissingModel, \
+    coalesce(SUM(illogicalPhone),0) AS IllogicalPhone, \
+    coalesce(SUM(illogicalPhoneFormat),0) AS IllogicalPhoneFormat, \
+    coalesce(SUM(illogicalPhoneProvider),0) AS IllogicalPhoneProvider, \
     coalesce(SUM(duplicatedPhone),0) As DuplicatedPhone, \
-    coalesce(SUM(duplicatedPhoneBetweenPupilAndStudent),0) As DuplicatedPhoneBetweenPupilAndStudent, \
-    coalesce(SUM(duplicatedPhoneBetweenPupilAndOthers),0) AS DuplicatedPhoneBetweenPupilAndOthers,\
-    coalesce(SUM(duplicatedPhoneBetweenStudentAndOthers),0) AS DuplicatedPhoneBetweenStudentAndOthers,\
-    coalesce(SUM(duplicatedPhoneWithinPupil),0) AS DuplicatedPhoneWithinPupil,\
-    coalesce(SUM(duplicatedPhoneWithinStudent),0) AS DuplicatedPhoneWithinStudent,\
-    coalesce(SUM(duplicatedPhoneWithinOthers),0) AS DuplicatedPhoneWithinOthers\
+    coalesce(SUM(duplicatedPhoneSameModel),0) As DuplicatedPhoneSameModel, \
+    coalesce(SUM(duplicatedPhoneDiffModel),0) As DuplicatedPhoneDiffModel \
     FROM customers'
 
     let whereCondition = '';
     let joinTable = '';
     let params = {};
-
-    if (filterType.groupId && filterType.groupId >= 1 && filterType.groupId <= 3){
-      whereCondition = 'WHERE customers.groupId = $groupId';
-      params = {
-        $groupId: filterType.groupId
-      }
-    } else if (filterType.provinceId !== undefined && filterType.provinceId !== null) {
-      whereCondition = 'WHERE customers.provinceId = $provinceId'
-      params = {
-        $provinceId: filterType.provinceId
-      }
-    }
 
     if (batch !== '' && filterType !== 'All') {
       params = _.merge(params, {
@@ -501,70 +408,31 @@ function writeToTemplate(reportFilePath, rowData, cellIndex) {
       let worksheet = workbook.getWorksheet(1);
       let row;
 
-      row = worksheet.getRow(6);
+      row = worksheet.getRow(5);
       row.getCell(cellIndex).value = rowData.TotalBase;
 
+      row = worksheet.getRow(6);
+      row.getCell(cellIndex).value = rowData.MissingPhoneNumber;
+
       row = worksheet.getRow(7);
-      row.getCell(cellIndex).value = rowData.MissingData;
-
-      row = worksheet.getRow(8);
-      row.getCell(cellIndex).value = rowData.MissingName;
-
-      row = worksheet.getRow(9);
-      row.getCell(cellIndex).value = rowData.MissingLivingCity;
-
-      row = worksheet.getRow(10);
-      row.getCell(cellIndex).value = rowData.MissingContactInformation;
-
-      row = worksheet.getRow(11);
-      row.getCell(cellIndex).value = rowData.MissingAge;
-
-      row = worksheet.getRow(12);
-      row.getCell(cellIndex).value = rowData.MissingSchoolName;
-
-      row = worksheet.getRow(13);
-      row.getCell(cellIndex).value = rowData.MissingBrandUsing;
-
-      row = worksheet.getRow(14);
       row.getCell(cellIndex).value = rowData.DuplicatedPhone;
 
-      row = worksheet.getRow(15);
-      row.getCell(cellIndex).value = rowData.DuplicatedPhoneBetweenPupilAndStudent;
+      row = worksheet.getRow(8);
+      row.getCell(cellIndex).value = rowData.DuplicatedPhoneSameModel;
 
-      row = worksheet.getRow(16);
-      row.getCell(cellIndex).value = rowData.DuplicatedPhoneBetweenPupilAndOthers;
+      row = worksheet.getRow(9);
+      row.getCell(cellIndex).value = rowData.DuplicatedPhoneDiffModel;
 
-      row = worksheet.getRow(17);
-      row.getCell(cellIndex).value = rowData.DuplicatedPhoneBetweenStudentAndOthers;
-
-      row = worksheet.getRow(18);
-      row.getCell(cellIndex).value = rowData.DuplicatedPhoneWithinPupil;
-
-      row = worksheet.getRow(19);
-      row.getCell(cellIndex).value = rowData.DuplicatedPhoneWithinStudent;
-
-      row = worksheet.getRow(20);
-      row.getCell(cellIndex).value = rowData.DuplicatedPhoneWithinOthers;
-
-      row = worksheet.getRow(21);
-      row.getCell(cellIndex).value = rowData.IllogicalData;
-
-      row = worksheet.getRow(22);
+      row = worksheet.getRow(10);
       row.getCell(cellIndex).value = rowData.IllogicalPhone;
 
-      row = worksheet.getRow(23);
-      row.getCell(cellIndex).value = rowData.IllogicalAge;
+      row = worksheet.getRow(11);
+      row.getCell(cellIndex).value = rowData.IllogicalPhoneFormat;
 
-      row = worksheet.getRow(24);
-      row.getCell(cellIndex).value = rowData.IllogicalAgePupil;
+      row = worksheet.getRow(12);
+      row.getCell(cellIndex).value = rowData.IllogicalPhoneProvider;
 
-      row = worksheet.getRow(25);
-      row.getCell(cellIndex).value = rowData.IllogicalAgeStudent;
-
-      row = worksheet.getRow(26);
-      row.getCell(cellIndex).value = rowData.IllogicalAgeOthers;
-
-      row = worksheet.getRow(27);
+      row = worksheet.getRow(13);
       row.getCell(cellIndex).value = rowData.TotalBase - rowData.HasError;
 
       resolve(workbook.xlsx.writeFile(reportFilePath));

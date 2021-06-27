@@ -6,38 +6,21 @@ import { db } from './database';
 import { createCustomer } from './createCustomer'
 import { buildExcelTemplate } from './buildExcelTemplate'
 
-const dataBeginRow = 4
+const dataBeginRow = 2
 const indexCol = 1
-const areaCol = 2
-const provinceCol = 3
-const schoolNameCol = 4
-const nameCol = 5
-const yearOfBirthCol = 6
-const phoneNumberCol = 7
-const parentPhoneNumberCol = 8
-const facebookCol = 9
-const emailCol = 10
-const kotexCol = 11
-const dianaCol = 12
-const laurierCol = 13
-const whisperCol = 14
-const othersCol = 15
-const notesCol = 16
-const createdAtCol = 17
-const receivedGiftCol = 18
-const groupNameCol = 19
+const nameCol = 2
+const phoneNumberCol = 3
+const addressCol = 4
+const cityCol = 5
+const modelCol = 6
 
 const isEmptyRow = (row) => {
-  if (row.getCell(nameCol).value === null     &&
-      row.getCell(schoolNameCol).value === null      &&
-      row.getCell(areaCol).value === null      &&
-      row.getCell(provinceCol).value === null      &&
+  if (row.getCell(indexCol).value === null     &&
+      row.getCell(nameCol).value === null      &&
       row.getCell(phoneNumberCol).value === null         &&
-      row.getCell(groupNameCol).value === null           &&
-      row.getCell(indexCol).value === null            &&
-      row.getCell(createdAtCol).value === null            &&
-      row.getCell(receivedGiftCol).value === null
-    ) {
+      row.getCell(addressCol).value === null           &&
+      row.getCell(cityCol).value === null            &&
+      row.getCell(modelCol).value === null) {
     // Empty Row
     return true
   }
@@ -97,64 +80,28 @@ const readEachRow = (excelFile, outputWorkbook, batch, worksheet, rowNumber) => 
       return resolve(outputWorkbook);
     }
 
-    let yearOfBirth = row.getCell(yearOfBirthCol).value
-    let currentYear = new Date().getFullYear()
-    let age;
-    if (yearOfBirth) {
-      age = currentYear - parseInt(yearOfBirth)
-    }
-
     let customer = {
-      areaName: row.getCell(areaCol).value,
-      provinceName: row.getCell(provinceCol).value,
-      schoolName: row.getCell(schoolNameCol).value,
       name: row.getCell(nameCol).value,
-      yearOfBirth: yearOfBirth,
-      age: age,
       phoneNumber: row.getCell(phoneNumberCol).value,
-      parentPhoneNumber: row.getCell(parentPhoneNumberCol).value,
-      facebook: row.getCell(facebookCol).value,
-      email: row.getCell(emailCol).value,
-      kotexData: row.getCell(kotexCol).value,
-      dianaData: row.getCell(dianaCol).value,
-      laurierData: row.getCell(laurierCol).value,
-      whisperData: row.getCell(whisperCol).value,
-      othersData: row.getCell(othersCol).value,
-      notes: row.getCell(notesCol).value,
-      createdAt: row.getCell(createdAtCol).value,
-      receivedGift: row.getCell(receivedGiftCol).value,
-      groupName: row.getCell(groupNameCol).value,
+      address: row.getCell(addressCol).value,
+      city: row.getCell(cityCol).value,
+      model: row.getCell(modelCol).value,
       batch: batch
     }
-
-    customer
 
     createCustomer(customer).then((response) => {
       customer = response;
       let missingData = customer.missingData === 1;
-      let illogicalData = customer.illogicalData === 1;
+      let illogicalData = customer.illogicalPhone === 1;
       let duplicateData = customer.duplicatedPhone === 1;
 
       let rowData = [
         customer.customerId,
-        customer.areaName,
-        customer.provinceName,
-        customer.schoolName,
         customer.name,
-        customer.yearOfBirth,
         customer.phoneNumber,
-        customer.parentPhoneNumber,
-        customer.facebook,
-        customer.email,
-        customer.kotexData,
-        customer.dianaData,
-        customer.laurierData,
-        customer.whisperData,
-        customer.othersData,
-        customer.notes,
-        customer.createdAt,
-        customer.receivedGift,
-        customer.groupName
+        customer.address,
+        customer.city,
+        customer.model
       ];
 
       let outputSheetName = 'Valid';
@@ -164,31 +111,17 @@ const readEachRow = (excelFile, outputWorkbook, batch, worksheet, rowNumber) => 
         outputSheetName = 'Duplication';
       }
 
-
       if (duplicateData == true) {
         var duplicatedWith
         duplicatedWith = customer.duplicatedWith;
 
         var duplicatedRow = [
           duplicatedWith.customerId,
-          duplicatedWith.areaName,
-          duplicatedWith.provinceName,
-          duplicatedWith.schoolName,
           duplicatedWith.name,
-          duplicatedWith.yearOfBirth,
           duplicatedWith.phoneNumber,
-          duplicatedWith.parentPhoneNumber,
-          duplicatedWith.facebook,
-          duplicatedWith.email,
-          duplicatedWith.kotexData,
-          duplicatedWith.dianaData,
-          duplicatedWith.laurierData,
-          duplicatedWith.whisperData,
-          duplicatedWith.othersData,
-          duplicatedWith.notes,
-          duplicatedWith.createdAt,
-          duplicatedWith.receivedGift,
-          duplicatedWith.groupName,
+          duplicatedWith.address,
+          duplicatedWith.city,
+          duplicatedWith.model,
           duplicatedWith.batch
         ]
 
@@ -198,10 +131,10 @@ const readEachRow = (excelFile, outputWorkbook, batch, worksheet, rowNumber) => 
           writeToFile(outputWorkbook, outputSheetName, rowData).then((workbook) => {
             if (rowNumber % 1000 === 0) {
               setTimeout(function(){
-                resolve(readEachRow(excelFile, workbook, batch, worksheet, rowNumber+1));
+                resolve(readEachRow(excelFile, workbook, batch, worksheet, rowNumber + 1));
               }, 0);
             } else {
-              resolve(readEachRow(excelFile, workbook, batch, worksheet, rowNumber+1));
+              resolve(readEachRow(excelFile, workbook, batch, worksheet, rowNumber + 1));
             }
           });
         });
@@ -253,62 +186,10 @@ export const writeToFile = (outputWorkbook, outputSheetName, rowData) => {
     row.getCell(6).border = row.getCell(1).border;
     row.getCell(6).alignment = row.getCell(1).alignment;
 
-    row.getCell(7).font = row.getCell(1).font;
-    row.getCell(7).border = row.getCell(1).border;
-    row.getCell(7).alignment = row.getCell(1).alignment;
-
-    row.getCell(8).font = row.getCell(1).font;
-    row.getCell(8).border = row.getCell(1).border;
-    row.getCell(8).alignment = row.getCell(1).alignment;
-
-    row.getCell(9).font = row.getCell(1).font;
-    row.getCell(9).border = row.getCell(1).border;
-    row.getCell(9).alignment = row.getCell(1).alignment;
-
-    row.getCell(10).font = row.getCell(1).font;
-    row.getCell(10).border = row.getCell(1).border;
-    row.getCell(10).alignment = row.getCell(1).alignment;
-
-    row.getCell(11).font = row.getCell(1).font;
-    row.getCell(11).border = row.getCell(1).border;
-    row.getCell(11).alignment = row.getCell(1).alignment;
-
-    row.getCell(12).font = row.getCell(1).font;
-    row.getCell(12).border = row.getCell(1).border;
-    row.getCell(12).alignment = row.getCell(1).alignment;
-
-    row.getCell(13).font = row.getCell(1).font;
-    row.getCell(13).border = row.getCell(1).border;
-    row.getCell(13).alignment = row.getCell(1).alignment;
-
-    row.getCell(14).font = row.getCell(1).font;
-    row.getCell(14).border = row.getCell(1).border;
-    row.getCell(14).alignment = row.getCell(1).alignment;
-
-    row.getCell(15).font = row.getCell(1).font;
-    row.getCell(15).border = row.getCell(1).border;
-    row.getCell(15).alignment = row.getCell(1).alignment;
-
-    row.getCell(16).font = row.getCell(1).font;
-    row.getCell(16).border = row.getCell(1).border;
-    row.getCell(16).alignment = row.getCell(1).alignment;
-
-    row.getCell(17).font = row.getCell(1).font;
-    row.getCell(17).border = row.getCell(1).border;
-    row.getCell(17).alignment = row.getCell(1).alignment;
-
-    row.getCell(18).font = row.getCell(1).font;
-    row.getCell(18).border = row.getCell(1).border;
-    row.getCell(18).alignment = row.getCell(1).alignment;
-
-    row.getCell(19).font = row.getCell(1).font;
-    row.getCell(19).border = row.getCell(1).border;
-    row.getCell(19).alignment = row.getCell(1).alignment;
-
     if (outputSheetName.endsWith('Duplication')) {
-      row.getCell(20).font = row.getCell(1).font;
-      row.getCell(20).border = row.getCell(1).border;
-      row.getCell(20).alignment = row.getCell(1).alignment;
+      row.getCell(7).font = row.getCell(1).font;
+      row.getCell(7).border = row.getCell(1).border;
+      row.getCell(7).alignment = row.getCell(1).alignment;
     }
 
     resolve(workbook);
