@@ -7,8 +7,8 @@ const validTitle = 'DATA CLEANING RESULT - VALID LIST'
 const invalidTitle = 'DATA CLEANING RESULT - INVALID LIST'
 const invalidPhoneFormatTitle = 'DATA CLEANING RESULT - INVALID LIST - Phone Format'
 const invalidPhoneProviderTitle = 'DATA CLEANING RESULT - INVALID LIST - Phone Provider'
-const dupSameProductTitle = 'DATA CLEANING RESULT - DUPLICATION LIST - Same Product Name'
-const dupDiffProductTitle = 'DATA CLEANING RESULT - DUPLICATION LIST - Different Product Name'
+const dupSameProductTitle = 'DATA CLEANING RESULT - DUPLICATION LIST - Same Model'
+const dupDiffProductTitle = 'DATA CLEANING RESULT - DUPLICATION LIST - Different Model'
 const logoPath = './vendor/logo.png';
 
 export const buildExcelTemplate = (outputPath) => {
@@ -35,6 +35,7 @@ function writeTemplate(outputPath, workbook) {
     let sheetName = 'Valid';
     let worksheet = workbook.addWorksheet(sheetName, {});
     writeBaseTemplate(workbook, worksheet, validTitle);
+
     sheetName = 'Invalid';
     worksheet = workbook.addWorksheet(sheetName, {});
     writeBaseTemplate(workbook, worksheet, invalidTitle);
@@ -46,10 +47,10 @@ function writeTemplate(outputPath, workbook) {
     worksheet = workbook.addWorksheet(sheetName, {});
     writeBaseTemplate(workbook, worksheet, invalidPhoneProviderTitle);
 
-    sheetName = 'Duplication - Same Product Name';
+    sheetName = 'Duplicated - Same Model';
     worksheet = workbook.addWorksheet(sheetName, {});
     writeBaseTemplate(workbook, worksheet, dupSameProductTitle);
-    sheetName = 'Duplication - Different Product Name';
+    sheetName = 'Duplicated - Different Model';
     worksheet = workbook.addWorksheet(sheetName, {});
     writeBaseTemplate(workbook, worksheet, dupDiffProductTitle);
     // Write to File
@@ -145,7 +146,7 @@ function writeBaseTemplate(workbook, worksheet, title) {
   worksheet.getCell('F5').border = worksheet.getCell('A5').border;
   worksheet.getCell('F5').value = 'Phiên bản';
 
-  if (worksheet.name.endsWith('Duplication')) {
+  if (worksheet.name.endsWith('Duplicated - Same Model') || worksheet.name.endsWith('Duplicated - Different Model')) {
     worksheet.mergeCells('G5:G6');
     worksheet.getCell('G5').font = worksheet.getCell('A5').font;
     worksheet.getCell('G5').fill = worksheet.getCell('A5').fill;
