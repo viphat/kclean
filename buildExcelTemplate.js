@@ -5,7 +5,10 @@ import _ from 'lodash'
 
 const validTitle = 'DATA CLEANING RESULT - VALID LIST'
 const invalidTitle = 'DATA CLEANING RESULT - INVALID LIST'
-const duplicationTitle = 'DATA CLEANING RESULT - DUPLICATION LIST'
+const invalidPhoneFormatTitle = 'DATA CLEANING RESULT - INVALID LIST - Phone Format'
+const invalidPhoneProviderTitle = 'DATA CLEANING RESULT - INVALID LIST - Phone Provider'
+const dupSameProductTitle = 'DATA CLEANING RESULT - DUPLICATION LIST - Same Product Name'
+const dupDiffProductTitle = 'DATA CLEANING RESULT - DUPLICATION LIST - Different Product Name'
 const logoPath = './vendor/logo.png';
 
 export const buildExcelTemplate = (outputPath) => {
@@ -35,9 +38,20 @@ function writeTemplate(outputPath, workbook) {
     sheetName = 'Invalid';
     worksheet = workbook.addWorksheet(sheetName, {});
     writeBaseTemplate(workbook, worksheet, invalidTitle);
-    sheetName = 'Duplication';
+
+    sheetName = 'Invalid - Phone Format';
     worksheet = workbook.addWorksheet(sheetName, {});
-    writeBaseTemplate(workbook, worksheet, duplicationTitle);
+    writeBaseTemplate(workbook, worksheet, invalidPhoneFormatTitle);
+    sheetName = 'Invalid - Phone Provider';
+    worksheet = workbook.addWorksheet(sheetName, {});
+    writeBaseTemplate(workbook, worksheet, invalidPhoneProviderTitle);
+
+    sheetName = 'Duplication - Same Product Name';
+    worksheet = workbook.addWorksheet(sheetName, {});
+    writeBaseTemplate(workbook, worksheet, dupSameProductTitle);
+    sheetName = 'Duplication - Different Product Name';
+    worksheet = workbook.addWorksheet(sheetName, {});
+    writeBaseTemplate(workbook, worksheet, dupDiffProductTitle);
     // Write to File
     workbook.xlsx.writeFile(outputPath).then(() => {
       resolve(workbook);

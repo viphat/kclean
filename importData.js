@@ -105,10 +105,19 @@ const readEachRow = (excelFile, outputWorkbook, batch, worksheet, rowNumber) => 
       ];
 
       let outputSheetName = 'Valid';
+
       if (missingData || illogicalData) {
-        outputSheetName = 'Invalid';
+        if (customer.illogicalPhoneFormat === 1) {
+          outputSheetName = 'Invalid - Phone Format';
+        } else if (customer.illogicalPhoneProvider === 1) {
+          outputSheetName = 'Invalid - Phone Provider';
+        }
       } else if (duplicateData === true) {
-        outputSheetName = 'Duplication';
+        if (customer.duplicatedPhoneSameModel === 1) {
+          outputSheetName = 'Duplication - Same Product Name';
+        } else {
+          outputSheetName = 'Duplication - Different Product Name';
+        }
       }
 
       if (duplicateData == true) {
@@ -186,7 +195,7 @@ export const writeToFile = (outputWorkbook, outputSheetName, rowData) => {
     row.getCell(6).border = row.getCell(1).border;
     row.getCell(6).alignment = row.getCell(1).alignment;
 
-    if (outputSheetName.endsWith('Duplication')) {
+    if (outputSheetName.endsWith('Duplication - Same Product Name') || outputSheetName.endsWith('Duplication - Different Product Name')) {
       row.getCell(7).font = row.getCell(1).font;
       row.getCell(7).border = row.getCell(1).border;
       row.getCell(7).alignment = row.getCell(1).alignment;
