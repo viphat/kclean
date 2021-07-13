@@ -15,6 +15,7 @@ const checkIllogicalData = (customer) => {
     } else {
       if (phone.length !== 10) {
         customer.illogicalPhoneFormat = 1;
+        customer.illogicalPhone = 1;
       } else {
         if (!phone.startsWith('02') && !phone.startsWith('03') && !phone.startsWith('05') && !phone.startsWith('07') && !phone.startsWith('08') && !phone.startsWith('09')) {
           customer.illogicalPhoneProvider = 1;
