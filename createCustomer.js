@@ -45,10 +45,10 @@ const checkMissingData = (customer) => {
     customer.missingData = 1
   }
 
-  if (isBlank(customer.address)) {
-    customer.missingAddress = 1
-    customer.missingData = 1
-  }
+  // if (isBlank(customer.address)) {
+  //   customer.missingAddress = 1
+  //   customer.missingData = 1
+  // }
 
   if (isBlank(customer.model)) {
     customer.missingModel = 1
