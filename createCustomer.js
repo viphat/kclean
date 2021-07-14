@@ -23,6 +23,9 @@ const checkIllogicalData = (customer) => {
         }
       }
     }
+  } else {
+    customer.illogicalPhoneFormat = 1;
+    customer.illogicalPhone = 1;
   }
 
   return customer;
@@ -35,25 +38,25 @@ const checkMissingData = (customer) => {
   customer.missingAddress = 0
   customer.missingModel = 0
 
-  if (isBlank(customer.name)) {
-    customer.missingName = 1
-    customer.missingData = 1
-  }
+  // if (isBlank(customer.name)) {
+  //   customer.missingName = 1
+  //   customer.missingData = 1
+  // }
 
-  if (isBlank(customer.phoneNumber)) {
-    customer.missingPhoneNumber = 1
-    customer.missingData = 1
-  }
+  // if (isBlank(customer.phoneNumber)) {
+  //   customer.missingPhoneNumber = 1
+  //   customer.missingData = 1
+  // }
 
   // if (isBlank(customer.address)) {
   //   customer.missingAddress = 1
   //   customer.missingData = 1
   // }
 
-  if (isBlank(customer.model)) {
-    customer.missingModel = 1
-    customer.missingData = 1
-  }
+  // if (isBlank(customer.model)) {
+  //   customer.missingModel = 1
+  //   customer.missingData = 1
+  // }
 
   return customer;
 }

@@ -36,9 +36,9 @@ function writeTemplate(outputPath, workbook) {
     let worksheet = workbook.addWorksheet(sheetName, {});
     writeBaseTemplate(workbook, worksheet, validTitle);
 
-    sheetName = 'Invalid';
-    worksheet = workbook.addWorksheet(sheetName, {});
-    writeBaseTemplate(workbook, worksheet, invalidTitle);
+    // sheetName = 'Invalid';
+    // worksheet = workbook.addWorksheet(sheetName, {});
+    // writeBaseTemplate(workbook, worksheet, invalidTitle);
 
     sheetName = 'Invalid - Phone Format';
     worksheet = workbook.addWorksheet(sheetName, {});

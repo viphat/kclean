@@ -111,8 +111,6 @@ const readEachRow = (excelFile, outputWorkbook, batch, worksheet, rowNumber) => 
           outputSheetName = 'Invalid - Phone Format';
         } else if (customer.illogicalPhoneProvider === 1) {
           outputSheetName = 'Invalid - Phone Provider';
-        } else {
-          outputSheetName = 'Invalid';
         }
       } else if (duplicateData === true) {
         if (customer.duplicatedPhoneSameModel === 1) {
