@@ -10,7 +10,7 @@ import { buildExcelTemplate } from './buildExcelTemplate'
 // BrandMax - High School
 // Focus MKT - University
 
-const dataBeginRow = 2
+const dataBeginRow = 3
 const indexCol = 1
 const schoolNameCol = 2
 const provinceNameCol = 3
@@ -29,8 +29,8 @@ const genderCol = 15
 const districtIdCol = 16
 const provinceIdCol = 17
 const optInCol = 18
-const productTypeCol = 19
-const targetCol = 20
+// const productTypeCol = 19
+// const targetCol = 20
 
 const isEmptyRow = (row) => {
   if (row.getCell(indexCol).value === null     &&
@@ -190,8 +190,8 @@ const readEachRow = (excelFile, outputWorkbook, batch, source, worksheet, rowNum
       samplingProduct: row.getCell(samplingProductCol).value,
       gender: row.getCell(genderCol).value,
       optIn: row.getCell(optInCol).value,
-      productType: row.getCell(productTypeCol).value,
-      target: row.getCell(targetCol).value,
+      // productType: row.getCell(productTypeCol).value,
+      // target: row.getCell(targetCol).value,
       source: source,
       batch: batch
     }
@@ -222,8 +222,8 @@ const readEachRow = (excelFile, outputWorkbook, batch, source, worksheet, rowNum
         customer.provinceId,
         customer.optIn,
         customer.source,
-        customer.productType,
-        customer.target
+        // customer.productType,
+        // customer.target,
       ];
 
       let outputSheetName = 'Valid';
@@ -262,8 +262,8 @@ const readEachRow = (excelFile, outputWorkbook, batch, source, worksheet, rowNum
           duplicatedWith.provinceId,
           duplicatedWith.optIn,
           duplicatedWith.source,
-          duplicatedWith.productType,
-          duplicatedWith.target,
+          // duplicatedWith.productType,
+          // duplicatedWith.target,
           duplicatedWith.batch,
         ]
 
@@ -380,18 +380,18 @@ export const writeToFile = (outputWorkbook, outputSheetName, rowData) => {
     row.getCell(19).border = row.getCell(1).border;
     row.getCell(19).alignment = row.getCell(1).alignment;
 
-    row.getCell(20).font = row.getCell(1).font;
-    row.getCell(20).border = row.getCell(1).border;
-    row.getCell(20).alignment = row.getCell(1).alignment;
+    // row.getCell(20).font = row.getCell(1).font;
+    // row.getCell(20).border = row.getCell(1).border;
+    // row.getCell(20).alignment = row.getCell(1).alignment;
 
-    row.getCell(21).font = row.getCell(1).font;
-    row.getCell(21).border = row.getCell(1).border;
-    row.getCell(21).alignment = row.getCell(1).alignment;
+    // row.getCell(21).font = row.getCell(1).font;
+    // row.getCell(21).border = row.getCell(1).border;
+    // row.getCell(21).alignment = row.getCell(1).alignment;
 
     if (outputSheetName.endsWith('Duplication') || outputSheetName.endsWith('Duplication With Another Agency')) {
-      row.getCell(22).font = row.getCell(1).font;
-      row.getCell(22).border = row.getCell(1).border;
-      row.getCell(22).alignment = row.getCell(1).alignment;
+      row.getCell(20).font = row.getCell(1).font;
+      row.getCell(20).border = row.getCell(1).border;
+      row.getCell(20).alignment = row.getCell(1).alignment;
     }
 
     resolve(workbook);

@@ -102,7 +102,7 @@ const generateReportTemplate = (batch, source, outputDirectory) => {
     worksheet.getColumn('L').width = 30;
     // A1
 
-    worksheet.getCell('B1').value = 'KOTEX CALL CENTER 2020 PROJECT';
+    worksheet.getCell('B1').value = 'KOTEX CALL CENTER 2022 PROJECT';
 
     worksheet.getCell('B1').font = {
       bold: true, size: 27, name: 'Calibri', family: 2,
@@ -148,29 +148,29 @@ const generateReportTemplate = (batch, source, outputDirectory) => {
 
     // A6, A27
     buildReportFirstColumnType3(worksheet, 6, 'Raw data received from ' + source);
-    buildReportFirstColumnType3(worksheet, 21, 'Valid database (value) - base all');
+    buildReportFirstColumnType3(worksheet, 18, 'Valid database (value) - base all');
 
     // A7, A14, A21
-    buildReportFirstColumnType2(worksheet, 7, 'Data missing');
-    buildReportFirstColumnType2(worksheet, 16, 'Duplicated Data (Checking vs. total database since 1st week)');
-    buildReportFirstColumnType2(worksheet, 17, 'Illogical data');
+    buildReportFirstColumnType2(worksheet, 7, 'Data missing (=blank)');
+    buildReportFirstColumnType2(worksheet, 14, 'Duplicated Data (Checking vs. total database since 1st week)');
+    buildReportFirstColumnType2(worksheet, 15, 'Illogical data');
 
     // A8 - A13, A15 - A20, A22-A25
     buildReportFirstColumnType1(worksheet, 8, "Respondent's name (column G+H)");
-    buildReportFirstColumnType1(worksheet, 9, "Living city (column C+D)");
-    buildReportFirstColumnType1(worksheet, 10, "Contact information\nBRAND MAX/ HIGH SCHOOL: must have either phone number (column I), parents number (column J)\nFOCUS MKT/ UNIVERSITY: must have phone number (column I)");
-    buildReportFirstColumnType1(worksheet, 11, "Birth Year (column K)");
-    buildReportFirstColumnType1(worksheet, 12, "Sampling Date (column E)");
-    buildReportFirstColumnType1(worksheet, 13, "School Name (column B+C+D)");
-    buildReportFirstColumnType1(worksheet, 14, "Brand Using (column L)");
-    buildReportFirstColumnType1(worksheet, 15, "Sampling Type\nFOCUS MKT/ UNIVERSITY: column N\nBRAND MAX/ HIGH SCHOOL: ok to be blank");
-    buildReportFirstColumnType1(worksheet, 18, "Illogical phone number format (not 03x, 05x, 07x, 08x, 09x)");
-    buildReportFirstColumnType1(worksheet, 19, "Illogical Age - High School (not 2002 - 2006)");
-    buildReportFirstColumnType1(worksheet, 20, "Illogical Age - University (not 1998 - 2003)");
+    // buildReportFirstColumnType1(worksheet, 9, "Living city (column C+D)");
+    buildReportFirstColumnType1(worksheet, 9, "Contact information\nBRAND MAX/ HIGH SCHOOL: must have either phone number (column I), parents number (column J)\n");
+    buildReportFirstColumnType1(worksheet, 10, "Birth Year (column K)");
+    buildReportFirstColumnType1(worksheet, 11, "Sampling Date (column E)");
+    buildReportFirstColumnType1(worksheet, 12, "School Name (column B+C+D)");
+    buildReportFirstColumnType1(worksheet, 13, "Brand Using (column L)");
+    // buildReportFirstColumnType1(worksheet, 15, "Sampling Type\nFOCUS MKT/ UNIVERSITY: column N\nBRAND MAX/ HIGH SCHOOL: ok to be blank");
+    buildReportFirstColumnType1(worksheet, 16, "Illogical phone number format (not 03x, 05x, 07x, 08x, 09x)");
+    buildReportFirstColumnType1(worksheet, 17, "Illogical Age - High School (not 2004 - 2007)");
+    // buildReportFirstColumnType1(worksheet, 20, "Illogical Age - University (not 1998 - 2003)");
     // Done 1st Col
 
     // Row 4 - D4, K4, P4, S4
-    buildReportRow4(worksheet, 'D', 'D4:L4', 'Break-down by city');
+    buildReportRow4(worksheet, 'D', 'D4:L4', 'Break-down by city (Column C)');
 
     // // Row 5, B4-T4
     buildReportRow5(worksheet, 'B', 'Total Project');
@@ -187,7 +187,7 @@ const generateReportTemplate = (batch, source, outputDirectory) => {
 
     // Data
     let colArr = ['B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L'];
-    let rowArr = [6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21];
+    let rowArr = [6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18];
 
     for (let rowArrIndex = 0; rowArrIndex < rowArr.length; rowArrIndex += 1) {
       for (let colArrIndex = 0; colArrIndex < colArr.length; colArrIndex += 1 ) {
@@ -378,11 +378,11 @@ function buildDataRow(worksheet, rowIndex, cellIndex) {
   let bold = false;
   let color = { argb: 'FF000000' };
 
-  if (rowIndex == 6 || rowIndex == 7 || rowIndex == 16 || rowIndex == 17 || rowIndex == 21) {
+  if (rowIndex == 6 || rowIndex == 7 || rowIndex == 14 || rowIndex == 15 || rowIndex == 18) {
     bold = true;
   }
 
-  if (rowIndex == 7 || rowIndex == 16 || rowIndex == 17) {
+  if (rowIndex == 7 || rowIndex == 14 || rowIndex == 15) {
     row.getCell(cellIndex).fill = {
       type: 'pattern',
       pattern: 'solid',
@@ -391,7 +391,7 @@ function buildDataRow(worksheet, rowIndex, cellIndex) {
     };
   }
 
-  if (rowIndex == 21) {
+  if (rowIndex == 18) {
     row.getCell(cellIndex).fill = {
       type: 'pattern',
       pattern: 'solid',
@@ -404,7 +404,7 @@ function buildDataRow(worksheet, rowIndex, cellIndex) {
     color = { argb: 'FFFF0000' };
   }
 
-  if (rowIndex == 7 || rowIndex == 16 || rowIndex == 17 || rowIndex == 21) {
+  if (rowIndex == 7 || rowIndex == 14 || rowIndex == 15 || rowIndex == 18) {
     color = { theme: 0 };
   }
 
@@ -429,18 +429,16 @@ function fillData(batch, source, filterType) {
   return new Promise((resolve, reject) => {
     let baseQuery = 'SELECT COUNT(*) AS TotalBase, coalesce(SUM(hasError),0) AS HasError,\
     coalesce(SUM(missingData),0) AS MissingData,\
-    coalesce(SUM(missingName),0) AS MissingName, coalesce(SUM(missingLivingCity),0) AS MissingLivingCity,\
+    coalesce(SUM(missingName),0) AS MissingName,\
     coalesce(SUM(missingContactInformation),0) AS MissingContactInformation, \
     coalesce(SUM(missingAge),0) As MissingAge, \
     coalesce(SUM(missingSchoolName),0) AS MissingSchoolName, \
     coalesce(SUM(missingCollectedDate),0) AS MissingCollectedDate, \
     coalesce(SUM(missingBrandUsing),0) AS MissingBrandUsing, \
-    coalesce(SUM(missingSamplingType),0) AS MissingSamplingType, \
     coalesce(SUM(illogicalData),0) As IllogicalData, \
     coalesce(SUM(illogicalPhone),0) AS IllogicalPhone,\
     coalesce(SUM(illogicalAge),0) AS IllogicalAge,\
     coalesce(SUM(illogicalAgePupil),0) AS IllogicalAgePupil,\
-    coalesce(SUM(illogicalAgeStudent),0) AS IllogicalAgeStudent,\
     coalesce(SUM(duplicatedPhone),0) As DuplicatedPhone, \
     coalesce(SUM(duplicatedPhoneBetweenPupilAndStudent),0) As DuplicatedPhoneBetweenPupilAndStudent, \
     coalesce(SUM(duplicatedPhoneWithinPupil),0) AS DuplicatedPhoneWithinPupil,\
@@ -508,47 +506,47 @@ function writeToTemplate(source, reportFilePath, rowData, cellIndex) {
       row = worksheet.getRow(8);
       row.getCell(cellIndex).value = rowData.MissingName;
 
-      row = worksheet.getRow(9);
-      row.getCell(cellIndex).value = rowData.MissingLivingCity;
+      // row = worksheet.getRow(9);
+      // row.getCell(cellIndex).value = rowData.MissingLivingCity;
 
-      row = worksheet.getRow(10);
+      row = worksheet.getRow(9);
       row.getCell(cellIndex).value = rowData.MissingContactInformation;
 
-      row = worksheet.getRow(11);
+      row = worksheet.getRow(10);
       row.getCell(cellIndex).value = rowData.MissingAge;
 
-      row = worksheet.getRow(12);
+      row = worksheet.getRow(11);
       row.getCell(cellIndex).value = rowData.MissingCollectedDate;
 
-      row = worksheet.getRow(13);
+      row = worksheet.getRow(12);
       row.getCell(cellIndex).value = rowData.MissingSchoolName;
 
-      row = worksheet.getRow(14);
+      row = worksheet.getRow(13);
       row.getCell(cellIndex).value = rowData.MissingBrandUsing;
 
-      row = worksheet.getRow(15);
-      row.getCell(cellIndex).value = rowData.MissingSamplingType;
+      // row = worksheet.getRow(15);
+      // row.getCell(cellIndex).value = rowData.MissingSamplingType;
 
-      row = worksheet.getRow(16);
+      row = worksheet.getRow(14);
       if (source === 'BrandMax') {
         row.getCell(cellIndex).value = rowData.DuplicatedPhoneWithinPupil;
       } else {
         row.getCell(cellIndex).value = rowData.DuplicatedPhoneWithinStudent;
       }
 
-      row = worksheet.getRow(17);
+      row = worksheet.getRow(15);
       row.getCell(cellIndex).value = rowData.IllogicalData;
 
-      row = worksheet.getRow(18);
+      row = worksheet.getRow(16);
       row.getCell(cellIndex).value = rowData.IllogicalPhone;
 
-      row = worksheet.getRow(19);
+      row = worksheet.getRow(17);
       row.getCell(cellIndex).value = rowData.IllogicalAgePupil;
 
-      row = worksheet.getRow(20);
-      row.getCell(cellIndex).value = rowData.IllogicalAgeStudent;
+      // row = worksheet.getRow(20);
+      // row.getCell(cellIndex).value = rowData.IllogicalAgeStudent;
 
-      row = worksheet.getRow(21);
+      row = worksheet.getRow(18);
       row.getCell(cellIndex).value = rowData.TotalBase - rowData.HasError;
 
       resolve(workbook.xlsx.writeFile(reportFilePath));
@@ -581,7 +579,7 @@ const generateSheetValidDatabase = (batch, source, reportFilePath) => {
     worksheet.getColumn('B').width = 30;
     worksheet.getColumn('C').width = 30;
 
-    worksheet.getCell('B1').value = 'KOTEX CALL CENTER 2020 PROJECT';
+    worksheet.getCell('B1').value = 'KOTEX CALL CENTER 2022 PROJECT';
 
     worksheet.getCell('B1').font = {
       bold: true, size: 26, name: 'Calibri', family: 2,

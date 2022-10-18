@@ -41,7 +41,7 @@ const checkIllogicalData = (customer) => {
     } else {
       var age = parseInt(customer.age)
 
-      if (customer.source === 'BrandMax' && (age < 12 || age > 20)) {
+      if (customer.source === 'BrandMax' && (age < 14 || age > 20)) {
         customer.illogicalData = 1
         customer.illogicalAge = 1
         customer.illogicalAgePupil = 1
@@ -99,7 +99,7 @@ const checkMissingData = (customer) => {
     customer.missingData = 1
   }
 
-  if (isBlank(customer.schoolName)) {
+  if (isBlank(customer.schoolName) || customer.missingLivingCity == 1) {
     customer.missingSchoolName = 1
     customer.missingData = 1
   }
@@ -139,7 +139,7 @@ const checkDuplication = (customer) => {
       customers.schoolName, customers.dateOfBirth, customers.collectedDate, customers.collectedTime,\
       customers.phoneNumber, customers.parentPhoneNumber,\
       customers.brand, customers.subBrand, customers.samplingProduct,\
-      customers.gender, customers.optIn, customers.productType, customers.target,\
+      customers.gender, customers.optIn,\
       customers.source, customers.batch\
     from customers\
     WHERE (customers.phoneNumber IS NOT NULL AND customers.phoneNumber != "" AND customers.phoneNumber = ?) OR (customers.source = "BrandMax" AND customers.parentPhoneNumber IS NOT NULL AND customers.parentPhoneNumber != "" AND customers.parentPhoneNumber = ?)',
@@ -193,11 +193,13 @@ export const createCustomer = (customer) => {
       }
 
       db.run('INSERT INTO customers(\
-            customerIndex, firstName, lastName, districtId, provinceId, districtName, provinceName, schoolName, phoneNumber, parentPhoneNumber, collectedDate, collectedTime, dateOfBirth, yearOfBirth, brand, subBrand, samplingProduct, gender, optIn, productType, target, source, batch,\
+            customerIndex, firstName, lastName, districtId, provinceId, districtName, provinceName, schoolName, phoneNumber, parentPhoneNumber, collectedDate, collectedTime, dateOfBirth, yearOfBirth, brand, subBrand, samplingProduct, gender, optIn,\
+            source, batch,\
             hasError, missingData, missingName, missingLivingCity, missingSchoolName, missingContactInformation, missingAge, missingCollectedDate, missingBrandUsing, missingSamplingType,\
             illogicalData, illogicalPhone, illogicalAge, illogicalAgePupil, illogicalAgeStudent,\
             duplicatedPhone, duplicatedPhoneBetweenPupilAndStudent, duplicatedPhoneWithinPupil, duplicatedPhoneWithinStudent) \
-          VALUES($customerIndex, $firstName, $lastName, $districtId, $provinceId, $districtName, $provinceName, $schoolName, $phoneNumber, $parentPhoneNumber, $collectedDate, $collectedTime, $dateOfBirth, $yearOfBirth, $brand, $subBrand, $samplingProduct, $gender, $optIn, $productType, $target, $source, $batch,\
+          VALUES($customerIndex, $firstName, $lastName, $districtId, $provinceId, $districtName, $provinceName, $schoolName, $phoneNumber, $parentPhoneNumber, $collectedDate, $collectedTime, $dateOfBirth, $yearOfBirth, $brand, $subBrand, $samplingProduct, $gender, $optIn,\
+          $source, $batch,\
             $hasError, $missingData, $missingName, $missingLivingCity, $missingSchoolName, $missingContactInformation, $missingAge, $missingCollectedDate, $missingBrandUsing, $missingSamplingType,\
             $illogicalData, $illogicalPhone, $illogicalAge, $illogicalAgePupil, $illogicalAgeStudent,\
             $duplicatedPhone, $duplicatedPhoneBetweenPupilAndStudent, $duplicatedPhoneWithinPupil, $duplicatedPhoneWithinStudent);',
@@ -221,8 +223,6 @@ export const createCustomer = (customer) => {
         $samplingProduct: customer.samplingProduct,
         $gender: customer.gender,
         $optIn: customer.optIn,
-        $productType: customer.productType,
-        $target: customer.target,
         $source: customer.source,
         $batch: customer.batch,
         $hasError: customer.hasError,
