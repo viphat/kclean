@@ -261,7 +261,7 @@ const readEachRow = (excelFile, outputWorkbook, batch, source, worksheet, rowNum
           duplicatedWith.districtId,
           duplicatedWith.provinceId,
           duplicatedWith.optIn,
-          duplicatedWith.source,
+          // duplicatedWith.source,
           // duplicatedWith.productType,
           // duplicatedWith.target,
           duplicatedWith.batch,
@@ -376,9 +376,9 @@ export const writeToFile = (outputWorkbook, outputSheetName, rowData) => {
     row.getCell(18).border = row.getCell(1).border;
     row.getCell(18).alignment = row.getCell(1).alignment;
 
-    row.getCell(19).font = row.getCell(1).font;
-    row.getCell(19).border = row.getCell(1).border;
-    row.getCell(19).alignment = row.getCell(1).alignment;
+    // row.getCell(19).font = row.getCell(1).font;
+    // row.getCell(19).border = row.getCell(1).border;
+    // row.getCell(19).alignment = row.getCell(1).alignment;
 
     // row.getCell(20).font = row.getCell(1).font;
     // row.getCell(20).border = row.getCell(1).border;
@@ -388,10 +388,11 @@ export const writeToFile = (outputWorkbook, outputSheetName, rowData) => {
     // row.getCell(21).border = row.getCell(1).border;
     // row.getCell(21).alignment = row.getCell(1).alignment;
 
-    if (outputSheetName.endsWith('Duplication') || outputSheetName.endsWith('Duplication With Another Agency')) {
-      row.getCell(20).font = row.getCell(1).font;
-      row.getCell(20).border = row.getCell(1).border;
-      row.getCell(20).alignment = row.getCell(1).alignment;
+    // outputSheetName.endsWith('Duplication With Another Agency')
+    if (outputSheetName.endsWith('Duplication')  {
+      row.getCell(19).font = row.getCell(1).font;
+      row.getCell(19).border = row.getCell(1).border;
+      row.getCell(19).alignment = row.getCell(1).alignment;
     }
 
     resolve(workbook);
