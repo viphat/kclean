@@ -10,7 +10,7 @@ import { buildExcelTemplate } from './buildExcelTemplate'
 // BrandMax - High School
 // Focus MKT - University
 
-const dataBeginRow = 3
+const dataBeginRow = 2
 const indexCol = 1
 const schoolNameCol = 2
 const provinceNameCol = 3
@@ -77,6 +77,8 @@ const readFile = (excelFile, batch, source, outputDirectory) => {
     let workbook = new Excel.Workbook();
     workbook.xlsx.readFile(excelFile).then(() => {
       let worksheet = workbook.getWorksheet(1);
+      console.log(worksheet)
+
       let rowNumber = dataBeginRow;
       let outputPath = outputDirectory + '/' + batch + '_' + source.replace(/ /g, '_') + '_cleaned_data.xlsx';
 
