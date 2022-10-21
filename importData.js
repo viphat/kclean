@@ -112,17 +112,28 @@ const readEachRow = (excelFile, outputWorkbook, batch, source, worksheet, rowNum
 
     if (dateOfBirth !== null && dateOfBirth !== undefined) {
       if (dateOfBirth.toString() === 'Invalid Date') {
-        // dd/mm/yyyy
-        arr = row.getCell(dateOfBirthCol).value.toString().split('/')
+        const value = row.getCell(dateOfBirthCol).value
+        if (value.length === 4) {
+          if (parseInt(value, 10) >= 2000 && parseInt(value, 10) <= 2020) {
+            yearOfBirth = parseInt(value, 10)
+            dateOfBirth = value
+          } else {
+            return reject('#1 - Lỗi ngày tháng DOB ở dòng ' + rowNumber)
+          }
+        } else {
+          arr = value.toString().split('/')
 
-        if (arr.length !== 3) {
-          return reject('#1 - Lỗi ngày tháng DOB ở dòng ' + rowNumber)
+          if (arr.length !== 3) {
+            return reject('#1 - Lỗi ngày tháng DOB ở dòng ' + rowNumber)
+          }
+
+          dayOfBirth = padStart(arr[0], 2, 0);
+          monthOfBirth = padStart(arr[1], 2, 0);
+          yearOfBirth = (arr[2].toString().length === 2 ? ((parseInt(arr[2], 10) >= 90 && parseInt(arr[2], 10) <= 99) ? '19' : '20') + arr[2] : arr[2]);
+          dateOfBirth = new Date(yearOfBirth + '-' + monthOfBirth + '-' + dayOfBirth)
         }
-
-        dayOfBirth = padStart(arr[0], 2, 0);
-        monthOfBirth = padStart(arr[1], 2, 0);
-        yearOfBirth = (arr[2].toString().length === 2 ? ((parseInt(arr[2], 10) >= 90 && parseInt(arr[2], 10) <= 99) ? '19' : '20') + arr[2] : arr[2]);
       } else {
+        // dd/mm/yyyy
         dayOfBirth = dateOfBirth.getDate()
         monthOfBirth = dateOfBirth.getMonth() + 1
         yearOfBirth = dateOfBirth.getFullYear()
@@ -130,9 +141,9 @@ const readEachRow = (excelFile, outputWorkbook, batch, source, worksheet, rowNum
         if (monthOfBirth > 12) {
           return reject('#2 - Lỗi ngày tháng DOB ở dòng ' + rowNumber)
         }
-      }
 
-      dateOfBirth = new Date(yearOfBirth + '-' + monthOfBirth + '-' + dayOfBirth)
+        dateOfBirth = new Date(yearOfBirth + '-' + monthOfBirth + '-' + dayOfBirth)
+      }
 
       let currentYear = new Date().getFullYear()
 
