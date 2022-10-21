@@ -25,10 +25,10 @@ const dateOfBirthCol = 11
 const brandCol = 12
 const subBrandCol = 13
 const samplingProductCol = 14
-const genderCol = 15
-const districtIdCol = 16
-const provinceIdCol = 17
-const optInCol = 18
+// const genderCol = 15
+const districtIdCol = 15
+const provinceIdCol = 16
+const optInCol = 17
 // const productTypeCol = 19
 // const targetCol = 20
 
@@ -115,6 +115,8 @@ const readEachRow = (excelFile, outputWorkbook, batch, source, worksheet, rowNum
     if (dateOfBirth !== null && dateOfBirth !== undefined) {
       if (dateOfBirth.toString() === 'Invalid Date') {
         const value = row.getCell(dateOfBirthCol).value
+        console.log(value)
+        console.log(value.length === 4)
         if (value.length === 4) {
           if (parseInt(value, 10) >= 2000 && parseInt(value, 10) <= 2020) {
             yearOfBirth = parseInt(value, 10)
@@ -201,7 +203,7 @@ const readEachRow = (excelFile, outputWorkbook, batch, source, worksheet, rowNum
       brand: row.getCell(brandCol).value,
       subBrand: row.getCell(subBrandCol).value,
       samplingProduct: row.getCell(samplingProductCol).value,
-      gender: row.getCell(genderCol).value,
+      // gender: row.getCell(genderCol).value,
       optIn: row.getCell(optInCol).value,
       // productType: row.getCell(productTypeCol).value,
       // target: row.getCell(targetCol).value,
@@ -230,7 +232,7 @@ const readEachRow = (excelFile, outputWorkbook, batch, source, worksheet, rowNum
         customer.brand,
         customer.subBrand,
         customer.samplingProduct,
-        customer.gender,
+        // customer.gender,
         customer.districtId,
         customer.provinceId,
         customer.optIn,
@@ -270,7 +272,7 @@ const readEachRow = (excelFile, outputWorkbook, batch, source, worksheet, rowNum
           duplicatedWith.brand,
           duplicatedWith.subBrand,
           duplicatedWith.samplingProduct,
-          duplicatedWith.gender,
+          // duplicatedWith.gender,
           duplicatedWith.districtId,
           duplicatedWith.provinceId,
           duplicatedWith.optIn,

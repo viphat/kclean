@@ -64,7 +64,7 @@ function writeBaseTemplate(workbook, worksheet, title) {
   worksheet.getColumn('L').width = 13.8;
   worksheet.getColumn('M').width = 13.8;
   worksheet.getColumn('N').width = 24;
-  worksheet.getColumn('O').width = 10;
+  worksheet.getColumn('O').width = 16;
   worksheet.getColumn('P').width = 16;
   worksheet.getColumn('Q').width = 16;
   worksheet.getColumn('R').width = 16;
@@ -202,33 +202,33 @@ function writeBaseTemplate(workbook, worksheet, title) {
   worksheet.getCell('N5').border = worksheet.getCell('A5').border;
   worksheet.getCell('N5').value = 'Sampling Product'
 
+  // worksheet.mergeCells('O5:O6');
+  // worksheet.getCell('O5').font = worksheet.getCell('A5').font;
+  // worksheet.getCell('O5').fill = worksheet.getCell('A5').fill;
+  // worksheet.getCell('O5').alignment = worksheet.getCell('A5').alignment;
+  // worksheet.getCell('O5').border = worksheet.getCell('A5').border;
+  // worksheet.getCell('O5').value = 'Gender'
+
   worksheet.mergeCells('O5:O6');
   worksheet.getCell('O5').font = worksheet.getCell('A5').font;
   worksheet.getCell('O5').fill = worksheet.getCell('A5').fill;
   worksheet.getCell('O5').alignment = worksheet.getCell('A5').alignment;
   worksheet.getCell('O5').border = worksheet.getCell('A5').border;
-  worksheet.getCell('O5').value = 'Gender'
+  worksheet.getCell('O5').value = 'District ID'
 
   worksheet.mergeCells('P5:P6');
   worksheet.getCell('P5').font = worksheet.getCell('A5').font;
   worksheet.getCell('P5').fill = worksheet.getCell('A5').fill;
   worksheet.getCell('P5').alignment = worksheet.getCell('A5').alignment;
   worksheet.getCell('P5').border = worksheet.getCell('A5').border;
-  worksheet.getCell('P5').value = 'District ID'
+  worksheet.getCell('P5').value = 'Province ID'
 
   worksheet.mergeCells('Q5:Q6');
   worksheet.getCell('Q5').font = worksheet.getCell('A5').font;
   worksheet.getCell('Q5').fill = worksheet.getCell('A5').fill;
   worksheet.getCell('Q5').alignment = worksheet.getCell('A5').alignment;
   worksheet.getCell('Q5').border = worksheet.getCell('A5').border;
-  worksheet.getCell('Q5').value = 'Province ID'
-
-  worksheet.mergeCells('R5:R6');
-  worksheet.getCell('R5').font = worksheet.getCell('A5').font;
-  worksheet.getCell('R5').fill = worksheet.getCell('A5').fill;
-  worksheet.getCell('R5').alignment = worksheet.getCell('A5').alignment;
-  worksheet.getCell('R5').border = worksheet.getCell('A5').border;
-  worksheet.getCell('R5').value = 'Opt In'
+  worksheet.getCell('Q5').value = 'Opt In'
 
   // worksheet.mergeCells('S5:S6');
   // worksheet.getCell('S5').font = worksheet.getCell('A5').font;
@@ -254,12 +254,12 @@ function writeBaseTemplate(workbook, worksheet, title) {
 
   // || worksheet.name.endsWith('Duplication With Another Agency')
   if (worksheet.name.endsWith('Duplication')) {
-    worksheet.mergeCells('S5:S6');
-    worksheet.getCell('S5').font = worksheet.getCell('A5').font;
-    worksheet.getCell('S5').fill = worksheet.getCell('A5').fill;
-    worksheet.getCell('S5').alignment = worksheet.getCell('A5').alignment;
-    worksheet.getCell('S5').border = worksheet.getCell('A5').border;
-    worksheet.getCell('S5').value = 'Tuần';
+    worksheet.mergeCells('R5:R6');
+    worksheet.getCell('R5').font = worksheet.getCell('A5').font;
+    worksheet.getCell('R5').fill = worksheet.getCell('A5').fill;
+    worksheet.getCell('R5').alignment = worksheet.getCell('A5').alignment;
+    worksheet.getCell('R5').border = worksheet.getCell('A5').border;
+    worksheet.getCell('R5').value = 'Tuần';
   }
 
   // Add Logo

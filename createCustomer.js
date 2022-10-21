@@ -139,7 +139,7 @@ const checkDuplication = (customer) => {
       customers.schoolName, customers.dateOfBirth, customers.collectedDate, customers.collectedTime,\
       customers.phoneNumber, customers.parentPhoneNumber,\
       customers.brand, customers.subBrand, customers.samplingProduct,\
-      customers.gender, customers.optIn,\
+      customers.optIn,\
       customers.source, customers.batch\
     from customers\
     WHERE (customers.phoneNumber IS NOT NULL AND customers.phoneNumber != "" AND customers.phoneNumber = ?) OR (customers.source = "BrandMax" AND customers.parentPhoneNumber IS NOT NULL AND customers.parentPhoneNumber != "" AND customers.parentPhoneNumber = ?)',
@@ -193,12 +193,12 @@ export const createCustomer = (customer) => {
       }
 
       db.run('INSERT INTO customers(\
-            customerIndex, firstName, lastName, districtId, provinceId, districtName, provinceName, schoolName, phoneNumber, parentPhoneNumber, collectedDate, collectedTime, dateOfBirth, yearOfBirth, brand, subBrand, samplingProduct, gender, optIn,\
+            customerIndex, firstName, lastName, districtId, provinceId, districtName, provinceName, schoolName, phoneNumber, parentPhoneNumber, collectedDate, collectedTime, dateOfBirth, yearOfBirth, brand, subBrand, samplingProduct, optIn,\
             source, batch,\
             hasError, missingData, missingName, missingLivingCity, missingSchoolName, missingContactInformation, missingAge, missingCollectedDate, missingBrandUsing, missingSamplingType,\
             illogicalData, illogicalPhone, illogicalAge, illogicalAgePupil, illogicalAgeStudent,\
             duplicatedPhone, duplicatedPhoneBetweenPupilAndStudent, duplicatedPhoneWithinPupil, duplicatedPhoneWithinStudent) \
-          VALUES($customerIndex, $firstName, $lastName, $districtId, $provinceId, $districtName, $provinceName, $schoolName, $phoneNumber, $parentPhoneNumber, $collectedDate, $collectedTime, $dateOfBirth, $yearOfBirth, $brand, $subBrand, $samplingProduct, $gender, $optIn,\
+          VALUES($customerIndex, $firstName, $lastName, $districtId, $provinceId, $districtName, $provinceName, $schoolName, $phoneNumber, $parentPhoneNumber, $collectedDate, $collectedTime, $dateOfBirth, $yearOfBirth, $brand, $subBrand, $samplingProduct, $optIn,\
           $source, $batch,\
             $hasError, $missingData, $missingName, $missingLivingCity, $missingSchoolName, $missingContactInformation, $missingAge, $missingCollectedDate, $missingBrandUsing, $missingSamplingType,\
             $illogicalData, $illogicalPhone, $illogicalAge, $illogicalAgePupil, $illogicalAgeStudent,\
@@ -221,7 +221,6 @@ export const createCustomer = (customer) => {
         $brand: customer.brand,
         $subBrand: customer.subBrand,
         $samplingProduct: customer.samplingProduct,
-        $gender: customer.gender,
         $optIn: customer.optIn,
         $source: customer.source,
         $batch: customer.batch,
