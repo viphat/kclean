@@ -389,7 +389,7 @@ export const writeToFile = (outputWorkbook, outputSheetName, rowData) => {
     // row.getCell(21).alignment = row.getCell(1).alignment;
 
     // outputSheetName.endsWith('Duplication With Another Agency')
-    if (outputSheetName.endsWith('Duplication')  {
+    if (outputSheetName.endsWith('Duplication'))  {
       row.getCell(19).font = row.getCell(1).font;
       row.getCell(19).border = row.getCell(1).border;
       row.getCell(19).alignment = row.getCell(1).alignment;
