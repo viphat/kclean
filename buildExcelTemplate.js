@@ -68,6 +68,7 @@ function writeBaseTemplate(workbook, worksheet, title) {
   worksheet.getColumn('P').width = 16;
   worksheet.getColumn('Q').width = 16;
   worksheet.getColumn('R').width = 16;
+  worksheet.getColumn('S').width = 16;
 
   worksheet.getRow('5').height = 30;
 
@@ -244,22 +245,22 @@ function writeBaseTemplate(workbook, worksheet, title) {
   // worksheet.getCell('T5').border = worksheet.getCell('A5').border;
   // worksheet.getCell('T5').value = 'Loại'
 
-  // worksheet.mergeCells('U5:U6');
-  // worksheet.getCell('U5').font = worksheet.getCell('A5').font;
-  // worksheet.getCell('U5').fill = worksheet.getCell('A5').fill;
-  // worksheet.getCell('U5').alignment = worksheet.getCell('A5').alignment;
-  // worksheet.getCell('U5').border = worksheet.getCell('A5').border;
-  // worksheet.getCell('U5').value = 'Target'
+  worksheet.mergeCells('R5:R6');
+  worksheet.getCell('R5').font = worksheet.getCell('A5').font;
+  worksheet.getCell('R5').fill = worksheet.getCell('A5').fill;
+  worksheet.getCell('R5').alignment = worksheet.getCell('A5').alignment;
+  worksheet.getCell('R5').border = worksheet.getCell('A5').border;
+  worksheet.getCell('R5').value = 'FW'
   // End Table Headers
 
   // || worksheet.name.endsWith('Duplication With Another Agency')
   if (worksheet.name.endsWith('Duplication')) {
-    worksheet.mergeCells('R5:R6');
-    worksheet.getCell('R5').font = worksheet.getCell('A5').font;
-    worksheet.getCell('R5').fill = worksheet.getCell('A5').fill;
-    worksheet.getCell('R5').alignment = worksheet.getCell('A5').alignment;
-    worksheet.getCell('R5').border = worksheet.getCell('A5').border;
-    worksheet.getCell('R5').value = 'Tuần';
+    worksheet.mergeCells('S5:S6');
+    worksheet.getCell('S5').font = worksheet.getCell('A5').font;
+    worksheet.getCell('S5').fill = worksheet.getCell('A5').fill;
+    worksheet.getCell('S5').alignment = worksheet.getCell('A5').alignment;
+    worksheet.getCell('S5').border = worksheet.getCell('A5').border;
+    worksheet.getCell('S5').value = 'Tuần';
   }
 
   // Add Logo

@@ -30,7 +30,7 @@ const districtIdCol = 15
 const provinceIdCol = 16
 const optInCol = 17
 // const productTypeCol = 19
-// const targetCol = 20
+const targetCol = 18
 
 const isEmptyRow = (row) => {
   if (row.getCell(indexCol).value === null     &&
@@ -206,7 +206,7 @@ const readEachRow = (excelFile, outputWorkbook, batch, source, worksheet, rowNum
       // gender: row.getCell(genderCol).value,
       optIn: row.getCell(optInCol).value,
       // productType: row.getCell(productTypeCol).value,
-      // target: row.getCell(targetCol).value,
+      target: row.getCell(targetCol).value,
       source: source,
       batch: batch
     }
@@ -236,9 +236,9 @@ const readEachRow = (excelFile, outputWorkbook, batch, source, worksheet, rowNum
         customer.districtId,
         customer.provinceId,
         customer.optIn,
-        customer.source,
+        customer.target,
+        // customer.source,
         // customer.productType,
-        // customer.target,
       ];
 
       let outputSheetName = 'Valid';
@@ -278,7 +278,7 @@ const readEachRow = (excelFile, outputWorkbook, batch, source, worksheet, rowNum
           duplicatedWith.optIn,
           // duplicatedWith.source,
           // duplicatedWith.productType,
-          // duplicatedWith.target,
+          duplicatedWith.target,
           duplicatedWith.batch,
         ]
 
