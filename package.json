@@ -1,6 +1,6 @@
 {
   "dependencies": {
-    "electron": "^7.1.9",
+    "electron": "^18.3.7",
     "esm": "^3.2.25",
     "exceljs": "^3.5.0",
     "extract-zip": "^1.6.7",
