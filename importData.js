@@ -3,7 +3,7 @@ const fs = require('fs');
 const _ = require('lodash');
 const padStart = require('string.prototype.padstart');
 
-import { db } from './database';
+// import { db } from './database';
 import { createCustomer } from './createCustomer'
 import { buildExcelTemplate } from './buildExcelTemplate'
 
@@ -31,6 +31,8 @@ const provinceIdCol = 16
 const optInCol = 17
 // const productTypeCol = 19
 const targetCol = 18
+const khoiCol = 19
+const daidienCol = 20
 
 const isEmptyRow = (row) => {
   if (row.getCell(indexCol).value === null     &&
@@ -207,6 +209,8 @@ const readEachRow = (excelFile, outputWorkbook, batch, source, worksheet, rowNum
       optIn: row.getCell(optInCol).value,
       // productType: row.getCell(productTypeCol).value,
       target: row.getCell(targetCol).value,
+      khoi: row.getCell(khoiCol).value,
+      daidien: row.getCell(daidienCol).value,
       source: source,
       batch: batch
     }
@@ -237,6 +241,8 @@ const readEachRow = (excelFile, outputWorkbook, batch, source, worksheet, rowNum
         customer.provinceId,
         customer.optIn,
         customer.target,
+        customer.khoi,
+        customer.daidien,
         // customer.source,
         // customer.productType,
       ];
@@ -252,7 +258,6 @@ const readEachRow = (excelFile, outputWorkbook, batch, source, worksheet, rowNum
           outputSheetName = 'Duplication';
         }
       }
-
 
       if (duplicateData == true) {
         var duplicatedWith = customer.duplicatedWith;
@@ -279,6 +284,8 @@ const readEachRow = (excelFile, outputWorkbook, batch, source, worksheet, rowNum
           // duplicatedWith.source,
           // duplicatedWith.productType,
           duplicatedWith.target,
+          duplicatedWith.khoi,
+          duplicatedWith.daidien,
           duplicatedWith.batch,
         ]
 
@@ -391,13 +398,13 @@ export const writeToFile = (outputWorkbook, outputSheetName, rowData) => {
     row.getCell(18).border = row.getCell(1).border;
     row.getCell(18).alignment = row.getCell(1).alignment;
 
-    // row.getCell(19).font = row.getCell(1).font;
-    // row.getCell(19).border = row.getCell(1).border;
-    // row.getCell(19).alignment = row.getCell(1).alignment;
+    row.getCell(19).font = row.getCell(1).font;
+    row.getCell(19).border = row.getCell(1).border;
+    row.getCell(19).alignment = row.getCell(1).alignment;
 
-    // row.getCell(20).font = row.getCell(1).font;
-    // row.getCell(20).border = row.getCell(1).border;
-    // row.getCell(20).alignment = row.getCell(1).alignment;
+    row.getCell(20).font = row.getCell(1).font;
+    row.getCell(20).border = row.getCell(1).border;
+    row.getCell(20).alignment = row.getCell(1).alignment;
 
     // row.getCell(21).font = row.getCell(1).font;
     // row.getCell(21).border = row.getCell(1).border;
@@ -405,9 +412,9 @@ export const writeToFile = (outputWorkbook, outputSheetName, rowData) => {
 
     // outputSheetName.endsWith('Duplication With Another Agency')
     if (outputSheetName.endsWith('Duplication'))  {
-      row.getCell(19).font = row.getCell(1).font;
-      row.getCell(19).border = row.getCell(1).border;
-      row.getCell(19).alignment = row.getCell(1).alignment;
+      row.getCell(21).font = row.getCell(1).font;
+      row.getCell(21).border = row.getCell(1).border;
+      row.getCell(21).alignment = row.getCell(1).alignment;
     }
 
     resolve(workbook);

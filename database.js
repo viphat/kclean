@@ -5,12 +5,14 @@ export const db = new sqlite3.Database('db.sqlite3');
 
 export const setupDatabase = () => {
   db.serialize(()=>{
-    createTableProvinces();
-    createTableDistricts();
-    createTableCustomers();
+    // createTableProvinces();
+    // createTableDistricts();
+    // createTableCustomers();
+    addColumnsToCustomers();
   });
 
-  dialog.showMessageBox({type: 'info', title: 'Thông báo', message: 'Đã khởi tạo Database thành công, bạn có thể tiếp tục sử dụng ứng dụng.'});
+  // dialog.showMessageBox({type: 'info', title: 'Thông báo', message: 'Đã khởi tạo Database thành công, bạn có thể tiếp tục sử dụng ứng dụng.'});
+  dialog.showMessageBox({type: 'info', title: 'Thông báo', message: 'Thêm cột vào CSDL thành công, bạn có thể tiếp tục sử dụng ứng dụng.'});
 }
 
 export const importData = () => {
@@ -20,6 +22,14 @@ export const importData = () => {
   });
 
   dialog.showMessageBox({type: 'info', title: 'Thông báo', message: 'Import dữ liệu thành công.'});
+}
+
+function addColumnsToCustomers() {
+  db.run('ALTER TABLE customers\
+  ADD khoi TEXT');
+
+  db.run('ALTER TABLE customers\
+  ADD daidien TEXT');
 }
 
 function createTableProvinces() {
