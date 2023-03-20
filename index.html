@@ -2,7 +2,7 @@
 <html>
   <head>
     <meta charset="UTF-8">
-    <title>FEM CALL CENTER 2022 - Data Cleaning Tools</title>
+    <title>HANA CALL CENTER 2023 - Data Cleaning Tools</title>
     <!-- https://electronjs.org/docs/tutorial/security#csp-meta-tag -->
     <meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-inline';" />
 
@@ -15,7 +15,7 @@
       <div class="col-md-12" style='text-align: center; margin-bottom: 10px;'>
         <img src='vendor/logo.png' alt='Intage Vietnam' />
       </div>
-      <h3 class='text-warning'>FEM CALL CENTER 2022 - Data Cleaning Tools</h3>
+      <h3 class='text-warning'>HANA CALL CENTER 2023 - Data Cleaning Tools</h3>
       <div class='row'>
         <div class="col-md-12">
           <form class='form' class='form-horizontal' novalidate=''>
@@ -31,22 +31,6 @@
               <div class='col-sm-8'>
                 <button type='button' id='outputDirectory' class='btn-sm btn btn-info'>Select a Directory</button>
                 <span id='outputDirectoryLabel'></span>
-              </div>
-            </div>
-
-            <div class='form-group row'>
-              <label class='text-success control-label col-sm-4' for='txtSource'>Source</label>
-              <div class='col-sm-8'>
-                <!-- <div class="form-check-inline">
-                  <label class="form-check-label">
-                    <input type="radio" class="form-check-input" name="txtSource" value="Focus MKT" style="margin-right: 10px;">Focus MKT
-                  </label>
-                </div> -->
-                <div class="form-check-inline">
-                  <label class="form-check-label">
-                    <input type="radio" class="form-check-input" name="txtSource" value="BrandMax" style="margin-right: 10px;">BrandMax
-                  </label>
-                </div>
               </div>
             </div>
 
@@ -88,7 +72,7 @@
     </div>
 
   <script>
-    let inputFile, outputDirectory, isProcessing, batch, source;
+    let inputFile, outputDirectory, isProcessing, batch;
     const dialog = require('electron').remote.dialog
     var ipc = require('electron').ipcRenderer;
 
@@ -140,16 +124,10 @@
 
     function assignFormValues() {
       batch = document.getElementById('txtBatch').value;
-
-      if (document.querySelector('input[name="txtSource"]:checked') !== null) {
-        source = document.querySelector('input[name="txtSource"]:checked').value;
-      } else {
-        source = undefined;
-      }
     }
 
     function isFormInvalid() {
-      return outputDirectory === undefined || inputFile === undefined || batch === undefined || batch === null || batch === '' || source === undefined || source === null || source === ''
+      return outputDirectory === undefined || inputFile === undefined || batch === undefined || batch === null || batch === ''
     }
 
     document.getElementById('btnClearBatch').addEventListener('click', _ => {
@@ -157,11 +135,6 @@
 
       if (batch === undefined || batch === null || batch === '') {
         dialog.showErrorBox('Notification', 'You must fill in batch field before processing.');
-        return null;
-      }
-
-      if (source === undefined || source === null || source === '') {
-        dialog.showErrorBox('Notification', 'You must fill in source field before processing.');
         return null;
       }
 
@@ -173,11 +146,11 @@
       isProcessing = true;
       resetAlertAndShowSpinner();
 
-      ipc.send('clearCustomerData', { batch, source })
+      ipc.send('clearCustomerData', { batch })
 
       ipc.on('clearCustomerDataSuccessful', function(event, data){
         disableSpinner();
-        showSucceedBox('Đã xóa Data ' + source + ' của đợt ' + batch + ' thành công.');
+        showSucceedBox('Đã xóa Data của đợt ' + batch + ' thành công.');
       })
 
       ipc.on('clearCustomerDataFailed', function(event, errMessage){
@@ -205,7 +178,7 @@
       isProcessing = true;
       resetAlertAndShowSpinner();
 
-      ipc.send('importData', { batch, source, inputFile, outputDirectory })
+      ipc.send('importData', { batch, inputFile, outputDirectory })
 
       ipc.on('importDataSuccessful', (event, data) => {
         disableSpinner();
@@ -228,11 +201,6 @@
         return null;
       }
 
-      if (source === undefined || source === null || source === '') {
-        dialog.showErrorBox('Notification', 'You must fill in source field before processing.');
-        return null;
-      }
-
       if (isProcessing === true) {
         dialog.showErrorBox('Notification', 'Processing...');
         return null;
@@ -241,7 +209,7 @@
       isProcessing = true;
       resetAlertAndShowSpinner();
 
-      ipc.send('generateReport', { batch, source, outputDirectory })
+      ipc.send('generateReport', { batch, outputDirectory })
 
       ipc.on('generateReportSuccessful', (event, reportFilePath) => {
         disableSpinner();

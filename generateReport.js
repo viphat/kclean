@@ -6,53 +6,59 @@ import { db } from './database';
 
 const logoPath = './vendor/logo.png';
 
-export const generateReport = (batch, source, outputDirectory) => {
+export const generateReport = (batch, outputDirectory) => {
   return new Promise((resolve, reject) => {
-    generateReportTemplate(batch, source, outputDirectory).then((reportFilePath) => {
-      fillData(batch, source, 'All').then((rowData) => {
-        return writeToTemplate(source, reportFilePath, rowData, 'B');
+    generateReportTemplate(batch, outputDirectory).then((reportFilePath) => {
+      fillData(batch, 'All').then((rowData) => {
+        return writeToTemplate(reportFilePath, rowData, 'B');
       }).then(() => {
-        return fillData(batch, source, 'ByBatch');
+        return fillData(batch, { target: "HIGH SCHOOL" });
       }).then((rowData) => {
-        return writeToTemplate(source, reportFilePath, rowData, 'C');
+        return writeToTemplate(reportFilePath, rowData, 'C');
       }).then(() => {
-        return fillData(batch, source, { provinceId: 23 }); // Ho Chi Minh
+        return fillData(batch, { target: "UNIVERSITY" });
       }).then((rowData) => {
-        return writeToTemplate(source, reportFilePath, rowData, 'D');
+        return writeToTemplate(reportFilePath, rowData, 'D');
       }).then(() => {
-        return fillData(batch, source, { provinceId: 21 }); // Ha Noi
+        return fillData(batch, { provinceId: 23, target: "HIGH SCHOOL" }); // Ho Chi Minh
       }).then((rowData) => {
-        return writeToTemplate(source, reportFilePath, rowData, 'E');
+        return writeToTemplate(reportFilePath, rowData, 'E');
       }).then(() => {
-        return fillData(batch, source, { provinceId: 28 }); // Hai Phong
+        return fillData(batch, { provinceId: 21, target: "HIGH SCHOOL" }); // Ha Noi
       }).then((rowData) => {
-        return writeToTemplate(source, reportFilePath, rowData, 'F');
+        return writeToTemplate(reportFilePath, rowData, 'F');
       }).then(() => {
-        return fillData(batch, source, { provinceId: 16 }); //. Da Nang
+        return fillData(batch, { provinceId: 28, target: "HIGH SCHOOL" }); // Hai Phong
       }).then((rowData) => {
-        return writeToTemplate(source, reportFilePath, rowData, 'G');
+        return writeToTemplate(reportFilePath, rowData, 'G');
       }).then(() => {
-        return fillData(batch, source, { provinceId: 33 }); // Khanh Hoa
+        return fillData(batch, { provinceId: 16, target: "HIGH SCHOOL" }); //. Da Nang
       }).then((rowData) => {
-        return writeToTemplate(source, reportFilePath, rowData, 'H');
+        return writeToTemplate(reportFilePath, rowData, 'H');
       }).then(() => {
-        return fillData(batch, source, { provinceId: 13 }); // Can Tho
+        return fillData(batch, { provinceId: 33, target: "HIGH SCHOOL" }); // Nha Trang
       }).then((rowData) => {
-        return writeToTemplate(source, reportFilePath, rowData, 'I');
+        return writeToTemplate(reportFilePath, rowData, 'I');
       }).then(() => {
-        return fillData(batch, source, { provinceId: 17 }); // Dong Nai
+        return fillData(batch, { provinceId: 23, target: "UNIVERSITY" }); // Ho Chi Minh
       }).then((rowData) => {
-        return writeToTemplate(source, reportFilePath, rowData, 'J');
+        return writeToTemplate(reportFilePath, rowData, 'J');
       }).then(() => {
-        return fillData(batch, source, { provinceId: 3 }); // Binh Duong
+        return fillData(batch, { provinceId: 21, target: "UNIVERSITY" }); // Ha Noi
       }).then((rowData) => {
-        return writeToTemplate(source, reportFilePath, rowData, 'K');
+        return writeToTemplate(reportFilePath, rowData, 'K');
       }).then(() => {
-        return fillData(batch, source, { provinceId: 1 }); // An Giang
+        return fillData(batch, { provinceId: 28, target: "UNIVERSITY" }); // Hai Phong
       }).then((rowData) => {
-        return writeToTemplate(source, reportFilePath, rowData, 'L');
+        return writeToTemplate(reportFilePath, rowData, 'L');
       }).then(() => {
-        return generateSheetValidDatabase(batch, source, reportFilePath);
+        return fillData(batch, { provinceId: 16, target: "UNIVERSITY" }); //. Da Nang
+      }).then((rowData) => {
+        return writeToTemplate(reportFilePath, rowData, 'M');
+      }).then(() => {
+        return fillData(batch, { provinceId: 33, target: "UNIVERSITY" }); // Nha Trang
+      }).then((rowData) => {
+        return writeToTemplate(reportFilePath, rowData, 'N');
       }).then(() => {
         resolve(reportFilePath);
       })
@@ -60,7 +66,7 @@ export const generateReport = (batch, source, outputDirectory) => {
   })
 }
 
-const generateReportTemplate = (batch, source, outputDirectory) => {
+const generateReportTemplate = (batch, outputDirectory) => {
   return new Promise((resolve, reject) => {
     let dir = outputDirectory + '/' + batch;
 
@@ -68,7 +74,7 @@ const generateReportTemplate = (batch, source, outputDirectory) => {
       fs.mkdirSync(dir)
     }
 
-    let reportFilePath = dir + '/' + batch + '_' + source + '_report.xlsx';
+    let reportFilePath = dir + '/' + batch + '_report.xlsx';
 
     let workbook = new Excel.Workbook();
     let worksheet = workbook.addWorksheet('Abs', {});
@@ -100,9 +106,11 @@ const generateReportTemplate = (batch, source, outputDirectory) => {
     worksheet.getColumn('J').width = 30;
     worksheet.getColumn('K').width = 30;
     worksheet.getColumn('L').width = 30;
+    worksheet.getColumn('M').width = 30;
+    worksheet.getColumn('N').width = 30;
     // A1
 
-    worksheet.getCell('B1').value = 'KOTEX CALL CENTER 2022 PROJECT';
+    worksheet.getCell('B1').value = 'KOTEX CALL CENTER 2023 PROJECT';
 
     worksheet.getCell('B1').font = {
       bold: true, size: 27, name: 'Calibri', family: 2,
@@ -147,47 +155,54 @@ const generateReportTemplate = (batch, source, outputDirectory) => {
     worksheet.getCell('A5').value = batch;
 
     // A6, A27
-    buildReportFirstColumnType3(worksheet, 6, 'Raw data received from ' + source);
-    buildReportFirstColumnType3(worksheet, 18, 'Valid database (value) - base all');
+    buildReportFirstColumnType3(worksheet, 6, 'Raw data received from Agency');
+    buildReportFirstColumnType3(worksheet, 23, 'Valid database (value) - base all');
 
-    // A7, A14, A21
     buildReportFirstColumnType2(worksheet, 7, 'Data missing (=blank)');
-    buildReportFirstColumnType2(worksheet, 14, 'Duplicated Data (Checking vs. total database since 1st week)');
-    buildReportFirstColumnType2(worksheet, 15, 'Illogical data');
+    buildReportFirstColumnType2(worksheet, 15, 'Duplicated Data (Checking vs. total database since 1st week)');
+    buildReportFirstColumnType2(worksheet, 19, 'Illogical data');
 
-    // A8 - A13, A15 - A20, A22-A25
-    buildReportFirstColumnType1(worksheet, 8, "Respondent's name (column G+H)");
-    // buildReportFirstColumnType1(worksheet, 9, "Living city (column C+D)");
-    buildReportFirstColumnType1(worksheet, 9, "Contact information\nBRAND MAX/ HIGH SCHOOL: must have either phone number (column I), parents number (column J)\n");
-    buildReportFirstColumnType1(worksheet, 10, "Birth Year (column K)");
-    buildReportFirstColumnType1(worksheet, 11, "Sampling Date (column E)");
-    buildReportFirstColumnType1(worksheet, 12, "School Name (column B+C+D)");
-    buildReportFirstColumnType1(worksheet, 13, "Brand Using (column L)");
-    // buildReportFirstColumnType1(worksheet, 15, "Sampling Type\nFOCUS MKT/ UNIVERSITY: column N\nBRAND MAX/ HIGH SCHOOL: ok to be blank");
-    buildReportFirstColumnType1(worksheet, 16, "Illogical phone number format (not 03x, 05x, 07x, 08x, 09x)");
-    buildReportFirstColumnType1(worksheet, 17, "Illogical Age - High School (not 2004 - 2007)");
-    // buildReportFirstColumnType1(worksheet, 20, "Illogical Age - University (not 1998 - 2003)");
+    buildReportFirstColumnType1(worksheet, 8, "Respondent's name");
+    buildReportFirstColumnType1(worksheet, 9, "Living city");
+    buildReportFirstColumnType1(worksheet, 10, "Contact information\nHIGH SCHOOL: must have either phone number, parents number\nUniversity: must have phone number");
+    buildReportFirstColumnType1(worksheet, 11, "Birth Year");
+    buildReportFirstColumnType1(worksheet, 12, "Sampling Date");
+    buildReportFirstColumnType1(worksheet, 13, "School Name");
+    buildReportFirstColumnType1(worksheet, 14, "Brand Using");
+
+    buildReportFirstColumnType1(worksheet, 16, "Duplication within High School");
+    buildReportFirstColumnType1(worksheet, 17, "Duplication within University");
+    buildReportFirstColumnType1(worksheet, 18, "Duplication between High School & University");
+
+    buildReportFirstColumnType1(worksheet, 20, "Illogical phone number format (not 03x, 05x, 07x, 08x, 09x)");
+    buildReportFirstColumnType1(worksheet, 21, "Illogical Age - High School (not 2005 - 2008)");
+    buildReportFirstColumnType1(worksheet, 22, "Illogical Age - University (not 2001 - 2005)");
     // Done 1st Col
 
     // Row 4 - D4, K4, P4, S4
-    buildReportRow4(worksheet, 'D', 'D4:L4', 'Break-down by city (Column C)');
+    buildReportRow4(worksheet, 'E', 'E4:I4', 'Break-down by city (Highschool)');
+    buildReportRow4(worksheet, 'J', 'J4:N4', 'Break-down by city (University)');
 
     // // Row 5, B4-T4
     buildReportRow5(worksheet, 'B', 'Total Project');
-    buildReportRow5(worksheet, 'C', 'Total ' + batch);
-    buildReportRow5(worksheet, 'D', 'Hồ Chí Minh');
-    buildReportRow5(worksheet, 'E', 'Hà Nội');
-    buildReportRow5(worksheet, 'F', 'Hải Phòng');
-    buildReportRow5(worksheet, 'G', 'Đà Nẵng');
-    buildReportRow5(worksheet, 'H', 'Nha Trang');
-    buildReportRow5(worksheet, 'I', 'Cần Thơ');
-    buildReportRow5(worksheet, 'J', 'Biên Hòa');
-    buildReportRow5(worksheet, 'K', 'Bình Dương');
-    buildReportRow5(worksheet, 'L', 'An Giang');
+    buildReportRow5(worksheet, 'C', 'Total ' + batch + ' (High school)');
+    buildReportRow5(worksheet, 'D', 'Total ' + batch + ' (University)');
+
+    buildReportRow5(worksheet, 'E', 'Hồ Chí Minh');
+    buildReportRow5(worksheet, 'F', 'Hà Nội');
+    buildReportRow5(worksheet, 'G', 'Hải Phòng');
+    buildReportRow5(worksheet, 'H', 'Đà Nẵng');
+    buildReportRow5(worksheet, 'I', 'Nha Trang');
+
+    buildReportRow5(worksheet, 'J', 'Hồ Chí Minh');
+    buildReportRow5(worksheet, 'K', 'Hà Nội');
+    buildReportRow5(worksheet, 'L', 'Hải Phòng');
+    buildReportRow5(worksheet, 'M', 'Đà Nẵng');
+    buildReportRow5(worksheet, 'N', 'Nha Trang');
 
     // Data
-    let colArr = ['B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L'];
-    let rowArr = [6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18];
+    let colArr = ['B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N'];
+    let rowArr = [6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23];
 
     for (let rowArrIndex = 0; rowArrIndex < rowArr.length; rowArrIndex += 1) {
       for (let colArrIndex = 0; colArrIndex < colArr.length; colArrIndex += 1 ) {
@@ -261,12 +276,12 @@ function buildReportRow4(worksheet, cellIndex, mergeRange, text) {
   let fgColor = '';
 
   switch (cellIndex) {
-    case 'D':
+    case 'E':
       fgColor = { argb: 'FFFFFF00' };
       break;
-    // case 'J':
-    //   fgColor = { theme: 6, tint: 0.3999755851924192 };
-    //   break;
+    case 'J':
+      fgColor = { theme: 6, tint: 0.3999755851924192 };
+      break;
   }
 
   row.getCell(cellIndex).fill = {
@@ -425,7 +440,7 @@ function buildDataRow(worksheet, rowIndex, cellIndex) {
   row.getCell(cellIndex).value = 0;
 }
 
-function fillData(batch, source, filterType) {
+function fillData(batch, filterType) {
   return new Promise((resolve, reject) => {
     let baseQuery = 'SELECT COUNT(*) AS TotalBase, coalesce(SUM(hasError),0) AS HasError,\
     coalesce(SUM(missingData),0) AS MissingData,\
@@ -456,6 +471,18 @@ function fillData(batch, source, filterType) {
       }
     }
 
+    if (filterType.target !== undefined && filterType.target !== null) {
+      if (whereCondition === '') {
+        whereCondition = 'WHERE customers.target = $target'
+      } else {
+        whereCondition += " AND customers.target = $target";
+      }
+
+      params = {
+        $target: filterType.target
+      }
+    }
+
     if (batch !== '' && filterType !== 'All') {
       params = _.merge(params, {
         $batch: batch
@@ -464,17 +491,6 @@ function fillData(batch, source, filterType) {
         whereCondition = 'WHERE customers.batch = $batch'
       } else {
         whereCondition += " AND customers.batch = $batch";
-      }
-    }
-
-    if (source !== '') {
-      params = _.merge(params, {
-        $source: source
-      });
-      if (whereCondition === '') {
-        whereCondition = 'WHERE customers.source = $source'
-      } else {
-        whereCondition += " AND customers.source = $source";
       }
     }
 
@@ -489,7 +505,7 @@ function fillData(batch, source, filterType) {
   });
 }
 
-function writeToTemplate(source, reportFilePath, rowData, cellIndex) {
+function writeToTemplate(reportFilePath, rowData, cellIndex) {
   return new Promise((resolve, reject) => {
     let workbook = new Excel.Workbook();
     workbook.xlsx.readFile(reportFilePath).then((response) => {
@@ -506,384 +522,52 @@ function writeToTemplate(source, reportFilePath, rowData, cellIndex) {
       row = worksheet.getRow(8);
       row.getCell(cellIndex).value = rowData.MissingName;
 
-      // row = worksheet.getRow(9);
-      // row.getCell(cellIndex).value = rowData.MissingLivingCity;
-
       row = worksheet.getRow(9);
-      row.getCell(cellIndex).value = rowData.MissingContactInformation;
+      row.getCell(cellIndex).value = rowData.MissingLivingCity;
 
       row = worksheet.getRow(10);
-      row.getCell(cellIndex).value = rowData.MissingAge;
+      row.getCell(cellIndex).value = rowData.MissingContactInformation;
 
       row = worksheet.getRow(11);
-      row.getCell(cellIndex).value = rowData.MissingCollectedDate;
+      row.getCell(cellIndex).value = rowData.MissingAge;
 
       row = worksheet.getRow(12);
-      row.getCell(cellIndex).value = rowData.MissingSchoolName;
+      row.getCell(cellIndex).value = rowData.MissingCollectedDate;
 
       row = worksheet.getRow(13);
-      row.getCell(cellIndex).value = rowData.MissingBrandUsing;
-
-      // row = worksheet.getRow(15);
-      // row.getCell(cellIndex).value = rowData.MissingSamplingType;
+      row.getCell(cellIndex).value = rowData.MissingSchoolName;
 
       row = worksheet.getRow(14);
-      if (source === 'BrandMax') {
-        row.getCell(cellIndex).value = rowData.DuplicatedPhoneWithinPupil;
-      } else {
-        row.getCell(cellIndex).value = rowData.DuplicatedPhoneWithinStudent;
-      }
+      row.getCell(cellIndex).value = rowData.MissingBrandUsing;
 
       row = worksheet.getRow(15);
-      row.getCell(cellIndex).value = rowData.IllogicalData;
+      row.getCell(cellIndex).value = rowData.DuplicatedPhone;
 
       row = worksheet.getRow(16);
-      row.getCell(cellIndex).value = rowData.IllogicalPhone;
+      row.getCell(cellIndex).value = rowData.DuplicatedPhoneWithinPupil;
 
       row = worksheet.getRow(17);
-      row.getCell(cellIndex).value = rowData.IllogicalAgePupil;
-
-      // row = worksheet.getRow(20);
-      // row.getCell(cellIndex).value = rowData.IllogicalAgeStudent;
+      row.getCell(cellIndex).value = rowData.DuplicatedPhoneWithinStudent;
 
       row = worksheet.getRow(18);
+      row.getCell(cellIndex).value = rowData.duplicatedPhoneBetweenPupilAndStudent;
+
+      row = worksheet.getRow(19);
+      row.getCell(cellIndex).value = rowData.IllogicalData;
+
+      row = worksheet.getRow(20);
+      row.getCell(cellIndex).value = rowData.IllogicalPhone;
+
+      row = worksheet.getRow(21);
+      row.getCell(cellIndex).value = rowData.IllogicalAgePupil;
+
+      row = worksheet.getRow(22);
+      row.getCell(cellIndex).value = rowData.IllogicalAgeStudent;
+
+      row = worksheet.getRow(23);
       row.getCell(cellIndex).value = rowData.TotalBase - rowData.HasError;
 
       resolve(workbook.xlsx.writeFile(reportFilePath));
-    });
-  });
-}
-
-const generateSheetValidDatabase = (batch, source, reportFilePath) => {
-  let workbook = new Excel.Workbook();
-
-  workbook.xlsx.readFile(reportFilePath).then((response) => {
-    let worksheet = workbook.addWorksheet('Valid Database for QC Calls', {});
-
-    worksheet.getColumn('A').width = 60;
-    worksheet.getRow(1).height = 50;
-    worksheet.getRow(4).height = 30;
-    worksheet.getRow(5).height = 40;
-
-    // Add Logo
-    let logo = workbook.addImage({
-      filename: logoPath,
-      extension: 'png'
-    });
-
-    worksheet.addImage(logo, {
-      tl: { col: 0, row: 0 },
-      br: { col: 1, row: 1 }
-    });
-
-    worksheet.getColumn('B').width = 30;
-    worksheet.getColumn('C').width = 30;
-
-    worksheet.getCell('B1').value = 'KOTEX CALL CENTER 2022 PROJECT';
-
-    worksheet.getCell('B1').font = {
-      bold: true, size: 26, name: 'Calibri', family: 2,
-      color: { argb: 'FFFF0000' }
-    };
-
-    worksheet.getCell('B1').alignment = { horizontal: 'center', vertical: 'middle' };
-    worksheet.mergeCells('B1:E1');
-
-    // A2
-    worksheet.getCell('B2').font = {
-      bold: true, size: 14, name: 'Calibri', family: 2,
-      underline: true,
-      color: { argb: 'FFFF0000' }
-    };
-
-    worksheet.getCell('B2').alignment = { horizontal: 'center', vertical: 'middle' };
-
-    worksheet.getCell('B2').value = 'Step 1: Database Clean - Summary Report';
-
-    // A4
-    worksheet.getCell('A5').border = {
-      left: { style: 'thin' },
-      right: { style: 'thin' },
-      top: { style: 'thin' },
-      bottom: { style: 'thin' }
-    };
-
-    worksheet.getCell('A5').font = {
-      bold: true, size: 14, name: 'Calibri', family: 2
-    };
-
-    worksheet.getCell('A5').alignment = { horizontal: 'center', vertical: 'middle' };
-
-    worksheet.getCell('A5').fill = {
-      type: 'pattern',
-      pattern: 'solid',
-      fgColor: { argb: 'FFFABF8F' },
-      bgColor: { indexed: 64 }
-    };
-
-    worksheet.getCell('A5').value = batch;
-
-    buildReportFirstColumnType3(worksheet, 6, 'Valid data received from ' + source);
-
-    buildReportFirstColumnType1(worksheet, 7, 'Total duplication removed with other Agency');
-
-    buildReportFirstColumnType1(worksheet, 8, 'Removed from Agency Focus MKT');
-
-    buildReportFirstColumnType1(worksheet, 9, 'Removed from Agency BrandMax');
-
-    buildReportFirstColumnType2(worksheet, 10, 'Valid database for QC Calls - ' + source);
-
-    fillDataForSheetValidDatabase(batch, source, 'All').then((rowData) => {
-      worksheet.getCell('B5').value = 'Total';
-
-      worksheet.getCell('B5').border = {
-        left: { style: 'thin' },
-        right: { style: 'thin' },
-        top: { style: 'thin' },
-        bottom: { style: 'thin' }
-      };
-
-      worksheet.getCell('B5').alignment = { horizontal: 'center', vertical: 'middle' };
-
-      worksheet.getCell('B5').fill = {
-        type: 'pattern',
-        pattern: 'solid',
-        fgColor: { argb: 'FFFABF8F' },
-        bgColor: { indexed: 64 }
-      };
-
-      worksheet.getCell('B6').value = rowData.TotalBase - rowData.HasError;
-
-      worksheet.getCell('B6').alignment = { vertical: 'middle' };
-
-      worksheet.getCell('B6').font = {
-        bold: true, size: 14, name: 'Calibri', family: 2,
-        color: { argb: 'FFFF0000' }
-      };
-
-      worksheet.getCell('B6').border = {
-        left: { style: 'thin' },
-        right: { style: 'thin' },
-        top: { style: 'thin' },
-        bottom: { style: 'thin' }
-      };
-
-      worksheet.getCell('B7').value = rowData.duplicatedCount;
-
-      worksheet.getCell('B7').border = {
-        left: { style: 'thin' },
-        right: { style: 'thin' },
-        top: { style: 'thin' },
-        bottom: { style: 'thin' }
-      };
-
-      worksheet.getCell('B7').font = {
-        size: 14, name: 'Calibri', family: 2
-      };
-
-      worksheet.getCell('B7').alignment = { horizontal: 'right', vertical: 'middle' };
-
-      if (source == 'Focus MKT') {
-        worksheet.getCell('B8').value = rowData.duplicatedCount;
-      } else {
-        worksheet.getCell('B8').value = 0;
-      }
-
-      worksheet.getCell('B8').border = {
-        left: { style: 'thin' },
-        right: { style: 'thin' },
-        top: { style: 'thin' },
-        bottom: { style: 'thin' }
-      };
-
-      worksheet.getCell('B8').font = {
-        size: 14, name: 'Calibri', family: 2
-      };
-
-      worksheet.getCell('B8').alignment = { horizontal: 'right', vertical: 'middle' };
-
-      if (source == 'BrandMax') {
-        worksheet.getCell('B9').value = rowData.duplicatedCount;
-      } else {
-        worksheet.getCell('B9').value = 0;
-      }
-
-      worksheet.getCell('B9').border = {
-        left: { style: 'thin' },
-        right: { style: 'thin' },
-        top: { style: 'thin' },
-        bottom: { style: 'thin' }
-      };
-
-      worksheet.getCell('B9').font = {
-        size: 14, name: 'Calibri', family: 2
-      };
-
-      worksheet.getCell('B9').alignment = { horizontal: 'right', vertical: 'middle' };
-
-      worksheet.getCell('B10').value = rowData.TotalBase - rowData.HasError - rowData.duplicatedCount;
-
-      worksheet.getCell('B10').border = {
-        left: { style: 'thin' },
-        right: { style: 'thin' },
-        top: { style: 'thin' },
-        bottom: { style: 'thin' }
-      };
-
-      worksheet.getCell('B10').font = {
-        bold: true, size: 14, name: 'Calibri', family: 2,
-        color: { theme: 0 }
-      };
-
-      worksheet.getCell('B10').alignment = { vertical: 'middle' };
-
-      worksheet.getCell('B10').fill = {
-        type: 'pattern',
-        pattern: 'solid',
-        fgColor: { argb: 'FF00B0F0' },
-        bgColor: { indexed: 64 }
-      };
-
-      fillDataForSheetValidDatabase(batch, source, 'ByBatch').then((rowData) => {
-        worksheet.getCell('C5').value = batch;
-
-        worksheet.getCell('C5').border = {
-          left: { style: 'thin' },
-          right: { style: 'thin' },
-          top: { style: 'thin' },
-          bottom: { style: 'thin' }
-        };
-
-        worksheet.getCell('C5').alignment = { horizontal: 'center', vertical: 'middle' };
-
-        worksheet.getCell('C5').fill = {
-          type: 'pattern',
-          pattern: 'solid',
-          fgColor: { argb: 'FFFABF8F' },
-          bgColor: { indexed: 64 }
-        };
-
-        worksheet.getCell('C6').value = rowData.TotalBase - rowData.HasError;
-
-        worksheet.getCell('C6').alignment = { vertical: 'middle' };
-
-        worksheet.getCell('C6').font = {
-          bold: true, size: 14, name: 'Calibri', family: 2,
-          color: { argb: 'FFFF0000' }
-        };
-
-        worksheet.getCell('C6').border = {
-          left: { style: 'thin' },
-          right: { style: 'thin' },
-          top: { style: 'thin' },
-          bottom: { style: 'thin' }
-        };
-
-        worksheet.getCell('C7').value = rowData.duplicatedCount;
-
-        worksheet.getCell('C7').border = {
-          left: { style: 'thin' },
-          right: { style: 'thin' },
-          top: { style: 'thin' },
-          bottom: { style: 'thin' }
-        };
-
-        worksheet.getCell('C7').font = {
-          size: 14, name: 'Calibri', family: 2
-        };
-
-        worksheet.getCell('C7').alignment = { horizontal: 'right', vertical: 'middle' };
-
-        if (source == 'Focus MKT') {
-          worksheet.getCell('C8').value = rowData.duplicatedCount;
-        } else {
-          worksheet.getCell('C8').value = 0;
-        }
-
-        worksheet.getCell('C8').border = {
-          left: { style: 'thin' },
-          right: { style: 'thin' },
-          top: { style: 'thin' },
-          bottom: { style: 'thin' }
-        };
-
-        worksheet.getCell('C8').font = {
-          size: 14, name: 'Calibri', family: 2
-        };
-
-        worksheet.getCell('C8').alignment = { horizontal: 'right', vertical: 'middle' };
-
-        if (source == 'BrandMax') {
-          worksheet.getCell('C9').value = rowData.duplicatedCount;
-        } else {
-          worksheet.getCell('C9').value = 0;
-        }
-
-        worksheet.getCell('C9').border = {
-          left: { style: 'thin' },
-          right: { style: 'thin' },
-          top: { style: 'thin' },
-          bottom: { style: 'thin' }
-        };
-
-        worksheet.getCell('C9').font = {
-          size: 14, name: 'Calibri', family: 2
-        };
-
-        worksheet.getCell('C9').alignment = { horizontal: 'right', vertical: 'middle' };
-
-        worksheet.getCell('C10').value = rowData.TotalBase - rowData.HasError - rowData.duplicatedCount;
-
-        worksheet.getCell('C10').border = {
-          left: { style: 'thin' },
-          right: { style: 'thin' },
-          top: { style: 'thin' },
-          bottom: { style: 'thin' }
-        };
-
-        worksheet.getCell('C10').font = {
-          bold: true, size: 14, name: 'Calibri', family: 2,
-          color: { theme: 0 }
-        };
-
-        worksheet.getCell('C10').alignment = { vertical: 'middle' };
-
-        worksheet.getCell('C10').fill = {
-          type: 'pattern',
-          pattern: 'solid',
-          fgColor: { argb: 'FF00B0F0' },
-          bgColor: { indexed: 64 }
-        };
-
-        workbook.xlsx.writeFile(reportFilePath);
-      });
-    });
-  });
-}
-
-function fillDataForSheetValidDatabase(batch, source, filterType) {
-  return new Promise((resolve, reject) => {
-    let baseQuery = 'SELECT COUNT(*) AS TotalBase,\
-      coalesce(SUM(hasError),0) AS HasError,\
-      coalesce(SUM(duplicatedPhoneBetweenPupilAndStudent),0) AS duplicatedCount\
-      FROM customers WHERE customers.source = $source';
-
-    let whereCondition = '';
-    let params = { $source: source };
-
-    if (batch !== '' && filterType !== 'All') {
-      params = _.merge(params, {
-        $batch: batch
-      });
-
-      whereCondition += " AND customers.batch = $batch";
-    }
-
-    db.get(baseQuery + ' ' + whereCondition, params, (err, row) => {
-      if (err) {
-        return reject(err);
-      }
-      resolve(row);
     });
   });
 }

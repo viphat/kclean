@@ -38,7 +38,7 @@ function writeTemplate(outputPath, workbook) {
     sheetName = 'Duplication';
     worksheet = workbook.addWorksheet(sheetName, {});
     writeBaseTemplate(workbook, worksheet, duplicationTitle);
-    sheetName = 'Duplication With Another Agency';
+    // sheetName = 'Duplication With Another Agency';
     // worksheet = workbook.addWorksheet(sheetName, {});
     // writeBaseTemplate(workbook, worksheet, duplicationWithAnotherAgencyTitle);
 
@@ -69,6 +69,11 @@ function writeBaseTemplate(workbook, worksheet, title) {
   worksheet.getColumn('Q').width = 16;
   worksheet.getColumn('R').width = 16;
   worksheet.getColumn('S').width = 16;
+  worksheet.getColumn('T').width = 16;
+  worksheet.getColumn('U').width = 16;
+  worksheet.getColumn('V').width = 16;
+  worksheet.getColumn('W').width = 16;
+  worksheet.getColumn('X').width = 16;
 
   worksheet.getRow('5').height = 30;
 
@@ -203,13 +208,6 @@ function writeBaseTemplate(workbook, worksheet, title) {
   worksheet.getCell('N5').border = worksheet.getCell('A5').border;
   worksheet.getCell('N5').value = 'Sampling Product'
 
-  // worksheet.mergeCells('O5:O6');
-  // worksheet.getCell('O5').font = worksheet.getCell('A5').font;
-  // worksheet.getCell('O5').fill = worksheet.getCell('A5').fill;
-  // worksheet.getCell('O5').alignment = worksheet.getCell('A5').alignment;
-  // worksheet.getCell('O5').border = worksheet.getCell('A5').border;
-  // worksheet.getCell('O5').value = 'Gender'
-
   worksheet.mergeCells('O5:O6');
   worksheet.getCell('O5').font = worksheet.getCell('A5').font;
   worksheet.getCell('O5').fill = worksheet.getCell('A5').fill;
@@ -231,36 +229,56 @@ function writeBaseTemplate(workbook, worksheet, title) {
   worksheet.getCell('Q5').border = worksheet.getCell('A5').border;
   worksheet.getCell('Q5').value = 'Opt In'
 
-  // worksheet.mergeCells('S5:S6');
-  // worksheet.getCell('S5').font = worksheet.getCell('A5').font;
-  // worksheet.getCell('S5').fill = worksheet.getCell('A5').fill;
-  // worksheet.getCell('S5').alignment = worksheet.getCell('A5').alignment;
-  // worksheet.getCell('S5').border = worksheet.getCell('A5').border;
-  // worksheet.getCell('S5').value = 'Agency'
-
-  // worksheet.mergeCells('T5:T6');
-  // worksheet.getCell('T5').font = worksheet.getCell('A5').font;
-  // worksheet.getCell('T5').fill = worksheet.getCell('A5').fill;
-  // worksheet.getCell('T5').alignment = worksheet.getCell('A5').alignment;
-  // worksheet.getCell('T5').border = worksheet.getCell('A5').border;
-  // worksheet.getCell('T5').value = 'Loại'
-
   worksheet.mergeCells('R5:R6');
   worksheet.getCell('R5').font = worksheet.getCell('A5').font;
   worksheet.getCell('R5').fill = worksheet.getCell('A5').fill;
   worksheet.getCell('R5').alignment = worksheet.getCell('A5').alignment;
   worksheet.getCell('R5').border = worksheet.getCell('A5').border;
   worksheet.getCell('R5').value = 'FW'
+
+  worksheet.mergeCells('S5:S6');
+  worksheet.getCell('S5').font = worksheet.getCell('A5').font;
+  worksheet.getCell('S5').fill = worksheet.getCell('A5').fill;
+  worksheet.getCell('S5').alignment = worksheet.getCell('A5').alignment;
+  worksheet.getCell('S5').border = worksheet.getCell('A5').border;
+  worksheet.getCell('S5').value = 'Khối'
+
+  worksheet.mergeCells('T5:T6');
+  worksheet.getCell('T5').font = worksheet.getCell('A5').font;
+  worksheet.getCell('T5').fill = worksheet.getCell('A5').fill;
+  worksheet.getCell('T5').alignment = worksheet.getCell('A5').alignment;
+  worksheet.getCell('T5').border = worksheet.getCell('A5').border;
+  worksheet.getCell('T5').value = 'Đại diện'
+
+  worksheet.mergeCells('U5:U6');
+  worksheet.getCell('U5').font = worksheet.getCell('A5').font;
+  worksheet.getCell('U5').fill = worksheet.getCell('A5').fill;
+  worksheet.getCell('U5').alignment = worksheet.getCell('A5').alignment;
+  worksheet.getCell('U5').border = worksheet.getCell('A5').border;
+  worksheet.getCell('U5').value = 'PG'
+
+  worksheet.mergeCells('V5:V6');
+  worksheet.getCell('V5').font = worksheet.getCell('A5').font;
+  worksheet.getCell('V5').fill = worksheet.getCell('A5').fill;
+  worksheet.getCell('V5').alignment = worksheet.getCell('A5').alignment;
+  worksheet.getCell('V5').border = worksheet.getCell('A5').border;
+  worksheet.getCell('V5').value = 'Activation'
+
+  worksheet.mergeCells('W5:W6');
+  worksheet.getCell('W5').font = worksheet.getCell('A5').font;
+  worksheet.getCell('W5').fill = worksheet.getCell('A5').fill;
+  worksheet.getCell('W5').alignment = worksheet.getCell('A5').alignment;
+  worksheet.getCell('W5').border = worksheet.getCell('A5').border;
+  worksheet.getCell('W5').value = 'Target'
   // End Table Headers
 
-  // || worksheet.name.endsWith('Duplication With Another Agency')
   if (worksheet.name.endsWith('Duplication')) {
-    worksheet.mergeCells('S5:S6');
-    worksheet.getCell('S5').font = worksheet.getCell('A5').font;
-    worksheet.getCell('S5').fill = worksheet.getCell('A5').fill;
-    worksheet.getCell('S5').alignment = worksheet.getCell('A5').alignment;
-    worksheet.getCell('S5').border = worksheet.getCell('A5').border;
-    worksheet.getCell('S5').value = 'Tuần';
+    worksheet.mergeCells('X5:X6');
+    worksheet.getCell('X5').font = worksheet.getCell('A5').font;
+    worksheet.getCell('X5').fill = worksheet.getCell('A5').fill;
+    worksheet.getCell('X5').alignment = worksheet.getCell('A5').alignment;
+    worksheet.getCell('X5').border = worksheet.getCell('A5').border;
+    worksheet.getCell('X5').value = 'Tuần';
   }
 
   // Add Logo

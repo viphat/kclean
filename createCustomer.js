@@ -33,19 +33,19 @@ const checkIllogicalData = (customer) => {
       customer.illogicalData = 1
       customer.illogicalAge = 1
 
-      if (customer.source === 'BrandMax') {
+      if (customer.target === 'HIGH SCHOOL') {
         customer.illogicalAgePupil = 1
-      } else if (customer.source === 'Focus MKT') {
+      } else if (customer.target === 'UNIVERSITY') {
         customer.illogicalAgeStudent = 1
       }
     } else {
       var age = parseInt(customer.age)
 
-      if (customer.source === 'BrandMax' && (age < 14 || age > 20)) {
+      if (customer.target === 'HIGH SCHOOL' && (age < 14 || age > 20)) {
         customer.illogicalData = 1
         customer.illogicalAge = 1
         customer.illogicalAgePupil = 1
-      } else if (customer.source === 'Focus MKT' && (age < 17 || age > 24))  {
+      } else if (customer.target === 'UNIVERSITY' && (age < 17 || age > 24))  {
         customer.illogicalData = 1
         customer.illogicalAge = 1
         customer.illogicalAgeStudent = 1
@@ -77,12 +77,12 @@ const checkMissingData = (customer) => {
     customer.missingData = 1
   }
 
-  if (customer.source === 'BrandMax') {
+  if (customer.target === 'HIGH SCHOOL') {
     if (isBlank(customer.phoneNumber) && isBlank(customer.parentPhoneNumber)) {
       customer.missingContactInformation = 1
       customer.missingData = 1
     }
-  } else if (customer.source === 'Focus MKT') {
+  } else if (customer.target === 'UNIVERSITY') {
     if (isBlank(customer.phoneNumber)) {
       customer.missingContactInformation = 1
       customer.missingData = 1
@@ -99,7 +99,7 @@ const checkMissingData = (customer) => {
     customer.missingData = 1
   }
 
-  if (isBlank(customer.schoolName) || customer.missingLivingCity == 1) {
+  if (isBlank(customer.schoolName)) {
     customer.missingSchoolName = 1
     customer.missingData = 1
   }
@@ -107,13 +107,6 @@ const checkMissingData = (customer) => {
   if (isBlank(customer.brand)) {
     customer.missingBrandUsing = 1
     customer.missingData = 1
-  }
-
-  if (isBlank(customer.samplingProduct)) {
-    if (customer.source === 'Focus MKT') {
-      customer.missingSamplingType = 1
-      customer.missingData = 1
-    }
   }
 
   return customer;
@@ -140,9 +133,9 @@ const checkDuplication = (customer) => {
       customers.phoneNumber, customers.parentPhoneNumber,\
       customers.brand, customers.subBrand, customers.samplingProduct,\
       customers.optIn, customers.target, customers.khoi, customers.daidien, \
-      customers.source, customers.batch\
+      customers.fw, customers.pg, customers.activation, customers.batch\
     from customers\
-    WHERE (customers.phoneNumber IS NOT NULL AND customers.phoneNumber != "" AND customers.phoneNumber = ?) OR (customers.source = "BrandMax" AND customers.parentPhoneNumber IS NOT NULL AND customers.parentPhoneNumber != "" AND customers.parentPhoneNumber = ?)',
+    WHERE (customers.phoneNumber IS NOT NULL AND customers.phoneNumber != "" AND customers.phoneNumber = ?) OR (customers.target = "HIGH SCHOOL" AND customers.parentPhoneNumber IS NOT NULL AND customers.parentPhoneNumber != "" AND customers.parentPhoneNumber = ?)',
       customer.phoneNumber, customer.parentPhoneNumber, (err, res) => {
       if (err) {
         return reject(err);
@@ -154,16 +147,16 @@ const checkDuplication = (customer) => {
         customer.duplicatedWith = res;
         customer.duplicatedPhone = 1;
 
-        if (customer.source === 'BrandMax') {
-          if (customer.duplicatedWith.source === 'Focus MKT') {
+        if (customer.target === 'HIGH SCHOOL') {
+          if (customer.duplicatedWith.target === 'UNIVERSITY') {
             customer.duplicatedPhoneBetweenPupilAndStudent = 1
-          } else if (customer.duplicatedWith.source === customer.source) {
+          } else if (customer.duplicatedWith.target === customer.target) {
             customer.duplicatedPhoneWithinPupil = 1
           }
-        } else if (customer.source === 'Focus MKT') {
-          if (customer.duplicatedWith.source === 'BrandMax') {
+        } else if (customer.target === 'UNIVERSITY') {
+          if (customer.duplicatedWith.target === 'HIGH SCHOOL') {
             customer.duplicatedPhoneBetweenPupilAndStudent = 1
-          } else if (customer.duplicatedWith.source === customer.source) {
+          } else if (customer.duplicatedWith.target === customer.target) {
             customer.duplicatedPhoneWithinStudent = 1
           }
         }
@@ -194,12 +187,12 @@ export const createCustomer = (customer) => {
 
       db.run('INSERT INTO customers(\
             customerIndex, firstName, lastName, districtId, provinceId, districtName, provinceName, schoolName, phoneNumber, parentPhoneNumber, collectedDate, collectedTime, dateOfBirth, yearOfBirth, brand, subBrand, samplingProduct, optIn, target, khoi, daidien, \
-            source, batch,\
+            fw, pg, activation, batch,\
             hasError, missingData, missingName, missingLivingCity, missingSchoolName, missingContactInformation, missingAge, missingCollectedDate, missingBrandUsing, missingSamplingType,\
             illogicalData, illogicalPhone, illogicalAge, illogicalAgePupil, illogicalAgeStudent,\
             duplicatedPhone, duplicatedPhoneBetweenPupilAndStudent, duplicatedPhoneWithinPupil, duplicatedPhoneWithinStudent) \
           VALUES($customerIndex, $firstName, $lastName, $districtId, $provinceId, $districtName, $provinceName, $schoolName, $phoneNumber, $parentPhoneNumber, $collectedDate, $collectedTime, $dateOfBirth, $yearOfBirth, $brand, $subBrand, $samplingProduct, $optIn, $target, $khoi, $daidien, \
-          $source, $batch,\
+          $fw, $pg, $activation, $batch,\
             $hasError, $missingData, $missingName, $missingLivingCity, $missingSchoolName, $missingContactInformation, $missingAge, $missingCollectedDate, $missingBrandUsing, $missingSamplingType,\
             $illogicalData, $illogicalPhone, $illogicalAge, $illogicalAgePupil, $illogicalAgeStudent,\
             $duplicatedPhone, $duplicatedPhoneBetweenPupilAndStudent, $duplicatedPhoneWithinPupil, $duplicatedPhoneWithinStudent);',
@@ -222,7 +215,9 @@ export const createCustomer = (customer) => {
         $subBrand: customer.subBrand,
         $samplingProduct: customer.samplingProduct,
         $optIn: customer.optIn,
-        $source: customer.source,
+        $fw: customer.fw,
+        $pg: customer.pg,
+        $activation: customer.activation,
         $batch: customer.batch,
         $target: customer.target,
         $khoi: customer.khoi,

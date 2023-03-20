@@ -30,9 +30,12 @@ const districtIdCol = 15
 const provinceIdCol = 16
 const optInCol = 17
 // const productTypeCol = 19
-const targetCol = 18
+const fwCol = 18
 const khoiCol = 19
 const daidienCol = 20
+const pgCol = 21
+const activationCol = 22
+const targetCol = 23
 
 const isEmptyRow = (row) => {
   if (row.getCell(indexCol).value === null     &&
@@ -52,7 +55,7 @@ const isEmptyRow = (row) => {
   return false
 }
 
-export const importData = (excelFile, batch, source, outputDirectory) => {
+export const importData = (excelFile, batch, outputDirectory) => {
   return new Promise((resolve, reject) => {
     if ( !_.endsWith(outputDirectory, '/') ) {
       outputDirectory += '/';
@@ -70,11 +73,11 @@ export const importData = (excelFile, batch, source, outputDirectory) => {
       fs.mkdirSync(dir)
     }
 
-    resolve(readFile(excelFile, batch, source, dir));
+    resolve(readFile(excelFile, batch, dir));
   });
 }
 
-const readFile = (excelFile, batch, source, outputDirectory) => {
+const readFile = (excelFile, batch, outputDirectory) => {
   return new Promise((resolve, reject) => {
     let workbook = new Excel.Workbook();
     workbook.xlsx.readFile(excelFile).then(() => {
@@ -82,14 +85,14 @@ const readFile = (excelFile, batch, source, outputDirectory) => {
       console.log(worksheet)
 
       let rowNumber = dataBeginRow;
-      let outputPath = outputDirectory + '/' + batch + '_' + source.replace(/ /g, '_') + '_cleaned_data.xlsx';
+      let outputPath = outputDirectory + '/' + batch + '_cleaned_data.xlsx';
 
       if (fs.existsSync(outputPath)) {
         fs.unlinkSync(outputPath);
       }
 
       buildExcelTemplate(outputPath).then((outputWorkbook) => {
-        return readEachRow(excelFile, outputWorkbook, batch, source, worksheet, rowNumber);
+        return readEachRow(excelFile, outputWorkbook, batch, worksheet, rowNumber);
       }).then((outputWorkbook) => {
         resolve(outputWorkbook.xlsx.writeFile(outputPath));
       });
@@ -97,7 +100,7 @@ const readFile = (excelFile, batch, source, outputDirectory) => {
   })
 }
 
-const readEachRow = (excelFile, outputWorkbook, batch, source, worksheet, rowNumber) => {
+const readEachRow = (excelFile, outputWorkbook, batch, worksheet, rowNumber) => {
   return new Promise((resolve, reject) => {
     let row = worksheet.getRow(rowNumber);
 
@@ -211,7 +214,9 @@ const readEachRow = (excelFile, outputWorkbook, batch, source, worksheet, rowNum
       target: row.getCell(targetCol).value,
       khoi: row.getCell(khoiCol).value,
       daidien: row.getCell(daidienCol).value,
-      source: source,
+      fw: row.getCell(fwCol).value,
+      pg: row.getCell(pgCol).value,
+      activation: row.getCell(activationCol).value,
       batch: batch
     }
 
@@ -236,15 +241,15 @@ const readEachRow = (excelFile, outputWorkbook, batch, source, worksheet, rowNum
         customer.brand,
         customer.subBrand,
         customer.samplingProduct,
-        // customer.gender,
         customer.districtId,
         customer.provinceId,
         customer.optIn,
-        customer.target,
+        customer.fw,
         customer.khoi,
         customer.daidien,
-        // customer.source,
-        // customer.productType,
+        customer.pg,
+        customer.activation,
+        customer.target,
       ];
 
       let outputSheetName = 'Valid';
@@ -252,11 +257,7 @@ const readEachRow = (excelFile, outputWorkbook, batch, source, worksheet, rowNum
       if (missingData || illogicalData) {
         outputSheetName = 'Invalid';
       } else if (duplicateData === true) {
-        if (customer.duplicatedPhoneBetweenPupilAndStudent === 1) {
-          outputSheetName = 'Duplication With Another Agency';
-        } else {
-          outputSheetName = 'Duplication';
-        }
+        outputSheetName = 'Duplication';
       }
 
       if (duplicateData == true) {
@@ -277,15 +278,15 @@ const readEachRow = (excelFile, outputWorkbook, batch, source, worksheet, rowNum
           duplicatedWith.brand,
           duplicatedWith.subBrand,
           duplicatedWith.samplingProduct,
-          // duplicatedWith.gender,
           duplicatedWith.districtId,
           duplicatedWith.provinceId,
           duplicatedWith.optIn,
-          // duplicatedWith.source,
-          // duplicatedWith.productType,
-          duplicatedWith.target,
+          duplicatedWith.fw,
           duplicatedWith.khoi,
           duplicatedWith.daidien,
+          duplicatedWith.pg,
+          duplicatedWith.activation,
+          duplicatedWith.target,
           duplicatedWith.batch,
         ]
 
@@ -295,10 +296,10 @@ const readEachRow = (excelFile, outputWorkbook, batch, source, worksheet, rowNum
           writeToFile(outputWorkbook, outputSheetName, rowData).then((workbook) => {
             if (rowNumber % 1000 === 0) {
               setTimeout(function(){
-                resolve(readEachRow(excelFile, workbook, batch, source, worksheet, rowNumber+1));
+                resolve(readEachRow(excelFile, workbook, batch, worksheet, rowNumber+1));
               }, 0);
             } else {
-              resolve(readEachRow(excelFile, workbook, batch, source, worksheet, rowNumber+1));
+              resolve(readEachRow(excelFile, workbook, batch, worksheet, rowNumber+1));
             }
           });
         });
@@ -306,10 +307,10 @@ const readEachRow = (excelFile, outputWorkbook, batch, source, worksheet, rowNum
         writeToFile(outputWorkbook, outputSheetName, rowData).then((workbook) => {
           if (rowNumber % 1000 === 0) {
               setTimeout(function(){
-                resolve(readEachRow(excelFile, workbook, batch, source, worksheet, rowNumber+1));
+                resolve(readEachRow(excelFile, workbook, batch, worksheet, rowNumber+1));
               }, 0);
             } else {
-              resolve(readEachRow(excelFile, workbook, batch, source, worksheet, rowNumber+1));
+              resolve(readEachRow(excelFile, workbook, batch, worksheet, rowNumber+1));
             }
         });
       }
@@ -406,15 +407,22 @@ export const writeToFile = (outputWorkbook, outputSheetName, rowData) => {
     row.getCell(20).border = row.getCell(1).border;
     row.getCell(20).alignment = row.getCell(1).alignment;
 
-    // row.getCell(21).font = row.getCell(1).font;
-    // row.getCell(21).border = row.getCell(1).border;
-    // row.getCell(21).alignment = row.getCell(1).alignment;
+    row.getCell(21).font = row.getCell(1).font;
+    row.getCell(21).border = row.getCell(1).border;
+    row.getCell(21).alignment = row.getCell(1).alignment;
 
-    // outputSheetName.endsWith('Duplication With Another Agency')
+    row.getCell(22).font = row.getCell(1).font;
+    row.getCell(22).border = row.getCell(1).border;
+    row.getCell(22).alignment = row.getCell(1).alignment;
+
+    row.getCell(23).font = row.getCell(1).font;
+    row.getCell(23).border = row.getCell(1).border;
+    row.getCell(23).alignment = row.getCell(1).alignment;
+
     if (outputSheetName.endsWith('Duplication'))  {
-      row.getCell(21).font = row.getCell(1).font;
-      row.getCell(21).border = row.getCell(1).border;
-      row.getCell(21).alignment = row.getCell(1).alignment;
+      row.getCell(24).font = row.getCell(1).font;
+      row.getCell(24).border = row.getCell(1).border;
+      row.getCell(24).alignment = row.getCell(1).alignment;
     }
 
     resolve(workbook);

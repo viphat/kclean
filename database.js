@@ -25,11 +25,20 @@ export const importData = () => {
 }
 
 function addColumnsToCustomers() {
-  db.run('ALTER TABLE customers\
-  ADD khoi TEXT');
+  // db.run('ALTER TABLE customers\
+  // ADD khoi TEXT');
+
+  // db.run('ALTER TABLE customers\
+  // ADD daidien TEXT');
 
   db.run('ALTER TABLE customers\
-  ADD daidien TEXT');
+  ADD fw TEXT');
+
+  db.run('ALTER TABLE customers\
+  ADD pg TEXT');
+
+  db.run('ALTER TABLE customers\
+  ADD activation TEXT');
 }
 
 function createTableProvinces() {
