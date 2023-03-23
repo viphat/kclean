@@ -5,9 +5,9 @@ export const db = new sqlite3.Database('db.sqlite3');
 
 export const setupDatabase = () => {
   db.serialize(()=>{
-    // createTableProvinces();
-    // createTableDistricts();
-    // createTableCustomers();
+    createTableProvinces();
+    createTableDistricts();
+    createTableCustomers();
     addColumnsToCustomers();
   });
 
@@ -25,11 +25,11 @@ export const importData = () => {
 }
 
 function addColumnsToCustomers() {
-  // db.run('ALTER TABLE customers\
-  // ADD khoi TEXT');
+  db.run('ALTER TABLE customers\
+  ADD khoi TEXT');
 
-  // db.run('ALTER TABLE customers\
-  // ADD daidien TEXT');
+  db.run('ALTER TABLE customers\
+  ADD daidien TEXT');
 
   db.run('ALTER TABLE customers\
   ADD fw TEXT');
