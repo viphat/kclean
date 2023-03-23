@@ -445,7 +445,7 @@ function fillData(batch, filterType) {
     let baseQuery = 'SELECT COUNT(*) AS TotalBase, coalesce(SUM(hasError),0) AS HasError,\
     coalesce(SUM(missingData),0) AS MissingData,\
     coalesce(SUM(missingName),0) AS MissingName,\
-    coalesce(SUM(missingName),0) AS MissingLivingCity,\
+    coalesce(SUM(MissingLivingCity),0) AS MissingLivingCity,\
     coalesce(SUM(missingContactInformation),0) AS MissingContactInformation, \
     coalesce(SUM(missingAge),0) As MissingAge, \
     coalesce(SUM(missingSchoolName),0) AS MissingSchoolName, \
