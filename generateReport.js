@@ -180,7 +180,7 @@ const generateReportTemplate = (batch, outputDirectory) => {
     // Done 1st Col
 
     // Row 4 - D4, K4, P4, S4
-    buildReportRow4(worksheet, 'E', 'E4:I4', 'Break-down by city (Highschool)');
+    buildReportRow4(worksheet, 'E', 'E4:I4', 'Break-down by city (High School)');
     buildReportRow4(worksheet, 'J', 'J4:N4', 'Break-down by city (University)');
 
     // // Row 5, B4-T4
@@ -231,7 +231,7 @@ function buildReportRow5(worksheet, cellIndex, text) {
   }
 
   if (cellIndex == 'D' || cellIndex == 'E' || cellIndex == 'F' || cellIndex == 'G' ||
-    cellIndex == 'H' || cellIndex == 'I' || cellIndex == 'J' || cellIndex == 'K' || cellIndex == 'L'
+    cellIndex == 'H' || cellIndex == 'I' || cellIndex == 'J' || cellIndex == 'K' || cellIndex == 'L' || cellIndex == 'M' || cellIndex == 'N'
   ) {
     fgColor = { argb: 'FFFFFF00' };
   }
@@ -393,11 +393,11 @@ function buildDataRow(worksheet, rowIndex, cellIndex) {
   let bold = false;
   let color = { argb: 'FF000000' };
 
-  if (rowIndex == 6 || rowIndex == 7 || rowIndex == 14 || rowIndex == 15 || rowIndex == 18) {
+  if (rowIndex == 6 || rowIndex == 7 || rowIndex == 15 || rowIndex == 19 || rowIndex == 23) {
     bold = true;
   }
 
-  if (rowIndex == 7 || rowIndex == 14 || rowIndex == 15) {
+  if (rowIndex == 7 || rowIndex == 15 || rowIndex == 19) {
     row.getCell(cellIndex).fill = {
       type: 'pattern',
       pattern: 'solid',
@@ -406,7 +406,7 @@ function buildDataRow(worksheet, rowIndex, cellIndex) {
     };
   }
 
-  if (rowIndex == 18) {
+  if (rowIndex == 23) {
     row.getCell(cellIndex).fill = {
       type: 'pattern',
       pattern: 'solid',
@@ -419,7 +419,7 @@ function buildDataRow(worksheet, rowIndex, cellIndex) {
     color = { argb: 'FFFF0000' };
   }
 
-  if (rowIndex == 7 || rowIndex == 14 || rowIndex == 15 || rowIndex == 18) {
+  if (rowIndex == 7 || rowIndex == 15 || rowIndex == 19 || rowIndex == 23) {
     color = { theme: 0 };
   }
 
@@ -445,6 +445,7 @@ function fillData(batch, filterType) {
     let baseQuery = 'SELECT COUNT(*) AS TotalBase, coalesce(SUM(hasError),0) AS HasError,\
     coalesce(SUM(missingData),0) AS MissingData,\
     coalesce(SUM(missingName),0) AS MissingName,\
+    coalesce(SUM(missingName),0) AS MissingLivingCity,\
     coalesce(SUM(missingContactInformation),0) AS MissingContactInformation, \
     coalesce(SUM(missingAge),0) As MissingAge, \
     coalesce(SUM(missingSchoolName),0) AS MissingSchoolName, \
@@ -454,6 +455,7 @@ function fillData(batch, filterType) {
     coalesce(SUM(illogicalPhone),0) AS IllogicalPhone,\
     coalesce(SUM(illogicalAge),0) AS IllogicalAge,\
     coalesce(SUM(illogicalAgePupil),0) AS IllogicalAgePupil,\
+    coalesce(SUM(illogicalAgePupil),0) AS IllogicalAgeStudent,\
     coalesce(SUM(duplicatedPhone),0) As DuplicatedPhone, \
     coalesce(SUM(duplicatedPhoneBetweenPupilAndStudent),0) As DuplicatedPhoneBetweenPupilAndStudent, \
     coalesce(SUM(duplicatedPhoneWithinPupil),0) AS DuplicatedPhoneWithinPupil,\
@@ -478,15 +480,16 @@ function fillData(batch, filterType) {
         whereCondition += " AND customers.target = $target";
       }
 
-      params = {
+      params = _.merge(params, {
         $target: filterType.target
-      }
+      });
     }
 
     if (batch !== '' && filterType !== 'All') {
       params = _.merge(params, {
         $batch: batch
       });
+
       if (whereCondition === '') {
         whereCondition = 'WHERE customers.batch = $batch'
       } else {
@@ -550,7 +553,7 @@ function writeToTemplate(reportFilePath, rowData, cellIndex) {
       row.getCell(cellIndex).value = rowData.DuplicatedPhoneWithinStudent;
 
       row = worksheet.getRow(18);
-      row.getCell(cellIndex).value = rowData.duplicatedPhoneBetweenPupilAndStudent;
+      row.getCell(cellIndex).value = rowData.DuplicatedPhoneBetweenPupilAndStudent;
 
       row = worksheet.getRow(19);
       row.getCell(cellIndex).value = rowData.IllogicalData;
