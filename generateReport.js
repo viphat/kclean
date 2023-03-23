@@ -455,7 +455,7 @@ function fillData(batch, filterType) {
     coalesce(SUM(illogicalPhone),0) AS IllogicalPhone,\
     coalesce(SUM(illogicalAge),0) AS IllogicalAge,\
     coalesce(SUM(illogicalAgePupil),0) AS IllogicalAgePupil,\
-    coalesce(SUM(illogicalAgePupil),0) AS IllogicalAgeStudent,\
+    coalesce(SUM(illogicalAgeStudent),0) AS IllogicalAgeStudent,\
     coalesce(SUM(duplicatedPhone),0) As DuplicatedPhone, \
     coalesce(SUM(duplicatedPhoneBetweenPupilAndStudent),0) As DuplicatedPhoneBetweenPupilAndStudent, \
     coalesce(SUM(duplicatedPhoneWithinPupil),0) AS DuplicatedPhoneWithinPupil,\
