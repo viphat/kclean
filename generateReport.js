@@ -535,7 +535,7 @@ const generateReportTemplate = (batch, outputDirectory) => {
     buildReportRow5(worksheet, 'AC', 'Bình Định');
     buildReportRow5(worksheet, 'AD', 'Ninh Thuận');
     buildReportRow5(worksheet, 'AE', 'Lâm Đồng');
-    buildReportRow5(worksheet, 'DF', 'Đắk Lắk');
+    buildReportRow5(worksheet, 'AF', 'Đắk Lắk');
     buildReportRow5(worksheet, 'AG', 'Gia Lai');
     buildReportRow5(worksheet, 'AH', 'Bà Rịa - Vũng Tàu');
     buildReportRow5(worksheet, 'AI', 'Bạc Liêu');
@@ -615,13 +615,13 @@ function buildReportRow5(worksheet, cellIndex, text) {
     fgColor = { theme: 5, tint: 0.5999938962981048 };
   }
 
-  if (['E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', 'AA', 'AB', 'AC', 'AD', 'AE', 'AF', 'AG', 'AH', 'AI', 'AJ', 'AK', 'AL', 'AM', 'AN', 'AO', 'AP', 'AQ', 'AR', 'AS', 'AT', 'AU', 'AV', 'AW', 'AX', 'AY', 'AZ', 'BA', 'BB', 'BC', 'BD', 'BE', 'BF', 'BG', 'BH', 'BI', 'BJ', 'BK', 'BL', 'BM', 'BN', 'BO', 'BP', 'BQ', 'BR', 'BS', 'BT', 'BU', 'BV', 'BW', 'BX', 'BY', 'BZ'].includes(cellIndex)) {
+  if (['E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', 'AA', 'AB', 'AC', 'AD', 'AE', 'AF', 'AG', 'AH', 'AI', 'AJ', 'AK', 'AL', 'AM', 'AN', 'AO'].includes(cellIndex)) {
     fgColor = { argb: 'FFFFFF00' };
   }
 
-  // if (cellIndex == 'J' || cellIndex == 'K' || cellIndex == 'L') {
-  //   fgColor = { theme: 6, tint: 0.3999755851924192 };
-  // }
+  if (['AP', 'AQ', 'AR', 'AS', 'AT', 'AU', 'AV', 'AW', 'AX', 'AY', 'AZ', 'BA', 'BB', 'BC', 'BD', 'BE', 'BF', 'BG', 'BH', 'BI', 'BJ', 'BK', 'BL', 'BM', 'BN', 'BO', 'BP', 'BQ', 'BR', 'BS', 'BT', 'BU', 'BV', 'BW', 'BX', 'BY', 'BZ'].includes(cellIndex)) {
+    fgColor = { theme: 6, tint: 0.3999755851924192 };
+  }
 
   row.getCell(cellIndex).border = {
     left: { style: 'thin' },
@@ -662,7 +662,7 @@ function buildReportRow4(worksheet, cellIndex, mergeRange, text) {
     case 'E':
       fgColor = { argb: 'FFFFFF00' };
       break;
-    case 'J':
+    case 'AP':
       fgColor = { theme: 6, tint: 0.3999755851924192 };
       break;
   }
