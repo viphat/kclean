@@ -119,8 +119,9 @@ const readEachRow = (excelFile, outputWorkbook, batch, source, worksheet, rowNum
         const value = row.getCell(dateOfBirthCol).value
         console.log(value)
         console.log(value.length === 4)
+
         if (value.length === 4) {
-          if (parseInt(value, 10) >= 2000 && parseInt(value, 10) <= 2020) {
+          if (parseInt(value, 10) >= 1970 && parseInt(value, 10) <= 2020) {
             yearOfBirth = parseInt(value, 10)
             dateOfBirth = value
           } else {
@@ -135,7 +136,7 @@ const readEachRow = (excelFile, outputWorkbook, batch, source, worksheet, rowNum
 
           dayOfBirth = padStart(arr[0], 2, 0);
           monthOfBirth = padStart(arr[1], 2, 0);
-          yearOfBirth = (arr[2].toString().length === 2 ? ((parseInt(arr[2], 10) >= 90 && parseInt(arr[2], 10) <= 99) ? '19' : '20') + arr[2] : arr[2]);
+          yearOfBirth = (arr[2].toString().length === 2 ? ((parseInt(arr[2], 10) >= 30 && parseInt(arr[2], 10) <= 99) ? '19' : '20') + arr[2] : arr[2]);
           dateOfBirth = new Date(yearOfBirth + '-' + monthOfBirth + '-' + dayOfBirth)
         }
       } else {

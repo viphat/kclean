@@ -40,15 +40,19 @@ const checkIllogicalData = (customer) => {
       }
     } else {
       var age = parseInt(customer.age)
-
-      if (customer.source === 'BrandMax' && (age < 14 || age > 20)) {
+      if (customer.samplingProduct === 'GV' && age < 20) {
         customer.illogicalData = 1
         customer.illogicalAge = 1
-        customer.illogicalAgePupil = 1
-      } else if (customer.source === 'Focus MKT' && (age < 17 || age > 24))  {
-        customer.illogicalData = 1
-        customer.illogicalAge = 1
-        customer.illogicalAgeStudent = 1
+      } else  {
+        if (customer.source === 'BrandMax' && (age < 14 || age > 20)) {
+          customer.illogicalData = 1
+          customer.illogicalAge = 1
+          customer.illogicalAgePupil = 1
+        } else if (customer.source === 'Focus MKT' && (age < 17 || age > 24))  {
+          customer.illogicalData = 1
+          customer.illogicalAge = 1
+          customer.illogicalAgeStudent = 1
+        }
       }
     }
   }
