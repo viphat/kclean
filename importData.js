@@ -121,7 +121,7 @@ const readEachRow = (excelFile, outputWorkbook, batch, worksheet, rowNumber) => 
       if (dateOfBirth.toString() === 'Invalid Date') {
         const value = row.getCell(dateOfBirthCol).value
         if (value.toString().length === 4) {
-          if (parseInt(value, 10) >= 2000 && parseInt(value, 10) <= 2020) {
+          if (parseInt(value, 10) >= 1900 && parseInt(value, 10) <= 2020) {
             yearOfBirth = parseInt(value, 10)
             dateOfBirth = value.toString()
           } else {
