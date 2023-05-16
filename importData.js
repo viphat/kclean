@@ -200,7 +200,7 @@ const readEachRow = (excelFile, outputWorkbook, batch, worksheet, rowNumber) => 
       schoolName: row.getCell(schoolNameCol).value,
       phoneNumber: row.getCell(phoneNumberCol).value,
       parentPhoneNumber: row.getCell(parentPhoneNumberCol).value,
-      dateOfBirth: yearOfBirth ? (padStart(dayOfBirth, 2, 0) + '/' + padStart(monthOfBirth, 2, 0) + '/' + yearOfBirth) : null,
+      dateOfBirth: dateOfBirth.length === 4 ? dateOfBirth : (padStart(dayOfBirth, 2, 0) + '/' + padStart(monthOfBirth, 2, 0) + '/' + yearOfBirth),
       yearOfBirth: yearOfBirth,
       age: age,
       collectedDate: collectedYear? (padStart(collectedDay, 2, 0) + '/' + padStart(collectedMonth, 2, 0) + '/' + collectedYear) : null,
