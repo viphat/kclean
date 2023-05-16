@@ -120,12 +120,10 @@ const readEachRow = (excelFile, outputWorkbook, batch, worksheet, rowNumber) => 
     if (dateOfBirth !== null && dateOfBirth !== undefined) {
       if (dateOfBirth.toString() === 'Invalid Date') {
         const value = row.getCell(dateOfBirthCol).value
-        console.log(value)
-        console.log(value.length === 4)
-        if (value.length === 4) {
+        if (value.toString().length === 4) {
           if (parseInt(value, 10) >= 2000 && parseInt(value, 10) <= 2020) {
             yearOfBirth = parseInt(value, 10)
-            dateOfBirth = value
+            dateOfBirth = value.toString()
           } else {
             return reject('#1 - Lỗi ngày tháng DOB ở dòng ' + rowNumber)
           }
