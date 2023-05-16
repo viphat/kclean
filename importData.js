@@ -114,32 +114,30 @@ const readEachRow = (excelFile, outputWorkbook, batch, worksheet, rowNumber) => 
     let dayOfBirth, monthOfBirth, yearOfBirth, age;
     let arr;
 
-    dateOfBirth = new Date(dateOfBirth)
+    // dateOfBirth = new Date(dateOfBirth)
     // Do Data gốc bị sai format, nên phải ép lại
 
     if (dateOfBirth !== null && dateOfBirth !== undefined) {
-      if (dateOfBirth.toString() === 'Invalid Date') {
+      if (dateOfBirth.toString().length === 4) {
         const value = row.getCell(dateOfBirthCol).value
-        if (value.toString().length === 4) {
-          if (parseInt(value, 10) >= 1900 && parseInt(value, 10) <= 2020) {
-            yearOfBirth = parseInt(value, 10)
-            dateOfBirth = value.toString()
-          } else {
-            return reject('#1 - Lỗi ngày tháng DOB ở dòng ' + rowNumber)
-          }
+        if (parseInt(value, 10) >= 1900 && parseInt(value, 10) <= 2020) {
+          yearOfBirth = parseInt(value, 10)
+          dateOfBirth = value.toString()
         } else {
-          arr = value.toString().split('/')
-
-          if (arr.length !== 3) {
-            return reject('#1 - Lỗi ngày tháng DOB ở dòng ' + rowNumber)
-          }
-
-          dayOfBirth = padStart(arr[0], 2, 0);
-          monthOfBirth = padStart(arr[1], 2, 0);
-          yearOfBirth = (arr[2].toString().length === 2 ? ((parseInt(arr[2], 10) >= 90 && parseInt(arr[2], 10) <= 99) ? '19' : '20') + arr[2] : arr[2]);
-          dateOfBirth = new Date(yearOfBirth + '-' + monthOfBirth + '-' + dayOfBirth)
+          return reject('#1 - Lỗi ngày tháng DOB ở dòng ' + rowNumber)
         }
-      } else {
+      } else if (dateOfBirth.toString().length === 10) {
+        arr = value.toString().split('/')
+
+        if (arr.length !== 3) {
+          return reject('#1 - Lỗi ngày tháng DOB ở dòng ' + rowNumber)
+        }
+
+        dayOfBirth = padStart(arr[0], 2, 0);
+        monthOfBirth = padStart(arr[1], 2, 0);
+        yearOfBirth = (arr[2].toString().length === 2 ? ((parseInt(arr[2], 10) >= 90 && parseInt(arr[2], 10) <= 99) ? '19' : '20') + arr[2] : arr[2]);
+        dateOfBirth = new Date(yearOfBirth + '-' + monthOfBirth + '-' + dayOfBirth)
+      } else if (dateOfBirth instanceof Date) {
         // dd/mm/yyyy
         dayOfBirth = dateOfBirth.getDate()
         monthOfBirth = dateOfBirth.getMonth() + 1
