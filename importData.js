@@ -146,8 +146,6 @@ const readEachRow = (excelFile, outputWorkbook, batch, worksheet, rowNumber) => 
         if (monthOfBirth > 12) {
           return reject('#2 - Lỗi ngày tháng DOB ở dòng ' + rowNumber)
         }
-
-        dateOfBirth = new Date(yearOfBirth + '-' + monthOfBirth + '-' + dayOfBirth)
       }
 
       let currentYear = new Date().getFullYear()
@@ -196,10 +194,10 @@ const readEachRow = (excelFile, outputWorkbook, batch, worksheet, rowNumber) => 
       schoolName: row.getCell(schoolNameCol).value,
       phoneNumber: row.getCell(phoneNumberCol).value,
       parentPhoneNumber: row.getCell(parentPhoneNumberCol).value,
-      dateOfBirth: dateOfBirth.length === 4 ? dateOfBirth : (padStart(dayOfBirth, 2, 0) + '/' + padStart(monthOfBirth, 2, 0) + '/' + yearOfBirth),
+      dateOfBirth: dayOfBirth && monthOfBirth && yearOfBirth ? (padStart(dayOfBirth, 2, 0) + '-' + padStart(monthOfBirth, 2, 0) + '-' + yearOfBirth) : new Date(dateOfBirth.toString()),
       yearOfBirth: yearOfBirth,
       age: age,
-      collectedDate: collectedYear? (padStart(collectedDay, 2, 0) + '/' + padStart(collectedMonth, 2, 0) + '/' + collectedYear) : null,
+      collectedDate: collectedYear? (padStart(collectedDay, 2, 0) + '-' + padStart(collectedMonth, 2, 0) + '-' + collectedYear) : null,
       collectedTime: row.getCell(collectedTimeCol).value,
       brand: row.getCell(brandCol).value,
       subBrand: row.getCell(subBrandCol).value,
