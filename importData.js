@@ -120,12 +120,12 @@ const readEachRow = (excelFile, outputWorkbook, batch, worksheet, rowNumber) => 
     if (dateOfBirth !== null && dateOfBirth !== undefined) {
       if (dateOfBirth.toString().length === 4) {
         const value = row.getCell(dateOfBirthCol).value
-        if (parseInt(value, 10) >= 1900 && parseInt(value, 10) <= 2020) {
-          yearOfBirth = parseInt(value, 10)
-          dateOfBirth = value.toString()
-        } else {
-          return reject('#1 - Lỗi ngày tháng DOB ở dòng ' + rowNumber)
-        }
+        // if (parseInt(value, 10) >= 0 && parseInt(value, 10) <= 5000) {
+        yearOfBirth = parseInt(value, 10)
+        dateOfBirth = value.toString()
+        // } else {
+        //   return reject('#1 - Lỗi ngày tháng DOB ở dòng ' + rowNumber)
+        // }
       } else if (dateOfBirth.toString().length === 10) {
         arr = value.toString().split('/')
 
@@ -143,9 +143,9 @@ const readEachRow = (excelFile, outputWorkbook, batch, worksheet, rowNumber) => 
         monthOfBirth = dateOfBirth.getMonth() + 1
         yearOfBirth = dateOfBirth.getFullYear()
 
-        if (monthOfBirth > 12) {
-          return reject('#2 - Lỗi ngày tháng DOB ở dòng ' + rowNumber)
-        }
+        // if (monthOfBirth > 12) {
+        //   return reject('#2 - Lỗi ngày tháng DOB ở dòng ' + rowNumber)
+        // }
       }
 
       let currentYear = new Date().getFullYear()
@@ -156,7 +156,6 @@ const readEachRow = (excelFile, outputWorkbook, batch, worksheet, rowNumber) => 
     }
 
     // dateOfBirth = new Date(dateOfBirth)
-    // console.log(dateOfBirth)
     // if (dateOfBirth.toString() === 'Invalid Date') {
     //   return reject('Lỗi ngày tháng DOB ở dòng ' + rowNumber)
     // }
